@@ -1,0 +1,345 @@
+'use client';
+import React, { useEffect, useState } from 'react';
+import { useForm, FormProvider as RHFFormProvider } from 'react-hook-form';
+import { Button, Container, Paper, Typography, CircularProgress, Alert } from '@mui/material';
+import { FormProvider as AppFormProvider, useFormContextData } from '@/context/FormContext'; // Adjust path
+
+// Import your modules
+import { PageWrapper } from '@/components/core/PageWrapper'; // Adjust path
+import { NavigationButtons } from '@/components/core/NavigationButtons'; // Adjust path
+import { ShortAnswerModule } from '@/components/form-modules/ShortAnswerModule'; // Adjust path
+import { NumberAnswerModule } from '@/components/form-modules/NumberAnswerModule'; // Adjust path
+import { SingleChoiceCheckboxModule } from '@/components/form-modules/SingleChoiceCheckboxModule'; // Adjust path
+import { CourseTimeslotModule } from '@/components/form-modules/CourseTimeslotModule'; // Adjust path
+import { EmailModule } from '@/components/form-modules/EmailModule'; // Adjust path
+import { PhoneNumberModule } from '@/components/form-modules/PhoneNumberModule';
+// ... import other modules
+
+const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
+const formTitle = "25-26年度 小學科學外展 報名表格"
+
+// Define a type for your entire form's data
+interface MainFormValues {
+  // Page 1
+  schoolNameChn?: string;
+  schoolNameEng?: string;
+  isSpecial?: string;
+  schoolAddChn?: string;
+  schoolAddEng?: string;
+  schoolPhone?: number;
+  schoolFax?: number;
+  teacherNameChn?: string;
+  teacherNameEng?: string;
+  teacherPhone?: number;
+  teacherEmail?: string;
+  contactAgree?: string;
+  // Page 2
+  email?: string;
+  appType?: string;
+  // Page 3 (Review)
+  // ... add all fields
+}
+
+const formPagesConfig = [
+  {
+    pageNumber: 1,
+    sheetId: 'YOUR_SHEET_ID_1', // For data from this page or group
+    fields: [
+      'schoolNameChn',
+      'schoolNameEng',
+      'isSpecial',
+      'schoolAddChn',
+      'schoolAddEng',
+      'schoolPhone',
+      'schoolFax',
+      'teacherNameChn',
+      'teacherNameEng',
+      'teacherPhone',
+      'teacherEmail',
+      'contactAgree'
+    ], // Fields on this page for validation trigger
+  },
+  {
+    pageNumber: 2,
+    sheetId: 'YOUR_SHEET_ID_1', // Could be same or different
+    fields: ['appType'],
+  },
+  {
+    pageNumber: 3,
+    sheetId: 'YOUR_SHEET_ID_1', // Could be same or different
+    fields: [
+      'course1Theme',
+      'course1Time1',
+      'course1Time2',
+      'course1Time3',
+      'course1Time4',
+      'course1Time5',
+      'course1Grade',
+      'course1Class',
+      'course1PplNo',
+    ],
+  },
+  {
+    pageNumber: 4,
+    sheetId: 'YOUR_SHEET_ID_1', // Could be same or different
+    fields: [
+      'eventTheme',
+      'eventTime1',
+      'eventTime2',
+      'eventTime3',
+      'eventTime4',
+      'eventTime5',
+      'eventGrade',
+      'eventClassNo',
+      'eventPplNo',
+    ],
+  },
+  // Add more pages
+];
+
+const isSpecialChoices = [
+  { value: 'no', label: '否 No' },
+  { value: 'yes', label: '是 Yes' },
+];
+
+const contactAgreeChoices = [
+  { value: 'yes', label: '同意 Agree' },
+];
+
+const REVIEW_PAGE_NUMBER = formPagesConfig.length + 1;
+const TOTAL_PAGES = formPagesConfig.length + 1; // +1 for review page
+
+
+const FormContent: React.FC = () => {
+  const {
+    currentPage,
+    formData,
+    updateFormData,
+    goToNextPage,
+    goToPage,
+    setFormMethods, // From FormContext
+  } = useFormContextData();
+
+  const rhfMethods = useForm<MainFormValues>({
+    mode: 'onChange', // Or 'onBlur', 'onSubmit'
+    defaultValues: formData, // Initialize RHF with global state
+  });
+
+  const { control, formState: { errors }, getValues, trigger, handleSubmit, reset } = rhfMethods;
+
+  useEffect(() => {
+    setFormMethods(rhfMethods); // Make RHF methods available globally via context
+  }, [rhfMethods, setFormMethods]);
+
+
+  // Update RHF when global formData changes (e.g., on page navigation back and forth)
+  useEffect(() => {
+    reset(formData);
+  }, [formData, reset]);
+
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+
+  const handlePageSpecificNext = async () => {
+    const currentConfig = formPagesConfig.find(p => p.pageNumber === currentPage);
+    const fieldsToValidate = currentConfig?.fields as (keyof MainFormValues)[] || [];
+
+    const isValid = await trigger(fieldsToValidate);
+    if (isValid) {
+      updateFormData(getValues(fieldsToValidate)); // Update global state with validated page data
+
+      // Handle conditional navigation for SingleChoiceCheckboxModule
+      const appTypeValue = getValues("appType"); // Assuming 'appTypeType' is your single choice field
+      const appTypeChoice = appTypeChoices.find(c => c.value === appTypeValue);
+      if (appTypeChoice?.nextPage) {
+        goToPage(appTypeChoice.nextPage);
+      } else {
+        goToNextPage();
+      }
+    }
+    return isValid;
+  };
+
+  const handleReview = async () => {
+    const currentConfig = formPagesConfig.find(p => p.pageNumber === currentPage);
+    const fieldsToValidate = currentConfig?.fields as (keyof MainFormValues)[] || [];
+    const isValid = await trigger(fieldsToValidate);
+    if (isValid) {
+      updateFormData(getValues(fieldsToValidate));
+      goToPage(REVIEW_PAGE_NUMBER); // Go to review page
+    }
+    return isValid;
+  };
+
+
+  const onSubmitToGoogleSheets = async (data: MainFormValues) => {
+    setIsSubmitting(true);
+    setSubmissionStatus(null);
+    console.log('Submitting data:', data);
+
+    // Here, you would determine which sheetId to use based on formPagesConfig
+    // For simplicity, assuming all data goes to one sheet or you have a primary sheetId
+    const targetSheetId = formPagesConfig[0]?.sheetId || 'FALLBACK_SHEET_ID'; // Example
+
+    try {
+      const response = await fetch('/api/submit-to-sheet', { // Your API endpoint
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data, sheetId: targetSheetId }), // Send all data
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Submission failed');
+      }
+
+      setSubmissionStatus({ type: 'success', message: 'Form submitted successfully!' });
+      // Optionally reset form or redirect: reset({}); goToPage(1);
+    } catch (error: any) {
+      setSubmissionStatus({ type: 'error', message: error.message || 'An error occurred.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const appTypeChoices = [
+    { value: 'courses', label: '外展到校課程 | Outreach courses', nextPage: 2}, /* Example: skip to page if needed, or just regular next*/
+    { value: 'event', label: '外展 Cool Science Day | Outreach Cool Science Day', nextPage: 2 },
+  ];
+
+
+  if (isSubmitting) {
+    return <div className="flex justify-center items-center h-screen"><CircularProgress /></div>;
+  }
+
+  if (submissionStatus) {
+    return (
+      <Container maxWidth="sm" className="py-10">
+        <Alert severity={submissionStatus.type}>{submissionStatus.message}</Alert>
+        {submissionStatus.type === 'success' && (
+          <Button onClick={() => { reset({}); goToPage(1); setSubmissionStatus(null); }} className="mt-4">
+            Submit Another Response
+          </Button>
+        )}
+      </Container>
+    );
+  }
+
+  return (
+    <RHFFormProvider {...rhfMethods}> {/* Provide RHF methods to children */}
+      <form onSubmit={handleSubmit(onSubmitToGoogleSheets)} noValidate>
+        <Paper elevation={3} className="p-6 md:p-10 my-10">
+          <Typography variant="h6" component="h6" gutterBottom className="text-center">
+            {orgTitle}
+          </Typography>
+          <Typography variant="h4" component="h1" gutterBottom className="text-center">
+            {formTitle}
+          </Typography>
+          {/* <Typography variant="h6" component="h6" gutterBottom className="text-center">
+            Page {currentPage > formPagesConfig.length ? 'Review' : currentPage}
+          </Typography> */}
+
+          <PageWrapper pageNumber={1}>
+            <Typography variant="h6" gutterBottom>參加學校資料 School info</Typography>
+            {/* <GoogleSheetWrapper sheetId="YOUR_SHEET_ID_FOR_PAGE_1"> */}
+            <ShortAnswerModule name="schoolNameChn" label="學校名稱（中文）" control={control} errors={errors} />
+            <ShortAnswerModule name="schoolNameEng" label="School Name (ENG)" control={control} errors={errors} required />
+            <SingleChoiceCheckboxModule
+              name="isSpecial"
+              label="本校為教育局資助特殊學校。Our school is an aided special school."
+              control={control}
+              errors={errors} 
+              choices={isSpecialChoices}
+              required
+            />
+            <ShortAnswerModule name="schoolAddChn" label="學校地址 （中文）" control={control} errors={errors} />
+            <ShortAnswerModule name="schoolAddEng" label="School Address (ENG)" control={control} errors={errors} required />
+            <PhoneNumberModule name="schoolPhone" label="學校電話 School phone no." control={control} errors={errors} required />
+            <PhoneNumberModule name="schoolFax" label="學校傳真 School Fax no." control={control} errors={errors} required />
+            <Typography variant="h6" gutterBottom>負責老師資料 Teacher's contact info </Typography>
+            <ShortAnswerModule name="teacherNameChn" label="老師姓名 （中文）" control={control} errors={errors} />
+            <ShortAnswerModule name="teacherNameEng" label="Teacher Name (ENG)" control={control} errors={errors} required />
+            <PhoneNumberModule name="teacherPhone" label="手提電話 Mobile phone no." control={control} errors={errors} required />
+            <EmailModule name="teacherEmail" label="聯絡電郵 Contact email" control={control} errors={errors} required />
+            <SingleChoiceCheckboxModule
+              name="contactAgree"
+              label={"本人同意可觀自然教育中心暨天文館日後以電郵及手提電話短訊聯絡本人，以處理課程報名及協調課程事宜。  I agree to be contacted by HKNEAC via email and text messages regarding course application and implementation."}
+              control={control}
+              errors={errors}
+              choices={contactAgreeChoices}
+              required
+            />
+            {/* </GoogleSheetWrapper> */}
+          </PageWrapper>
+
+          <PageWrapper pageNumber={2}>
+            <Typography variant="h6" gutterBottom>報名類型  Type of Application</Typography>
+            {/* <GoogleSheetWrapper sheetId="YOUR_SHEET_ID_FOR_PAGE_2_OR_SAME"> */}
+            <SingleChoiceCheckboxModule
+              name="appType"
+              label="請選擇報名類型。 Please choose a type of application."
+              control={control}
+              errors={errors}
+              choices={appTypeChoices}
+              required
+            />
+            {/* </GoogleSheetWrapper> */}
+          </PageWrapper>
+
+          {/* --- Review Page --- */}
+          {currentPage === REVIEW_PAGE_NUMBER && (
+            <div className="animate-fadeIn">
+              <Typography variant="h5" gutterBottom>Review Your Answers</Typography>
+              {Object.entries(formData).map(([key, value]) => (
+                <div key={key} className="mb-2">
+                  <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography>
+                  <Typography variant="body1" component="span">
+                    {typeof value === 'object' && value !== null && value instanceof Date
+                      ? value.toLocaleDateString()
+                      : Array.isArray(value)
+                        ? value.join(', ')
+                        : String(value)}
+                  </Typography>
+                </div>
+              ))}
+              <div className="mt-8 flex justify-between">
+                <Button variant="outlined" onClick={() => goToPage(currentPage - 1)}>
+                  Back to Edit
+                </Button>
+                <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                  {isSubmitting ? <CircularProgress size={24} /> : 'Submit Application'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Navigation (only if not on review page and not submitting) */}
+          {currentPage !== REVIEW_PAGE_NUMBER && !isSubmitting && (
+            <NavigationButtons
+              onNext={handlePageSpecificNext}
+              isFirstPage={currentPage === 1}
+              isLastPage={currentPage === formPagesConfig.length} // True if current page is the last data entry page
+              onReview={handleReview}
+            />
+          )}
+        </Paper>
+      </form>
+    </RHFFormProvider>
+  );
+};
+
+
+// Main exported page component
+export default function FormPageContainer() {
+  return (
+    <AppFormProvider totalFormPages={TOTAL_PAGES}>
+      <Container maxWidth="md">
+        <FormContent />
+      </Container>
+    </AppFormProvider>
+  );
+}
