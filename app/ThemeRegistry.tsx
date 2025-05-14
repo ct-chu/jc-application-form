@@ -10,7 +10,12 @@ const theme = createTheme({
   // your theme configuration
   typography: {
     "fontFamily": `"Noto Sans HK", sans-serif`,
-   }
+  },
+  palette: {
+    background: {
+      paper: "#eceff4"
+    }
+  },
 });
 
 export default function ThemeRegistry({ children }: { children: React.ReactNode }) {
