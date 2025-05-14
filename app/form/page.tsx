@@ -13,7 +13,9 @@ import { SingleChoiceCheckboxModule } from '@/components/form-modules/SingleChoi
 import { CourseTimeslotModule } from '@/components/form-modules/CourseTimeslotModule'; // Adjust path
 import { EmailModule } from '@/components/form-modules/EmailModule'; // Adjust path
 import { PhoneNumberModule } from '@/components/form-modules/PhoneNumberModule';
+import { DropdownChoiceModule } from '@/components/form-modules/DropdownChoiceModule';
 // ... import other modules
+import { CssBaseline } from '@mui/material';
 
 const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
 const formTitle = "25-26年度 小學科學外展 報名表格"
@@ -36,6 +38,20 @@ interface MainFormValues {
   // Page 2
   email?: string;
   appType?: string;
+  // Page 3
+  outreach1?: {
+    theme?: number;
+    timeslot?: {
+      1?: string;
+      2?: string;
+      3?: string;
+      4?: string;
+      5?: string;
+    };
+    grade?: number;
+    className?: string;
+    noOfppl?: number;
+  };
   // Page 3 (Review)
   // ... add all fields
 }
@@ -68,15 +84,15 @@ const formPagesConfig = [
     pageNumber: 3,
     sheetId: 'YOUR_SHEET_ID_1', // Could be same or different
     fields: [
-      'course1Theme',
-      'course1Time1',
-      'course1Time2',
-      'course1Time3',
-      'course1Time4',
-      'course1Time5',
-      'course1Grade',
-      'course1Class',
-      'course1PplNo',
+      'outreach1.theme',
+      'outreach1.timeslot[1]',
+      'outreach1.timeslot[2]',
+      'outreach1.timeslot[3]',
+      'outreach1.timeslot[4]',
+      'outreach1.timeslot[5]',
+      'outreach1.grade',
+      'outreach1.className',
+      'outreach1.noOfppl',
     ],
   },
   {
@@ -207,9 +223,29 @@ const FormContent: React.FC = () => {
   };
 
   const appTypeChoices = [
-    { value: 'courses', label: '外展到校課程 | Outreach courses', nextPage: 2}, /* Example: skip to page if needed, or just regular next*/
+    { value: 'courses', label: '外展到校課程 | Outreach courses', nextPage: 3}, /* Example: skip to page if needed, or just regular next*/
     { value: 'event', label: '外展 Cool Science Day | Outreach Cool Science Day', nextPage: 2 },
   ];
+
+  const outreachThemes = [
+    {value: 1, label: "R1 地球的日與夜",},
+    {value: 2, label: "R2 四季之謎：貓貓拯救大作戰 The Mystery of Seasons: Cat Rescue Mission",},
+    {value: 3, label: "R3 立竿見影、觀象授時",},
+    {value: 4, label: "R4 大行星之旅（課室版） The Planetary Grand Tour",},
+    {value: 5, label: "R5 大行星之旅（加長版） The Planetary Grand Tour",},
+    {value: 6, label: "R6 太陽的祕密（戶外版） Secrets of Our Sun",},
+    {value: 7, label: "R7 小小伽利略",},
+    {value: 8, label: "R8 動物隱身術",},
+    {value: 9, label: "R9 DeliverBird",},
+    {value: 10, label: "R10 花朵解密",},
+    {value: 11, label: "R11 生物搜查隊 OR 公民科學家 - 校園動植物搜查?",},
+    {value: 12, label: "R12 城市設計師：探究動植物與自然環境的關係",},
+    {value: 13, label: "R13 我的理想校園",},
+    {value: 14, label: "R14 影子大師",},
+    {value: 15, label: "R15 飛嘗航天任務 My Very First Space Mission",},
+    {value: 16, label: "R16 星星守護者",},
+    {value: 17, label: "R17 機械生物大步走",},
+  ]
 
 
   if (isSubmitting) {
@@ -233,10 +269,10 @@ const FormContent: React.FC = () => {
     <RHFFormProvider {...rhfMethods}> {/* Provide RHF methods to children */}
       <form onSubmit={handleSubmit(onSubmitToGoogleSheets)} noValidate>
         <Paper elevation={3} className="p-6 md:p-10 my-10">
-          <Typography variant="h6" component="h6" gutterBottom className="text-center">
+          <Typography variant="h6" component="h2" gutterBottom className="text-center">
             {orgTitle}
           </Typography>
-          <Typography variant="h4" component="h1" gutterBottom className="text-center">
+          <Typography sx={{ fontWeight: 800 }} variant="h4" component="h1" gutterBottom className="text-center">
             {formTitle}
           </Typography>
           {/* <Typography variant="h6" component="h6" gutterBottom className="text-center">
@@ -290,6 +326,20 @@ const FormContent: React.FC = () => {
             {/* </GoogleSheetWrapper> */}
           </PageWrapper>
 
+          <PageWrapper pageNumber={3}>
+            <Typography variant="h6" gutterBottom>外展到校課程(1) | Outreach courses(1)</Typography>
+            {/* <GoogleSheetWrapper sheetId="YOUR_SHEET_ID_FOR_PAGE_2_OR_SAME"> */}
+            <DropdownChoiceModule
+              name="outreach1.theme"
+              label="請選擇課程主題。 Please choose a course theme"
+              control={control}
+              errors={errors}
+              choices={outreachThemes}
+              required
+            />
+            {/* </GoogleSheetWrapper> */}
+          </PageWrapper>
+
           {/* --- Review Page --- */}
           {currentPage === REVIEW_PAGE_NUMBER && (
             <div className="animate-fadeIn">
@@ -337,6 +387,7 @@ const FormContent: React.FC = () => {
 export default function FormPageContainer() {
   return (
     <AppFormProvider totalFormPages={TOTAL_PAGES}>
+      <CssBaseline />
       <Container maxWidth="md">
         <FormContent />
       </Container>
