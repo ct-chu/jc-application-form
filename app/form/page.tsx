@@ -42,11 +42,11 @@ interface MainFormValues {
   outreach1?: {
     theme?: number;
     timeslot?: {
-      1?: string;
-      2?: string;
-      3?: string;
-      4?: string;
-      5?: string;
+      "one"?: string;
+      "two"?: string;
+      "three"?: string;
+      "four"?: string;
+      "five"?: string;
     };
     grade?: number;
     className?: string;
@@ -85,11 +85,11 @@ const formPagesConfig = [
     sheetId: 'YOUR_SHEET_ID_1', // Could be same or different
     fields: [
       'outreach1.theme',
-      'outreach1.timeslot[1]',
-      'outreach1.timeslot[2]',
-      'outreach1.timeslot[3]',
-      'outreach1.timeslot[4]',
-      'outreach1.timeslot[5]',
+      'outreach1.timeslot.one',
+      'outreach1.timeslot.two',
+      'outreach1.timeslot.three',
+      'outreach1.timeslot.four',
+      'outreach1.timeslot.five',
       'outreach1.grade',
       'outreach1.className',
       'outreach1.noOfppl',
@@ -137,7 +137,7 @@ const FormContent: React.FC = () => {
   } = useFormContextData();
 
   const rhfMethods = useForm<MainFormValues>({
-    mode: 'onChange', // Or 'onBlur', 'onSubmit'
+    mode: 'onTouched', // 'onTouched' or 'onSubmit'. 'onChange' can be aggressive.
     defaultValues: formData, // Initialize RHF with global state
   });
 
@@ -148,47 +148,94 @@ const FormContent: React.FC = () => {
   }, [rhfMethods, setFormMethods]);
 
 
-  // Update RHF when global formData changes (e.g., on page navigation back and forth)
-  useEffect(() => {
-    reset(formData);
-  }, [formData, reset]);
+   useEffect(() => {
+    console.log("Syncing RHF with formData. Current Page:", currentPage, "Global formData:", formData);
+    // When formData from context changes (e.g., after updateFormData)
+    // or when navigating back to a page, reset RHF with the latest global data.
+    // This should update field values and clear errors for fields that are now valid.
+    reset(formData, {
+        keepDirtyValues: true, // Preserve user's unsubmitted changes on the current page if any
+        keepErrors: false, // Clear previous errors; new validation will run based on new values
+    });
+  }, [formData, currentPage, reset]); // Rerun if formData changes OR if currentPage changes
 
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
+  
+  // Gets the current page's configuration
+  const getCurrentPageConfig = () => formPagesConfig.find(p => p.pageNumber === currentPage);
 
+  // Handles validation and data update for "Next" button on data entry pages
   const handlePageSpecificNext = async () => {
-    const currentConfig = formPagesConfig.find(p => p.pageNumber === currentPage);
-    const fieldsToValidate = currentConfig?.fields as (keyof MainFormValues)[] || [];
+    const currentConfig = getCurrentPageConfig();
+    if (!currentConfig) return;
 
-    const isValid = await trigger(fieldsToValidate);
+    const fieldsToValidate = currentConfig.fields as (keyof MainFormValues)[];
+    console.log(`Page ${currentPage} - Validating fields:`, fieldsToValidate);
+
+    // Trigger validation for only the current page's fields
+    const isValid = await trigger(fieldsToValidate.length > 0 ? fieldsToValidate : undefined);
+    console.log(`Page ${currentPage} - Validation result:`, isValid, "Errors:", errors);
+
+
     if (isValid) {
-      updateFormData(getValues(fieldsToValidate)); // Update global state with validated page data
+      const currentPageData: Partial<MainFormValues> = {};
+      fieldsToValidate.forEach(field => {
+        (currentPageData as any)[field] = getValues(field as Path<MainFormValues>);
+      });
+      console.log(`Page ${currentPage} - Updating global data with:`, currentPageData);
+      updateFormData(currentPageData); // Update global context with current page's data
 
-      // Handle conditional navigation for SingleChoiceCheckboxModule
-      const appTypeValue = getValues("appType"); // Assuming 'appTypeType' is your single choice field
-      const appTypeChoice = appTypeChoices.find(c => c.value === appTypeValue);
-      if (appTypeChoice?.nextPage) {
-        goToPage(appTypeChoice.nextPage);
-      } else {
-        goToNextPage();
+      // Conditional navigation logic (example, adapt as needed)
+      const appTypeValue = getValues("appType");
+      const selectedappChoice = appTypeChoices.find(c => c.value === appTypeValue);
+      let navigatedConditionally = false;
+
+      // Example: if feedbackType field is on this page and has conditional routing
+      if (fieldsToValidate.includes("appType" as keyof MainFormValues) && selectedappChoice?.nextPage && selectedappChoice.nextPage !== currentPage) {
+          // Ensure nextPage is different to avoid loop and is a valid page number
+          if (selectedappChoice.nextPage <= formPagesConfig.length) {
+            console.log(`Page ${currentPage} - Navigating conditionally to page ${selectedappChoice.nextPage}`);
+            goToPage(selectedappChoice.nextPage);
+            navigatedConditionally = true;
+          }
       }
+
+      if (!navigatedConditionally) {
+        console.log(`Page ${currentPage} - Navigating to next page.`);
+        goToNextPage(); // This will increment currentPage
+      }
+    } else {
+      // Ensure UI updates to show errors if validation fails
+      // RHF typically handles this automatically by updating the `errors` object
+      console.warn(`Page ${currentPage} - Validation failed. Errors:`, JSON.stringify(errors));
     }
-    return isValid;
   };
 
+// Handles validation and navigation to the Review page
   const handleReview = async () => {
-    const currentConfig = formPagesConfig.find(p => p.pageNumber === currentPage);
-    const fieldsToValidate = currentConfig?.fields as (keyof MainFormValues)[] || [];
-    const isValid = await trigger(fieldsToValidate);
-    if (isValid) {
-      updateFormData(getValues(fieldsToValidate));
-      goToPage(REVIEW_PAGE_NUMBER); // Go to review page
-    }
-    return isValid;
-  };
+    const currentConfig = getCurrentPageConfig();
+    if (!currentConfig) return;
 
+    const fieldsToValidate = currentConfig.fields as (keyof MainFormValues)[];
+    console.log(`Page ${currentPage} (to Review) - Validating fields:`, fieldsToValidate);
+    const isValid = await trigger(fieldsToValidate.length > 0 ? fieldsToValidate : undefined);
+    console.log(`Page ${currentPage} (to Review) - Validation result:`, isValid);
+
+    if (isValid) {
+      const currentPageData: Partial<MainFormValues> = {};
+      fieldsToValidate.forEach(field => {
+        (currentPageData as any)[field] = getValues(field as Path<MainFormValues>);
+      });
+      updateFormData(currentPageData);
+      console.log(`Page ${currentPage} - Navigating to Review Page.`);
+      goToPage(REVIEW_PAGE_NUMBER);
+    } else {
+      console.warn(`Page ${currentPage} (to Review) - Validation failed. Errors:`, JSON.stringify(errors));
+    }
+  };
 
   const onSubmitToGoogleSheets = async (data: MainFormValues) => {
     setIsSubmitting(true);
@@ -246,6 +293,10 @@ const FormContent: React.FC = () => {
     {value: 16, label: "R16 星星守護者",},
     {value: 17, label: "R17 機械生物大步走",},
   ]
+
+  const courseTimeslots = {
+    "HKP_001": "2025/05/08_AM",
+  }
 
 
   if (isSubmitting) {
@@ -331,10 +382,18 @@ const FormContent: React.FC = () => {
             {/* <GoogleSheetWrapper sheetId="YOUR_SHEET_ID_FOR_PAGE_2_OR_SAME"> */}
             <DropdownChoiceModule
               name="outreach1.theme"
-              label="請選擇課程主題。 Please choose a course theme"
+              label="請選擇課程主題。 Please choose a course theme."
               control={control}
               errors={errors}
               choices={outreachThemes}
+              required
+            />
+            <CourseTimeslotModule
+              name="outreach1.timeslot.one"
+              label="請選擇課程時段（第一選擇）。 Please choose a course timeslot (1st choice)."
+              control={control}
+              errors={errors}
+              courseTimeslots={courseTimeslots}
               required
             />
             {/* </GoogleSheetWrapper> */}

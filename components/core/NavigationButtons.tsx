@@ -1,15 +1,14 @@
+// components/core/NavigationButtons.tsx
 'use client';
 import React from 'react';
 import { Button } from '@mui/material';
 import { useFormContextData } from '@/context/FormContext'; // Adjust path
-import { useForm } from 'react-hook-form'; // We need form instance here
 
 interface NavigationButtonsProps {
-  onNext?: () => Promise<boolean | void>; // Async to allow for validation
+  onNext?: () => Promise<void>; // Handler for "Next" or "Review" button
   onPrevious?: () => void;
-  isLastPage?: boolean;
+  isLastPage?: boolean; // True if this is the last data entry page (leading to Review)
   isFirstPage?: boolean;
-  onReview?: () => Promise<boolean | void>;
 }
 
 export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
@@ -17,74 +16,45 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onPrevious,
   isLastPage = false,
   isFirstPage = false,
-  onReview,
 }) => {
-  const { goToNextPage, goToPreviousPage, currentPage, totalPages, trigger, getValues, updateFormData } = useFormContextData();
+  const { goToPreviousPage, currentPage } = useFormContextData();
 
-  const handleNext = async () => {
-    // Trigger validation for the current page's fields
-    // This assumes fields are uniquely named or grouped for the current page
-    // You'll need a strategy to know which fields belong to the current page.
-    // For simplicity, we might trigger all fields and rely on RHF's overall validity.
-    const isValid = await trigger();
-
-
-    if (isValid) {
-      // Update global form data with current page's values from RHF
-      // This is a bit tricky if RHF controls the whole form.
-      // A better approach might be to pass the RHF 'getValues' to the context or update on field blur/change.
-      // For now, let's assume updateFormData is called appropriately within each field or on next.
-      // updateFormData(getValues()); // Potentially update all values
-
-      if (onNext) {
-        await onNext();
-      } else {
-        goToNextPage();
-      }
-    } else {
-      console.log("Validation failed");
+  const handleNextClick = async () => {
+    if (onNext) {
+      // onNext will be handlePageSpecificNext or handleReview from FormContent.
+      // These functions are responsible for their own validation & data update.
+      await onNext();
     }
   };
 
-  const handlePrevious = () => {
+  const handlePreviousClick = () => {
     if (onPrevious) {
-      onPrevious();
+      onPrevious(); // Allow custom previous behavior if needed
     } else {
       goToPreviousPage();
     }
   };
 
-  const handleReview = async () => {
-    const isValid = await trigger();
-    if (isValid) {
-      if (onReview) {
-        await onReview();
-      }
-    } else {
-      console.log("Validation failed, cannot proceed to review.");
-    }
-  }
-
   return (
     <div className="mt-8 flex justify-between">
       <Button
         variant="outlined"
-        onClick={handlePrevious}
+        onClick={handlePreviousClick}
         disabled={isFirstPage || currentPage === 1}
+        className="rounded-md shadow-sm hover:shadow-md transition-shadow"
       >
         Previous
       </Button>
 
-      {currentPage < totalPages && !isLastPage && ( // Not the review page yet
-        <Button variant="contained" color="primary" onClick={handleNext}>
-          Next
-        </Button>
-      )}
-      {isLastPage && onReview && ( // On the actual last data entry page, show "Review"
-         <Button variant="contained" color="primary" onClick={handleReview}>
-          Review
-        </Button>
-      )}
+      {/* This button's text and action are determined by FormContent */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleNextClick}
+        className="rounded-md shadow-sm hover:shadow-md transition-shadow"
+      >
+        {isLastPage ? "Review Your Answers" : "Next"}
+      </Button>
     </div>
   );
 };
