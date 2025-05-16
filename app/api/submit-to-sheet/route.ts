@@ -1,54 +1,76 @@
-// This script will be deployed as a Web App
-function doPost(e) {
-    try {
-      var requestData = JSON.parse(e.postData.contents);
-      var data = requestData.data; // The form data object
-      var sheetId = requestData.sheetId; // The ID of the target spreadsheet
-      var sheetName = requestData.sheetName; // Optional: specific sheet name/tab
-  
-      var ss = SpreadsheetApp.openById(sheetId);
-      var sheet;
-  
-      if (sheetName) {
-        sheet = ss.getSheetByName(sheetName);
-        if (!sheet) {
-          sheet = ss.insertSheet(sheetName);
-           // Potentially add headers if it's a new sheet and data is an object
-          if (typeof data === 'object' && !Array.isArray(data) && data !== null) {
-              sheet.appendRow(Object.keys(data));
-          }
-        }
-      } else {
-        sheet = ss.getSheets()[0]; // Default to the first sheet
-      }
-  
-      // Prepare the row data
-      var rowData = [];
-      if (Array.isArray(data)) { // If data is already an array (e.g. for specific row structure)
-        rowData = data;
-      } else if (typeof data === 'object' && data !== null) { // If data is an object, extract values
-        // Ensure consistent order of columns if appending multiple times
-        // It's better if the client sends data in the correct column order
-        // or if headers are already set in the sheet.
-        var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-        if (headers && headers.length > 0 && headers.every(h => h !== "")) {
-          rowData = headers.map(header => data[header] !== undefined ? data[header] : "");
-        } else {
-          // Fallback if no headers, just append values in object order (less reliable for consistency)
-          rowData = Object.values(data);
-           // If no headers, and it's the first data row, prepend headers
-          if (sheet.getLastRow() === 0) {
-              sheet.appendRow(Object.keys(data));
-          }
-        }
-      } else {
-        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Invalid data format" })).setMimeType(ContentService.MimeType.JSON);
-      }
-  
-      sheet.appendRow(rowData.concat(new Date())); // Add timestamp
-  
-      return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "Data received" })).setMimeType(ContentService.MimeType.JSON);
-    } catch (error) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() })).setMimeType(ContentService.MimeType.JSON);
-    }
+import { NextRequest, NextResponse } from 'next/server';
+import axios from 'axios';
+
+// Store your Google Apps Script Web App URL in an environment variable
+const GOOGLE_APPS_SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
+const defaultSheetName = "response"
+
+export async function POST(request: NextRequest) {
+  if (!GOOGLE_APPS_SCRIPT_URL) {
+    console.error("Google Apps Script URL is not configured.");
+    return NextResponse.json({ message: 'Server configuration error.' }, { status: 500 });
   }
+
+  try {
+    const body = await request.json();
+    const { data, sheetId, sheetName } = body; // Expecting form data and target sheetId
+
+    if (!data || !sheetId) {
+      return NextResponse.json({ message: 'Missing form data or sheetId.' }, { status: 400 });
+    }
+
+    if (sheetName == undefined || sheetName == null) {
+      sheetName = defaultSheetName
+    }
+
+    // Forward the data to your Google Apps Script
+    const response = await axios.post(GOOGLE_APPS_SCRIPT_URL, {
+      data,
+      sheetId,
+      (sheetName == undefined || sheetName == null)? defaultSheetName : sheetName // Optional
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // Google Apps Script web apps often redirect, so handle that
+      maxRedirects: 0,
+      validateStatus: function (status) {
+        return status >= 200 && status < 303; // Accept success and redirect statuses
+      },
+    });
+
+    // Apps Script usually returns 302 on success if it's a simple text output,
+    // or 200 if it's JSON output and correctly configured.
+    // The actual content of the success/error is in the Apps Script response,
+    // which is harder to get directly if it redirects.
+    // A common pattern is to have Apps Script return JSON.
+    if (response.status === 200 && response.data && response.data.status === 'success') {
+      return NextResponse.json({ message: 'Data submitted successfully to Google Sheet.', details: response.data }, { status: 200 });
+    } else if (response.status === 200 && response.data && response.data.status === 'error') {
+       return NextResponse.json({ message: 'Error from Google Apps Script.', details: response.data.message || 'Unknown Apps Script error' }, { status: 500 });
+    }
+    else {
+      // If it was a redirect (302), it's often a sign of success for simple doPost scripts.
+      // However, it's better if Apps Script returns JSON with a clear status.
+      // Assuming success if not an explicit error from a JSON response.
+      console.log("Apps Script Response Status:", response.status, "Data:", response.data);
+      // This part needs careful handling based on how your Apps Script is configured to respond.
+      // If it always returns JSON:
+      // return NextResponse.json({ message: 'Unexpected response from Google Sheets integration.', details: response.data }, { status: response.status });
+
+      // For now, let's assume a non-200 from Apps Script (that isn't a redirect) is an issue.
+      // Or if the response.data isn't what we expect.
+       return NextResponse.json({ message: 'Data submitted, but verify Google Sheet. Apps Script responded.', details: response.data }, { status: 200 }); // Treat as success for now
+    }
+
+  } catch (error: any) {
+    console.error('Error in /api/submit-to-sheet:', error);
+    let errorMessage = 'Failed to submit data.';
+    if (axios.isAxiosError(error) && error.response) {
+      errorMessage = `Error from Google Sheets integration: ${error.response.status} ${JSON.stringify(error.response.data)}`;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return NextResponse.json({ message: errorMessage, details: error.toString() }, { status: 500 });
+  }
+}

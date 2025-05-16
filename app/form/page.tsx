@@ -6,11 +6,12 @@ import { FormProvider as AppFormProvider, useFormContextData } from '@/context/F
 
 // Import your modules
 import { PageWrapper } from '@/components/core/PageWrapper'; // Adjust path
+import { GoogleSheetWrapper } from '@/components/core/GoogleSheetWrapper';
 import { NavigationButtons } from '@/components/core/NavigationButtons'; // Adjust path
 import { ShortAnswerModule } from '@/components/form-modules/ShortAnswerModule'; // Adjust path
 import { NumberAnswerModule } from '@/components/form-modules/NumberAnswerModule'; // Adjust path
 import { SingleChoiceCheckboxModule } from '@/components/form-modules/SingleChoiceCheckboxModule'; // Adjust path
-import { CourseTimeslotModule } from '@/components/form-modules/CourseTimeslotModule'; // Adjust path
+import { JcCourseTimeslotModule } from '@/components/form-modules/JcCourseTimeslotModule'; // Adjust path
 import { EmailModule } from '@/components/form-modules/EmailModule'; // Adjust path
 import { PhoneNumberModule } from '@/components/form-modules/PhoneNumberModule';
 import { DropdownChoiceModule } from '@/components/form-modules/DropdownChoiceModule';
@@ -19,6 +20,8 @@ import { CssBaseline } from '@mui/material';
 
 const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
 const formTitle = "25-26年度 小學科學外展 報名表格"
+const sheetName = "response"
+const SHEET_ID_1 = process.env.NEXT_PUBLIC_SHEET_ID_1
 
 // Define a type for your entire form's data
 interface MainFormValues {
@@ -42,24 +45,103 @@ interface MainFormValues {
   outreach1?: {
     theme?: number;
     timeslot?: {
-      "one"?: string;
-      "two"?: string;
-      "three"?: string;
-      "four"?: string;
-      "five"?: string;
+      "1"?: string;
+      "2"?: string;
+      "3"?: string;
+      "4"?: string;
+      "5"?: string;
     };
     grade?: number;
-    className?: string;
-    noOfppl?: number;
+    whichClass?: string;
+    noOfPpl?: number;
+  };
+  // Page 4
+  outreach2?: {
+    theme?: number;
+    timeslot?: {
+      "1"?: string;
+      "2"?: string;
+      "3"?: string;
+      "4"?: string;
+      "5"?: string;
+    };
+    grade?: number;
+    whichClass?: string;
+    noOfPpl?: number;
+  };
+  // Page 5
+  outreach3?: {
+    theme?: number;
+    timeslot?: {
+      "1"?: string;
+      "2"?: string;
+      "3"?: string;
+      "4"?: string;
+      "5"?: string;
+    };
+    grade?: number;
+    whichClass?: string;
+    noOfPpl?: number;
+  };
+  // Page 6
+  outreach4?: {
+    theme?: number;
+    timeslot?: {
+      "1"?: string;
+      "2"?: string;
+      "3"?: string;
+      "4"?: string;
+      "5"?: string;
+    };
+    grade?: number;
+    whichClass?: string;
+    noOfPpl?: number;
+  };
+  // Page 7
+  outreach5?: {
+    theme?: number;
+    timeslot?: {
+      "1"?: string;
+      "2"?: string;
+      "3"?: string;
+      "4"?: string;
+      "5"?: string;
+    };
+    grade?: number;
+    whichClass?: string;
+    noOfPpl?: number;
+  };
+  // Page 8
+  outreach6?: {
+    theme?: number;
+    timeslot?: {
+      "1"?: string;
+      "2"?: string;
+      "3"?: string;
+      "4"?: string;
+      "5"?: string;
+    };
+    grade?: number;
+    whichClass?: string;
+    noOfPpl?: number;
   };
   // Page 3 (Review)
   // ... add all fields
 }
 
+const outreachs = [
+  {n: 1, sheetId: `${SHEET_ID_1}`},
+  // {n: 2, sheetId: `${SHEET_ID_1}`},
+  // {n: 3, sheetId: `${SHEET_ID_1}`},
+  // {n: 4, sheetId: `${SHEET_ID_1}`},
+  // {n: 5, sheetId: `${SHEET_ID_1}`},
+  // {n: 6, sheetId: `${SHEET_ID_1}`},
+]
+
 const formPagesConfig = [
   {
     pageNumber: 1,
-    sheetId: 'YOUR_SHEET_ID_1', // For data from this page or group
+    sheetId: SHEET_ID_1, // For data from this page or group
     fields: [
       'schoolNameChn',
       'schoolNameEng',
@@ -77,41 +159,144 @@ const formPagesConfig = [
   },
   {
     pageNumber: 2,
-    sheetId: 'YOUR_SHEET_ID_1', // Could be same or different
+    sheetId: SHEET_ID_1, // Could be same or different
     fields: ['appType'],
   },
   {
     pageNumber: 3,
-    sheetId: 'YOUR_SHEET_ID_1', // Could be same or different
+    sheetId: SHEET_ID_1,
     fields: [
       'outreach1.theme',
-      'outreach1.timeslot.one',
-      'outreach1.timeslot.two',
-      'outreach1.timeslot.three',
-      'outreach1.timeslot.four',
-      'outreach1.timeslot.five',
+      'outreach1.timeslot[1]',
+      'outreach1.timeslot[2]',
+      'outreach1.timeslot[3]',
+      'outreach1.timeslot[4]',
+      'outreach1.timeslot[5]',
       'outreach1.grade',
-      'outreach1.className',
-      'outreach1.noOfppl',
+      'outreach1.whichClass',
+      'outreach1.noOfPpl',
     ],
   },
   {
     pageNumber: 4,
-    sheetId: 'YOUR_SHEET_ID_1', // Could be same or different
+    sheetId: SHEET_ID_1,
     fields: [
-      'eventTheme',
-      'eventTime1',
-      'eventTime2',
-      'eventTime3',
-      'eventTime4',
-      'eventTime5',
-      'eventGrade',
-      'eventClassNo',
-      'eventPplNo',
+      'outreach2.theme',
+      'outreach2.timeslot[1]',
+      'outreach2.timeslot[2]',
+      'outreach2.timeslot[3]',
+      'outreach2.timeslot[4]',
+      'outreach2.timeslot[5]',
+      'outreach2.grade',
+      'outreach2.whichClass',
+      'outreach2.noOfPpl',
     ],
   },
+  {
+    pageNumber: 5,
+    sheetId: SHEET_ID_1,
+    fields: [
+      'outreach3.theme',
+      'outreach3.timeslot[1]',
+      'outreach3.timeslot[2]',
+      'outreach3.timeslot[3]',
+      'outreach3.timeslot[4]',
+      'outreach3.timeslot[5]',
+      'outreach3.grade',
+      'outreach3.whichClass',
+      'outreach3.noOfPpl',
+    ],
+  },
+  {
+    pageNumber: 6,
+    sheetId: SHEET_ID_1,
+    fields: [
+      'outreach4.theme',
+      'outreach4.timeslot[1]',
+      'outreach4.timeslot[2]',
+      'outreach4.timeslot[3]',
+      'outreach4.timeslot[4]',
+      'outreach4.timeslot[5]',
+      'outreach4.grade',
+      'outreach4.whichClass',
+      'outreach4.noOfPpl',
+    ],
+  },
+  {
+    pageNumber: 7,
+    sheetId: SHEET_ID_1,
+    fields: [
+      'outreach5.theme',
+      'outreach5.timeslot[1]',
+      'outreach5.timeslot[2]',
+      'outreach5.timeslot[3]',
+      'outreach5.timeslot[4]',
+      'outreach5.timeslot[5]',
+      'outreach5.grade',
+      'outreach5.whichClass',
+      'outreach5.noOfPpl',
+    ],
+  },
+  {
+    pageNumber: 8,
+    sheetId: SHEET_ID_1,
+    fields: [
+      'outreach6.theme',
+      'outreach6.timeslot[1]',
+      'outreach6.timeslot[2]',
+      'outreach6.timeslot[3]',
+      'outreach6.timeslot[4]',
+      'outreach6.timeslot[5]',
+      'outreach6.grade',
+      'outreach6.whichClass',
+      'outreach6.noOfPpl',
+    ],
+  },
+  // {
+  //   pageNumber: 9,
+  //   sheetId: SHEET_ID_1,
+  //   fields: [
+  //     'eventTheme',
+  //     'eventTime1',
+  //     'eventTime2',
+  //     'eventTime3',
+  //     'eventTime4',
+  //     'eventTime5',
+  //     'eventGrade',
+  //     'eventClassNo',
+  //     'eventPplNo',
+  //   ],
+  // },
   // Add more pages
 ];
+
+var labels = {
+  'schoolNameChn': "學校名稱（中文）",
+  'schoolNameEng': "School name (ENG)",
+  'isSpecial': "本校為教育局資助特殊學校。Our school is an aided special school.",
+  'schoolAddChn': "學校地址 （中文）",
+  'schoolAddEng': "School address (ENG)",
+  'schoolPhone': "學校電話 School phone no.",
+  'schoolFax': "學校傳真 School fax no.",
+  'teacherNameChn': "老師姓名 （中文）",
+  'teacherNameEng': "Teacher name (ENG)",
+  'teacherPhone': "手提電話 Mobile phone no.",
+  'teacherEmail': "聯絡電郵 Contact email",
+  'contactAgree': "同意聯絡本人 Agreed to be contacted",
+  'appType': "報名類型  Type of application",
+}
+
+for (let i = 0; i < 7; i++) {
+  labels = Object.assign({[`outreach${i}.theme`] : `課程主題 Course theme` },labels)
+  labels = Object.assign({[`outreach${i}.timeslot[1]`] : `課程時段（第一選擇） Course timeslot (1st choice)` },labels)
+  labels = Object.assign({[`outreach${i}.timeslot[2]`] : `課程時段（第二選擇） Course timeslot (2nd choice)` },labels)
+  labels = Object.assign({[`outreach${i}.timeslot[3]`] : `課程時段（第三選擇） Course timeslot (3rd choice)` },labels)
+  labels = Object.assign({[`outreach${i}.timeslot[4]`] : `課程時段（第四選擇） Course timeslot (4th choice)` },labels)
+  labels = Object.assign({[`outreach${i}.timeslot[5]`] : `課程時段（第五選擇） Course timeslot (5th choice)` },labels)
+  labels = Object.assign({[`outreach${i}.grade`] : `學生年級 Student grade` },labels)
+  labels = Object.assign({[`outreach${i}.whichClass`] : `班別 Class` },labels)
+  labels = Object.assign({[`outreach${i}.noOfPpl`] : `學生人數 No. of students` },labels)
+  }
 
 const isSpecialChoices = [
   { value: 'no', label: '否 No' },
@@ -121,6 +306,77 @@ const isSpecialChoices = [
 const contactAgreeChoices = [
   { value: 'yes', label: '同意 Agree' },
 ];
+
+const appTypeChoices = [
+  { value: 'courses', label: '外展到校課程 | Outreach courses', nextPage: 3}, /* Example: skip to page if needed, or just regular next*/
+  { value: 'event', label: '外展 Cool Science Day | Outreach Cool Science Day', nextPage: 9 },
+];
+
+const studentgrades = [
+  {value: 1, label: "小一 P.1",},
+  {value: 2, label: "小二 P.2",},
+  {value: 3, label: "小三 P.3",},
+  {value: 4, label: "小四 P.4",},
+  {value: 5, label: "小五 P.5",},
+  {value: 6, label: "小六 P.6",},
+]
+
+const outreachThemes = [
+  {value: 1, label: "R1 地球的日與夜",},
+  {value: 2, label: "R2 四季之謎：貓貓拯救大作戰 The Mystery of Seasons: Cat Rescue Mission",},
+  {value: 3, label: "R3 立竿見影、觀象授時",},
+  {value: 4, label: "R4 大行星之旅（課室版） The Planetary Grand Tour",},
+  {value: 5, label: "R5 大行星之旅（加長版） The Planetary Grand Tour",},
+  {value: 6, label: "R6 太陽的祕密（戶外版） Secrets of Our Sun",},
+  {value: 7, label: "R7 小小伽利略",},
+  {value: 8, label: "R8 動物隱身術",},
+  {value: 9, label: "R9 DeliverBird",},
+  {value: 10, label: "R10 花朵解密",},
+  {value: 11, label: "R11 生物搜查隊 OR 公民科學家 - 校園動植物搜查?",},
+  {value: 12, label: "R12 城市設計師：探究動植物與自然環境的關係",},
+  {value: 13, label: "R13 我的理想校園",},
+  {value: 14, label: "R14 影子大師",},
+  {value: 15, label: "R15 飛嘗航天任務 My Very First Space Mission",},
+  {value: 16, label: "R16 星星守護者",},
+  {value: 17, label: "R17 機械生物大步走",},
+]
+
+const courseTimeslots = [
+  "2025/09/16_AM",
+  "2025/09/16_PM",
+  "2025/09/17_AM",
+  "2025/09/17_PM",
+  "2025/09/18_AM",
+  "2025/09/18_PM",
+  "2025/09/19_AM",
+  "2025/09/19_PM",
+  "2025/09/22_AM",
+  "2025/09/22_PM",
+  "2025/09/23_AM",
+  "2025/09/23_PM",
+  "2025/09/24_AM",
+  "2025/09/24_PM",
+  "2025/09/25_AM",
+  "2025/09/25_PM",
+  "2025/09/29_AM",
+  "2025/09/29_PM",
+  "2025/09/30_AM",
+  "2025/09/30_PM",
+  "2025/10/09_AM",
+  "2025/10/09_PM",
+  "2025/10/13_AM",
+  "2025/10/13_PM",
+  "2025/10/14_AM",
+  "2025/10/14_PM",
+  "2025/10/15_AM",
+  "2025/10/15_PM",
+  "2025/10/16_AM",
+  "2025/10/16_PM",
+  "2025/10/20_AM",
+  "2025/10/20_PM",
+  "2025/10/21_AM",
+  "2025/10/21_PM",
+]
 
 const REVIEW_PAGE_NUMBER = formPagesConfig.length + 1;
 const TOTAL_PAGES = formPagesConfig.length + 1; // +1 for review page
@@ -244,7 +500,7 @@ const FormContent: React.FC = () => {
 
     // Here, you would determine which sheetId to use based on formPagesConfig
     // For simplicity, assuming all data goes to one sheet or you have a primary sheetId
-    const targetSheetId = formPagesConfig[0]?.sheetId || 'FALLBACK_SHEET_ID'; // Example
+    const targetSheetId = formPagesConfig[0]?.sheetId || SHEET_ID_1; // Example
 
     try {
       const response = await fetch('/api/submit-to-sheet', { // Your API endpoint
@@ -252,7 +508,10 @@ const FormContent: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data, sheetId: targetSheetId }), // Send all data
+        body: JSON.stringify(
+          { data, sheetId: targetSheetId, sheetName: process.env.NEXT_PUBLIC_SHEET_NAME },
+          (k, v) => v === undefined ? null : v ), // replace undefined with null so that all columns will be sent
+          // Send all data
       });
 
       if (!response.ok) {
@@ -260,44 +519,14 @@ const FormContent: React.FC = () => {
         throw new Error(errorData.message || 'Submission failed');
       }
 
-      setSubmissionStatus({ type: 'success', message: 'Form submitted successfully!' });
+      setSubmissionStatus({ type: 'success', message: '你已成功遞交表格。Form submitted successfully.' });
       // Optionally reset form or redirect: reset({}); goToPage(1);
     } catch (error: any) {
-      setSubmissionStatus({ type: 'error', message: error.message || 'An error occurred.' });
+      setSubmissionStatus({ type: 'error', message: error.message || '發生錯誤。An error occurred.' });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const appTypeChoices = [
-    { value: 'courses', label: '外展到校課程 | Outreach courses', nextPage: 3}, /* Example: skip to page if needed, or just regular next*/
-    { value: 'event', label: '外展 Cool Science Day | Outreach Cool Science Day', nextPage: 2 },
-  ];
-
-  const outreachThemes = [
-    {value: 1, label: "R1 地球的日與夜",},
-    {value: 2, label: "R2 四季之謎：貓貓拯救大作戰 The Mystery of Seasons: Cat Rescue Mission",},
-    {value: 3, label: "R3 立竿見影、觀象授時",},
-    {value: 4, label: "R4 大行星之旅（課室版） The Planetary Grand Tour",},
-    {value: 5, label: "R5 大行星之旅（加長版） The Planetary Grand Tour",},
-    {value: 6, label: "R6 太陽的祕密（戶外版） Secrets of Our Sun",},
-    {value: 7, label: "R7 小小伽利略",},
-    {value: 8, label: "R8 動物隱身術",},
-    {value: 9, label: "R9 DeliverBird",},
-    {value: 10, label: "R10 花朵解密",},
-    {value: 11, label: "R11 生物搜查隊 OR 公民科學家 - 校園動植物搜查?",},
-    {value: 12, label: "R12 城市設計師：探究動植物與自然環境的關係",},
-    {value: 13, label: "R13 我的理想校園",},
-    {value: 14, label: "R14 影子大師",},
-    {value: 15, label: "R15 飛嘗航天任務 My Very First Space Mission",},
-    {value: 16, label: "R16 星星守護者",},
-    {value: 17, label: "R17 機械生物大步走",},
-  ]
-
-  const courseTimeslots = {
-    "HKP_001": "2025/05/08_AM",
-  }
-
 
   if (isSubmitting) {
     return <div className="flex justify-center items-center h-screen"><CircularProgress /></div>;
@@ -332,7 +561,7 @@ const FormContent: React.FC = () => {
 
           <PageWrapper pageNumber={1}>
             <Typography variant="h6" gutterBottom>參加學校資料 School info</Typography>
-            {/* <GoogleSheetWrapper sheetId="YOUR_SHEET_ID_FOR_PAGE_1"> */}
+            <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}>
             <ShortAnswerModule name="schoolNameChn" label="學校名稱（中文）" control={control} errors={errors} />
             <ShortAnswerModule name="schoolNameEng" label="School Name (ENG)" control={control} errors={errors} required />
             <SingleChoiceCheckboxModule
@@ -360,12 +589,12 @@ const FormContent: React.FC = () => {
               choices={contactAgreeChoices}
               required
             />
-            {/* </GoogleSheetWrapper> */}
+            </GoogleSheetWrapper>
           </PageWrapper>
 
           <PageWrapper pageNumber={2}>
             <Typography variant="h6" gutterBottom>報名類型  Type of Application</Typography>
-            {/* <GoogleSheetWrapper sheetId="YOUR_SHEET_ID_FOR_PAGE_2_OR_SAME"> */}
+            <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}>
             <SingleChoiceCheckboxModule
               name="appType"
               label="請選擇報名類型。 Please choose a type of application."
@@ -374,12 +603,80 @@ const FormContent: React.FC = () => {
               choices={appTypeChoices}
               required
             />
-            {/* </GoogleSheetWrapper> */}
+            </GoogleSheetWrapper>
           </PageWrapper>
 
-          <PageWrapper pageNumber={3}>
-            <Typography variant="h6" gutterBottom>外展到校課程(1) | Outreach courses(1)</Typography>
-            {/* <GoogleSheetWrapper sheetId="YOUR_SHEET_ID_FOR_PAGE_2_OR_SAME"> */}
+          {outreachs.map((outreach) => (
+            <PageWrapper pageNumber={outreach.n + 2}>
+              <GoogleSheetWrapper sheetId={outreach.sheetId} sheetName={sheetName}>
+                <Typography align="center" variant="h5" className='pb-3' gutterBottom>外展到校課程({outreach.n}) | Outreach courses ({outreach.n})</Typography>
+                <Typography variant="h6" className='pb-3' gutterBottom>課程資料 | Course Details</Typography>
+                <DropdownChoiceModule
+                  name={`outreach${outreach.n.toString()}.theme`}
+                  label="請選擇課程主題。 Please choose a course theme."
+                  control={control}
+                  errors={errors}
+                  choices={outreachThemes}
+                  required
+                />
+                <JcCourseTimeslotModule
+                  name={`outreach${outreach.n.toString()}.timeslot[1]`}
+                  label="請選擇課程時段（第一選擇）。 Please choose a course timeslot (1st choice)."
+                  control={control}
+                  errors={errors}
+                  jcTimeslots={courseTimeslots}
+                  required
+                />
+                <JcCourseTimeslotModule
+                  name={`outreach${outreach.n.toString()}.timeslot[2]`}
+                  label="請選擇課程時段（第二選擇）。 Please choose a course timeslot (2nd choice)."
+                  control={control}
+                  errors={errors}
+                  jcTimeslots={courseTimeslots}
+                  required
+                />
+                <JcCourseTimeslotModule
+                  name={`outreach${outreach.n.toString()}.timeslot[3]`}
+                  label="請選擇課程時段（第三選擇）。 Please choose a course timeslot (3rd choice)."
+                  control={control}
+                  errors={errors}
+                  jcTimeslots={courseTimeslots}
+                  required
+                />
+                <JcCourseTimeslotModule
+                  name={`outreach${outreach.n.toString()}.timeslot[4]`}
+                  label="請選擇課程時段（第四選擇）。 Please choose a course timeslot (4th choice)."
+                  control={control}
+                  errors={errors}
+                  jcTimeslots={courseTimeslots}
+                  required
+                />
+                <JcCourseTimeslotModule
+                  name={`outreach${outreach.n.toString()}.timeslot[5]`}
+                  label="請選擇課程時段（第五選擇）。 Please choose a course timeslot (5th choice)."
+                  control={control}
+                  errors={errors}
+                  jcTimeslots={courseTimeslots}
+                  required
+                />
+                <Typography variant="h6" className='pb-3' gutterBottom>學生資料 | Student Details</Typography>
+                <SingleChoiceCheckboxModule
+                  name={`outreach${outreach.n.toString()}.grade`}
+                  label="學生年級 Student grade"
+                  control={control}
+                  errors={errors}
+                  choices={studentgrades}
+                  required
+                />
+                <ShortAnswerModule name={`outreach${outreach.n.toString()}.whichClass`} label="班別 Class" control={control} errors={errors} required />
+                <NumberAnswerModule name={`outreach${outreach.n.toString()}.noOfPpl`} label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
+              </GoogleSheetWrapper>
+            </PageWrapper>
+          ))}
+          {/* <PageWrapper pageNumber={3}> */}
+            {/* <GoogleSheetWrapper sheetId="SHEET_ID_1" sheetName={sheetName}> */}
+            {/* <Typography align="center" variant="h5" className='pb-3' gutterBottom>外展到校課程(1) | Outreach courses (1)</Typography>
+            <Typography variant="h6" className='pb-3' gutterBottom>課程資料 | Course Details</Typography>
             <DropdownChoiceModule
               name="outreach1.theme"
               label="請選擇課程主題。 Please choose a course theme."
@@ -388,21 +685,66 @@ const FormContent: React.FC = () => {
               choices={outreachThemes}
               required
             />
-            <CourseTimeslotModule
-              name="outreach1.timeslot.one"
+            <JcCourseTimeslotModule
+              name="outreach1.timeslot[1]"
               label="請選擇課程時段（第一選擇）。 Please choose a course timeslot (1st choice)."
               control={control}
               errors={errors}
-              courseTimeslots={courseTimeslots}
+              jcTimeslots={courseTimeslots}
               required
             />
+            <JcCourseTimeslotModule
+              name="outreach1.timeslot[2]"
+              label="請選擇課程時段（第二選擇）。 Please choose a course timeslot (2nd choice)."
+              control={control}
+              errors={errors}
+              jcTimeslots={courseTimeslots}
+              required
+            />
+            <JcCourseTimeslotModule
+              name="outreach1.timeslot[3]"
+              label="請選擇課程時段（第三選擇）。 Please choose a course timeslot (3rd choice)."
+              control={control}
+              errors={errors}
+              jcTimeslots={courseTimeslots}
+              required
+            />
+            <JcCourseTimeslotModule
+              name="outreach1.timeslot[4]"
+              label="請選擇課程時段（第四選擇）。 Please choose a course timeslot (4th choice)."
+              control={control}
+              errors={errors}
+              jcTimeslots={courseTimeslots}
+              required
+            />
+            <JcCourseTimeslotModule
+              name="outreach1.timeslot[5]"
+              label="請選擇課程時段（第五選擇）。 Please choose a course timeslot (5th choice)."
+              control={control}
+              errors={errors}
+              jcTimeslots={courseTimeslots}
+              required
+            />
+            <Typography variant="h6" className='pb-3' gutterBottom>學生資料 | Student Details</Typography>
+            <SingleChoiceCheckboxModule
+              name="outreach1.grade"
+              label="學生年級 Student grade"
+              control={control}
+              errors={errors}
+              choices={studentgrades}
+              required
+            />
+            <ShortAnswerModule name="outreach1.whichClass" label="班別 Class" control={control} errors={errors} required />
+            <NumberAnswerModule name="outreach1.noOfPpl" label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required /> */}
             {/* </GoogleSheetWrapper> */}
-          </PageWrapper>
+          {/* </PageWrapper> */}
+
+
 
           {/* --- Review Page --- */}
           {currentPage === REVIEW_PAGE_NUMBER && (
             <div className="animate-fadeIn">
-              <Typography variant="h5" gutterBottom>Review Your Answers</Typography>
+              <Typography align="center" className="pt-3 pb-3" variant="h5" gutterBottom>請檢查你的申請內容。Please review your application.</Typography>
               {Object.entries(formData).map(([key, value]) => (
                 <div key={key} className="mb-2">
                   <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography>
@@ -411,7 +753,8 @@ const FormContent: React.FC = () => {
                       ? value.toLocaleDateString()
                       : Array.isArray(value)
                         ? value.join(', ')
-                        : String(value)}
+                        : value == undefined? "沒有 N/A" : String(value)}
+                        {/* replace undefined value */}
                   </Typography>
                 </div>
               ))}

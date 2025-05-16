@@ -34,7 +34,7 @@ export const NumberAnswerModule: React.FC<NumberAnswerProps<MyFormValues>> = ({
           max: max !== undefined ? { value: max, message: `Maximum value is ${max}` } : undefined,
           validate: value => {
             if (value === null || value === undefined || value === '') return true; // Allow empty if not required
-            const num = parseFloat(value);
+            const num = parseFloat(value.toString());
             return !isNaN(num) || 'Please enter a valid number';
           }
         }}
@@ -48,10 +48,20 @@ export const NumberAnswerModule: React.FC<NumberAnswerProps<MyFormValues>> = ({
             required={!!required}
             error={!!errors[name]}
             helperText={errors[name]?.message as string || ''}
-            inputProps={{ min, max, step: 'any' }} // HTML5 validation can be a plus
+            inputProps={{
+              min, max, step: 'any'
+            }} // HTML5 validation can be a plus
             className="bg-white"
             onChange={(e) => field.onChange(e.target.value === '' ? null : parseFloat(e.target.value))} // ensure number or null
             value={field.value === null || field.value === undefined ? '' : field.value}
+            sx={{
+              "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": {
+                display: "none",
+              },
+              "& input[type=number]": {
+                MozAppearance: "textfield",
+              },
+            }}
           />
         )}
       />
