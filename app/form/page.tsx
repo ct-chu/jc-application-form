@@ -614,13 +614,16 @@ const FormContent: React.FC = () => {
     const currentConfig = getCurrentPageConfig();
     if (!currentConfig) return;
 
-    const fieldsToValidate = currentConfig.fields as (keyof MainFormValues)[];
+    // The `fields` from `formPagesConfig` are `readonly string[]` due to `as const`.
+    // These strings should be valid FieldPath<MainFormValues>.
+    const fieldsToValidateFromConfig = currentConfig.fields;
+    // Convert to a mutable string array to satisfy some overloads of `trigger` more easily.
+    // This is safe because FieldPath<MainFormValues> resolves to strings.
+    const fieldsToValidate: string[] = [...fieldsToValidateFromConfig];
     console.log(`Page ${currentPage} - Validating fields:`, fieldsToValidate);
-
-    // Trigger validation for only the current page's fields
-    const isValid = await trigger(fieldsToValidate.length > 0 ? fieldsToValidate : undefined);
-    console.log(`Page ${currentPage} - Validation result:`, isValid, "Errors:", errors);
-
+    const argumentForTrigger = fieldsToValidate.length > 0 ? fieldsToValidate : undefined;
+    const isValid = await trigger(argumentForTrigger);
+    console.log(`Page ${currentPage} - Validation result:`, isValid, "Errors:", JSON.stringify(errors));
 
     if (isValid) {
       const currentPageData: Partial<MainFormValues> = {};
@@ -690,9 +693,15 @@ const FormContent: React.FC = () => {
     const currentConfig = getCurrentPageConfig();
     if (!currentConfig) return;
 
-    const fieldsToValidate = currentConfig.fields as (keyof MainFormValues)[];
+    // The `fields` from `formPagesConfig` are `readonly string[]` due to `as const`.
+    // These strings should be valid FieldPath<MainFormValues>.
+    const fieldsToValidateFromConfig = currentConfig.fields;
+    // Convert to a mutable string array to satisfy some overloads of `trigger` more easily.
+    // This is safe because FieldPath<MainFormValues> resolves to strings.
+    const fieldsToValidate: string[] = [...fieldsToValidateFromConfig];
     console.log(`Page ${currentPage} (to Review) - Validating fields:`, fieldsToValidate);
-    const isValid = await trigger(fieldsToValidate.length > 0 ? fieldsToValidate : undefined);
+    const argumentForTrigger = fieldsToValidate.length > 0 ? fieldsToValidate : undefined;
+    const isValid = await trigger(argumentForTrigger);
     console.log(`Page ${currentPage} (to Review) - Validation result:`, isValid);
 
     if (isValid) {
