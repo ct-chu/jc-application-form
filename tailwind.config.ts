@@ -10,10 +10,10 @@ const config: Config = {
     extend: {},
   },
   plugins: [],
-  corePlugins: {
+  // corePlugins: {
     // Optional: Disable preflight if it conflicts heavily with MUI,
     // though MUI v5 is generally compatible.
     // preflight: false,
-  },
+  // },
 };
 export default config;
