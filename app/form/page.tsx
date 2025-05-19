@@ -6,7 +6,7 @@ import { FormProvider as AppFormProvider, useFormContextData } from '@/context/F
 
 // Import your modules
 import { PageWrapper } from '@/components/core/PageWrapper'; // Adjust path
-import { GoogleSheetWrapper } from '@/components/core/GoogleSheetWrapper';
+// import { GoogleSheetWrapper } from '@/components/core/GoogleSheetWrapper';
 import { NavigationButtons } from '@/components/core/NavigationButtons'; // Adjust path
 import { ShortAnswerModule } from '@/components/form-modules/ShortAnswerModule'; // Adjust path
 import { NumberAnswerModule } from '@/components/form-modules/NumberAnswerModule'; // Adjust path
@@ -766,7 +766,7 @@ const FormContent: React.FC = () => {
               3. 申請人所提供的資料將予保密，並只作申請有關課程用途。 All data will remain confidential and used only for course application.
             </Typography>
             <Typography align="center" variant="h5" className='pt-4 pb-3' fontWeight={700} color="#2e3440" gutterBottom>參加學校資料 School info</Typography>
-            <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}>
+            {/* <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}> */}
             <ShortAnswerModule name="schoolNameChn" label="學校名稱（中文）" control={control} errors={errors} />
             <ShortAnswerModule name="schoolNameEng" label="School Name (ENG)" control={control} errors={errors} required />
             <SingleChoiceCheckboxModule
@@ -794,7 +794,7 @@ const FormContent: React.FC = () => {
               choices={contactAgreeChoices}
               required
             />
-            </GoogleSheetWrapper>
+            {/* </GoogleSheetWrapper> */}
           </PageWrapper>
 
           <PageWrapper pageNumber={2}>
@@ -808,7 +808,7 @@ const FormContent: React.FC = () => {
               If <strong>"Outreach Cool Science Day"</strong> is chosen, the school can apply for a <u><strong>maximum of 1 event</strong></u>, and roughly 1 grade of students would be able to participate (subject to change according to the no. of students in a grade).
             </Typography>
             <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>報名類型  Type of Application</Typography>
-            <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}>
+            {/* <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}> */}
             <SingleChoiceCheckboxModule
               name="appType"
               label="請選擇報名類型。 Please choose a type of application."
@@ -817,12 +817,12 @@ const FormContent: React.FC = () => {
               choices={appTypeChoices}
               required
             />
-            </GoogleSheetWrapper>
+            {/* </GoogleSheetWrapper> */}
           </PageWrapper>
 
           {outreachs.map((outreach) => (
             <PageWrapper pageNumber={outreach.n + 2}>
-              <GoogleSheetWrapper sheetId={outreach.sheetId} sheetName={sheetName}>
+              {/* <GoogleSheetWrapper sheetId={outreach.sheetId} sheetName={sheetName}> */}
                 <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>
                   外展到校課程({outreach.n})<br />
                   Outreach courses ({outreach.n})
@@ -934,13 +934,13 @@ const FormContent: React.FC = () => {
                 <ShortAnswerModule name={`outreach${outreach.n.toString()}.whichClass`} label="班別 Class" control={control} errors={errors} required />
                 <NumberAnswerModule name={`outreach${outreach.n.toString()}.noOfPpl`} label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
                 {outreach.n == outreachs.length? <NextJumpToReview /> :null}
-              </GoogleSheetWrapper>
+              {/* </GoogleSheetWrapper> */}
             </PageWrapper>
           ))}
 
           {/* --- Page for outreach--- */}
           <PageWrapper pageNumber={9}>
-            <GoogleSheetWrapper sheetId="SHEET_ID_1" sheetName={sheetName}>
+            {/* <GoogleSheetWrapper sheetId="SHEET_ID_1" sheetName={sheetName}> */}
               <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>
                   外展 Cool Science Day<br />
                   Outreach Cool Science Day
@@ -1052,7 +1052,7 @@ const FormContent: React.FC = () => {
               />
               <ShortAnswerModule name="event.whichClass" label="班別 Class" control={control} errors={errors} required />
               <NumberAnswerModule name="event.noOfPpl" label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
-            </GoogleSheetWrapper>
+            {/* </GoogleSheetWrapper> */}
           </PageWrapper>
 
 
