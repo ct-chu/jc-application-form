@@ -563,6 +563,7 @@ const FormContent: React.FC = () => {
     currentPage,
     formData,
     updateFormData,
+    goToPreviousPage,
     goToNextPage,
     goToPage,
     setFormMethods, // From FormContext
@@ -670,6 +671,18 @@ const FormContent: React.FC = () => {
       // RHF typically handles this automatically by updating the `errors` object
       console.warn(`Page ${currentPage} - Validation failed. Errors:`, JSON.stringify(errors));
     }
+  };
+
+  const handlePageSpecificPrevious = async () => {
+  if (formData.appType == "event") {
+    if (currentPage == 9){
+      goToPage(2);
+    } else goToPreviousPage();
+  } else if (formData.appType == "courses"){
+    if (currentPage == REVIEW_PAGE_NUMBER) {
+      goToPage(REVIEW_PAGE_NUMBER - 2);
+    } else goToPreviousPage();
+  } else goToPreviousPage();
   };
 
 // Handles validation and navigation to the Review page
@@ -1131,6 +1144,7 @@ const FormContent: React.FC = () => {
           {currentPage !== REVIEW_PAGE_NUMBER && !isSubmitting && (
             <NavigationButtons
               onNext={handlePageSpecificNext}
+              onPrevious={handlePageSpecificPrevious}
               isFirstPage={currentPage === 1}
               isLastPage={currentPage === formPagesConfig.length} // True if current page is the last data entry page
               onReview={handleReview}
