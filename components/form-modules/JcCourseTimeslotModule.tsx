@@ -229,7 +229,7 @@ export const JcCourseTimeslotModule: React.FC<
                     <DatePicker
                       enableAccessibleFieldDOMStructure={false}
                       views={['year', 'month', 'day']}
-                      openTo="month"
+                      // openTo="month"
                       label={datePickerLabel}
                       value={selectedDate}
                       onChange={handleDateChange}
