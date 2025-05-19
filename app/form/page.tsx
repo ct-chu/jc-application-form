@@ -224,7 +224,7 @@ const formPagesConfig = [
 ];
 
 //labels for review page
-let labels = {
+let labels: {[key: string]: string,} = {
   'schoolNameChn': "學校名稱（中文）",
   'schoolNameEng': "School name (ENG)",
   'isSpecial': "本校為教育局資助特殊學校。Our school is an aided special school.",
