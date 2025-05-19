@@ -18,7 +18,7 @@ import {
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'; // For date-fns v2.x. For v3.x use AdapterDateFnsV3
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
-import { Controller, useFormContext, FieldPath } from 'react-hook-form';
+import { Controller, useFormContext, FieldPath, FieldValues } from 'react-hook-form';
 import { format as formatDateFns, isValid as isValidDate, isEqual as isEqualDate, parse as parseDateFns, startOfDay } from 'date-fns';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import PublishIcon from '@mui/icons-material/Publish'; // For default verify state
@@ -46,7 +46,7 @@ interface CourseTimeslotModuleProps<TFormValues extends Record<string, any>>
 }
 
 // Props for the custom day component
-interface CustomPickersDayProps extends PickersDayProps<Date> {
+interface CustomPickersDayProps extends PickersDayProps {
     isAvailable: boolean;
 }
 
@@ -69,7 +69,7 @@ const StyledPickersDay = styled(PickersDay, {
 }));
 
 
-interface MyMainFormValuesExample { // Replace with your actual form values type
+interface MyMainFormValuesExample extends FieldValues { // Replace with your actual form values type
     "outreach1.timeslot.one"?: string | null;
 }
 

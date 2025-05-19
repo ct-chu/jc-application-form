@@ -18,7 +18,7 @@ import {
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'; // For date-fns v2.x. For v3.x use AdapterDateFnsV3
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
-import { Controller, useFormContext, FieldPath } from 'react-hook-form';
+import { Controller, useFormContext, FieldPath, FieldValues } from 'react-hook-form';
 import { format as formatDateFns, isValid as isValidDate, isEqual as isEqualDate, parse as parseDateFns, startOfDay } from 'date-fns';
 // import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'; // Not used directly
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -38,7 +38,7 @@ export interface FormModuleProps<TFormValues extends Record<string, any>> {
 export type JcTimeslotData = string[]; // e.g., ["2025/05/08_AM", "2025/05/09_PM"]
 
 // Props for the custom day component
-interface CustomPickersDayProps extends PickersDayProps<Date> {
+interface CustomPickersDayProps extends PickersDayProps {
   isAvailable: boolean;
 }
 
@@ -72,7 +72,7 @@ interface JcCourseTimeslotModuleProps<TFormValues extends Record<string, any>>
 // For this example, assuming it's defined above or imported.
 
 
-interface MyMainFormValuesJcExample { // Replace with your actual form values type
+interface MyMainFormValuesJcExample extends FieldValues { // Replace with your actual form values type
   "jcTimeslotField"?: string | null;
 }
 
@@ -92,7 +92,7 @@ export const JcCourseTimeslotModule: React.FC<
 
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedAmPm, setSelectedAmPm] = useState<string>('');
-    const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>('idle');
+    const [verificationStatus, setVerificationStatus] = useState('idle');
     const [verificationMessage, setVerificationMessage] = useState<string>('');
 
     const rhfFieldValue = watch(name); // This is the "YYYY/MM/DD_AMPM" string or null
