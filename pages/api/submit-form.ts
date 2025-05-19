@@ -1,5 +1,6 @@
 // pages/api/submit-form.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable prefer-const */
 import { NextApiRequest, NextApiResponse } from 'next';
 import { google } from 'googleapis';
 
