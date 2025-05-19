@@ -27,7 +27,7 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt'; // For verified state
 
 // Re-using FormModuleProps definition
 export interface FormModuleProps<TFormValues extends Record<string, any>> {
-  name: FieldPath<TFormValues>;
+  name: FieldPath<TFormValues>|string;
   label: string;
   control: any;
   errors: any;

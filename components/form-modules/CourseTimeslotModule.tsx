@@ -26,7 +26,7 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt'; // For verified state
 
 // Assuming FormModuleProps is defined in a common file
 export interface FormModuleProps<TFormValues extends Record<string, any>> {
-    name: FieldPath<TFormValues>;
+    name: FieldPath<TFormValues>|string;
     label: string;
     control: any; // Control<TFormValues>
     errors: any; // FieldErrors<TFormValues> // This is RHF's top-level errors object
