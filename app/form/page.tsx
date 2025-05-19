@@ -689,33 +689,33 @@ const FormContent: React.FC = () => {
   };
 
 // Handles validation and navigation to the Review page
-  const handleReview = async () => {
-    const currentConfig = getCurrentPageConfig();
-    if (!currentConfig) return;
+  // const handleReview = async () => {
+  //   const currentConfig = getCurrentPageConfig();
+  //   if (!currentConfig) return;
 
-    // The `fields` from `formPagesConfig` are `readonly string[]` due to `as const`.
-    // These strings should be valid FieldPath<MainFormValues>.
-    const fieldsToValidateFromConfig = currentConfig.fields;
-    // Convert to a mutable string array to satisfy some overloads of `trigger` more easily.
-    // This is safe because FieldPath<MainFormValues> resolves to strings.
-    const fieldsToValidate: string[] = [...fieldsToValidateFromConfig];
-    console.log(`Page ${currentPage} (to Review) - Validating fields:`, fieldsToValidate);
-    const argumentForTrigger = fieldsToValidate.length > 0 ? fieldsToValidate : undefined;
-    const isValid = await trigger(argumentForTrigger);
-    console.log(`Page ${currentPage} (to Review) - Validation result:`, isValid);
+  //   // The `fields` from `formPagesConfig` are `readonly string[]` due to `as const`.
+  //   // These strings should be valid FieldPath<MainFormValues>.
+  //   const fieldsToValidateFromConfig = currentConfig.fields;
+  //   // Convert to a mutable string array to satisfy some overloads of `trigger` more easily.
+  //   // This is safe because FieldPath<MainFormValues> resolves to strings.
+  //   const fieldsToValidate: string[] = [...fieldsToValidateFromConfig];
+  //   console.log(`Page ${currentPage} (to Review) - Validating fields:`, fieldsToValidate);
+  //   const argumentForTrigger = fieldsToValidate.length > 0 ? fieldsToValidate : undefined;
+  //   const isValid = await trigger(argumentForTrigger);
+  //   console.log(`Page ${currentPage} (to Review) - Validation result:`, isValid);
 
-    if (isValid) {
-      const currentPageData: Partial<MainFormValues> = {};
-      fieldsToValidate.forEach(field => {
-        (currentPageData as any)[field] = getValues(field as Path<MainFormValues>);
-      });
-      updateFormData(currentPageData);
-      console.log(`Page ${currentPage} - Navigating to Review Page.`);
-      goToPage(REVIEW_PAGE_NUMBER);
-    } else {
-      console.warn(`Page ${currentPage} (to Review) - Validation failed. Errors:`, JSON.stringify(errors));
-    }
-  };
+  //   if (isValid) {
+  //     const currentPageData: Partial<MainFormValues> = {};
+  //     fieldsToValidate.forEach(field => {
+  //       (currentPageData as any)[field] = getValues(field as Path<MainFormValues>);
+  //     });
+  //     updateFormData(currentPageData);
+  //     console.log(`Page ${currentPage} - Navigating to Review Page.`);
+  //     goToPage(REVIEW_PAGE_NUMBER);
+  //   } else {
+  //     console.warn(`Page ${currentPage} (to Review) - Validation failed. Errors:`, JSON.stringify(errors));
+  //   }
+  // };
 
   const onSubmitToGoogleSheets = async (data: MainFormValues) => {
     setIsSubmitting(true);
@@ -1156,7 +1156,7 @@ const FormContent: React.FC = () => {
               onPrevious={handlePageSpecificPrevious}
               isFirstPage={currentPage === 1}
               isLastPage={currentPage === formPagesConfig.length} // True if current page is the last data entry page
-              onReview={handleReview}
+              // onReview={handleReview}
             />
           )}
         </Paper>
