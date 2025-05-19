@@ -687,19 +687,59 @@ const FormContent: React.FC = () => {
           {currentPage === REVIEW_PAGE_NUMBER && (
             <div className="animate-fadeIn">
               <Typography align="center" className="pt-3 pb-3" variant="h5" gutterBottom>請檢查你的申請內容。Please review your application.</Typography>
-              {Object.entries(formData).map(([key, value]) => (
-                <div key={key} className="mb-2">
-                  <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography>
-                  <Typography variant="body1" component="span">
-                    {typeof value === 'object' && value !== null && value instanceof Date
-                      ? value.toLocaleDateString()
-                      : Array.isArray(value)
-                        ? value.join(', ')
-                        : value == undefined? "沒有 N/A" : String(value)}
+              <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">報名學校及老師資料 <br />School and Teacher info</Typography>
+              {formData.appType == "event" ? //check if application type is event
+                Object.entries(
+                  Object.keys(formData).
+                    filter((key) => !key.includes('outreach')).
+                    reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
+                )
+                  .map(([key, value], index) => (
+                    <div key={key} className="mb-2">
+                      {/* <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography> */}
+                      <Typography variant="subtitle1" component="span" fontWeight={500} color="#5e81ac">{labels[key]}: </Typography>
+                      <Typography variant="body1" component="span">
+                        {value == undefined ? "沒有 N/A" :
+                          typeof value === 'object' && value !== null && value instanceof Date
+                            ? value.toLocaleDateString()
+                            : key == "appType" ? String(appTypeChoices.find(o => o.value === value).label)
+                              : key.substring(key.length - 5, key.length) == "theme" ? String(outreachThemes.find(o => o.value === value).label)
+                                : key.substring(key.length - 5, key.length) == "grade" ? `P. ${String(value)}`
+                                  : Array.isArray(value)
+                                    ? key.substring(key.length - 5, key.length) == "grade" ? `P. ${value.join(', ')}`
+                                      : value.join(', ')
+                                    : String(value)}
                         {/* replace undefined value */}
-                  </Typography>
-                </div>
-              ))}
+                      </Typography>
+                    </div>
+                  ))
+                : Object.entries( //if application type is NOT event, should be outreach courses then
+                  Object.keys(formData).
+                    filter((key) => !key.includes('event')).
+                    reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
+                )
+                  .map(([key, value], index) => (
+                    <div key={key} className="mb-2">
+                      {/* <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography> */}
+                      {( (index-12)%9 == 1) ? <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">外展到校課程({(index-13)/9+1})<br />Outreach courses ({(index-13)/9+1})</Typography>: null}
+                      {/* <Typography variant="body1" component="span" fontWeight={500} color="#5e81ac">{String(index)} | </Typography> */}
+                      <Typography variant="subtitle1" component="span" fontWeight={500} color="#5e81ac">{labels[key]}: </Typography>
+                      <Typography variant="body1" component="span">
+                        {value == undefined ? "沒有 N/A" :
+                          typeof value === 'object' && value !== null && value instanceof Date
+                            ? value.toLocaleDateString()
+                            : key == "appType" ? String(appTypeChoices.find(o => o.value === value).label)
+                              : key.substring(key.length - 5, key.length) == "theme" ? String(outreachThemes.find(o => o.value === value).label)
+                                : key.substring(key.length - 5, key.length) == "grade" ? `P. ${String(value)}`
+                                  : Array.isArray(value)
+                                    ? key.substring(key.length - 5, key.length) == "grade" ? `P. ${value.join(', ')}`
+                                      : value.join(', ')
+                                    : String(value)}
+                        {/* replace undefined value */}
+                      </Typography>
+                    </div>
+                  ))
+              }
               <div className="mt-8 flex justify-between">
                 <Button variant="outlined" onClick={() => goToPage(currentPage - 1)}>
                   Back to Edit
