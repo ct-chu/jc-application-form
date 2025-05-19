@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React from 'react';
 import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, FormHelperText } from '@mui/material';
@@ -17,7 +18,7 @@ interface MyFormValues {
 }
 
 interface SingleChoiceProps<T extends MyFormValues> extends FormModuleProps<T> {
-  choices: ChoiceOption[];
+  choices: ChoiceOption[]|any;
 }
 
 export const SingleChoiceCheckboxModule: React.FC<SingleChoiceProps<MyFormValues>> = ({
@@ -45,12 +46,12 @@ export const SingleChoiceCheckboxModule: React.FC<SingleChoiceProps<MyFormValues
               onChange={(e) => {
                 field.onChange(e);
                 const selectedValue = e.target.value;
-                const selectedChoice = choices.find(choice => choice.value === selectedValue);
+                const selectedChoice = choices.find((choice: any) => choice.value === selectedValue);
                 updateFormData({ [name]: selectedValue }); // Update global context immediately for potential conditional logic
                 // Conditional navigation is handled by the NavigationButton's onNext prop
               }}
             >
-              {choices.map((choice) => (
+              {choices.map((choice: any) => (
                 <FormControlLabel
                   key={choice.value}
                   value={choice.value}
