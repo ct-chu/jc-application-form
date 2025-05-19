@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider as RHFFormProvider } from 'react-hook-form';
@@ -24,8 +26,8 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
-const orgTitleEng = "Ho Koon Nature Education Cum Astronomical Centre  JC Cool Science"
+// const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
+// const orgTitleEng = "Ho Koon Nature Education Cum Astronomical Centre  JC Cool Science"
 const formTitle = "25-26年度 小學科學外展 報名表格"
 const formTitleEng = "Application for 25-26 Primary Science Outreach activities"
 const SHEET_ID_1 = process.env.NEXT_PUBLIC_SHEET_ID_1
