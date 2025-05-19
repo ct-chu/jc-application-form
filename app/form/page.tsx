@@ -1101,8 +1101,8 @@ const FormContent: React.FC = () => {
                         {value == undefined ? "沒有 N/A" :
                           typeof value === 'object' && value !== null && value instanceof Date
                             ? value.toLocaleDateString()
-                            : key == "appType" ? String(appTypeChoices.find(o => o.value === value).label)
-                              : key.substring(key.length - 5, key.length) == "theme" ? String(eventThemes.find(o => o.value === value).label)
+                            : key == "appType" ? String(appTypeChoices?.find(o => o.value === value)?.label)
+                              : key.substring(key.length - 5, key.length) == "theme" ? String(eventThemes?.find(o => o.value === value)?.label)
                                 : Array.isArray(value)
                                   ? key.substring(key.length - 5, key.length) == "grade" ? `P. ${value.join(', P.')}`
                                     : value.join(', ')
@@ -1126,8 +1126,8 @@ const FormContent: React.FC = () => {
                         {value == undefined ? "沒有 N/A" :
                           typeof value === 'object' && value !== null && value instanceof Date
                             ? value.toLocaleDateString()
-                            : key == "appType" ? String(appTypeChoices.find(o => o.value === value).label)
-                              : key.substring(key.length - 5, key.length) == "theme" ? String(outreachThemes.find(o => o.value === value).label)
+                            : key == "appType" ? String(appTypeChoices?.find(o => o.value === value)?.label)
+                              : key.substring(key.length - 5, key.length) == "theme" ? String(outreachThemes?.find(o => o.value === value)?.label)
                                 : key.substring(key.length - 5, key.length) == "grade" ? `P. ${String(value)}`
                                   : Array.isArray(value)
                                     ? key.substring(key.length - 5, key.length) == "grade" ? `P. ${value.join(', ')}`
