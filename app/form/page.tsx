@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useForm, FormProvider as RHFFormProvider, Path } from 'react-hook-form';
+import { useForm, FormProvider as RHFFormProvider, Path, FieldValues } from 'react-hook-form';
 import { Button, Container, Paper, Typography, CircularProgress, Alert } from '@mui/material';
 import { FormProvider as AppFormProvider, useFormContextData } from '@/context/FormContext'; // Adjust path
 
@@ -47,7 +47,7 @@ interface outreachDetail {
 }
 
 // Define a type for your entire form's data
-interface MainFormValues {
+interface MainFormValues extends FieldValues {
   // Page 1
   schoolNameChn?: string;
   schoolNameEng?: string;
