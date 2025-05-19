@@ -32,7 +32,7 @@ const formTitle = "25-26年度 小學科學外展 報名表格"
 const formTitleEng = "Application for 25-26 Primary Science Outreach activities"
 const SHEET_ID_1 = process.env.NEXT_PUBLIC_SHEET_ID_1
 
-interface outreachDetail {
+interface outreachDetail extends FieldValues {
   theme?: number;
     timeslot?: {
       "1"?: string;
