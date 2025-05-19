@@ -3,7 +3,6 @@ import axios from 'axios';
 
 // Store your Google Apps Script Web App URL in an environment variable
 const GOOGLE_APPS_SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
-const defaultSheetName = "response"
 
 export async function POST(request: NextRequest) {
   if (!GOOGLE_APPS_SCRIPT_URL) {
@@ -19,15 +18,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Missing form data or sheetId.' }, { status: 400 });
     }
 
-    if (sheetName == undefined || sheetName == null) {
-      sheetName = defaultSheetName
-    }
-
     // Forward the data to your Google Apps Script
     const response = await axios.post(GOOGLE_APPS_SCRIPT_URL, {
       data,
       sheetId,
-      (sheetName == undefined || sheetName == null)? defaultSheetName : sheetName // Optional
+      sheetName // Optional
     }, {
       headers: {
         'Content-Type': 'application/json',
