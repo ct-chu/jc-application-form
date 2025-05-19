@@ -198,7 +198,7 @@ export const JcCourseTimeslotModule: React.FC<
       resetVerificationAndRHFValue();
     };
 
-    const handleAmPmChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleAmPmChange = (event: React.ChangeEvent<{ value: unknown }>| any) => {
       setSelectedAmPm(event.target.value as string);
       resetVerificationAndRHFValue();
     };

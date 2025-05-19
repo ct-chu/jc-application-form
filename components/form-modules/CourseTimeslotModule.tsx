@@ -215,7 +215,7 @@ export const CourseTimeslotModule: React.FC<
             resetVerificationAndRHFValue();
         };
 
-        const handleAmPmChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        const handleAmPmChange = (event: React.ChangeEvent<{ value: unknown }> | any) => {
             const newAmPm = event.target.value as string;
             console.log(`CourseTimeslotModule Input Change for '${name}': AM/PM selected:`, newAmPm);
             setSelectedAmPm(newAmPm);
