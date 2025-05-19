@@ -250,7 +250,9 @@ export const CourseTimeslotModule: React.FC<
                                 {label} {required && <span className="text-red-500">*</span>}
                             </Typography>
                             <Grid container spacing={1} alignItems="center" className="mt-1">
-                                <Grid item xs={12} sm={6} md={5}>
+                                <Grid
+                                    // item xs={12} sm={6} md={5}
+                                >
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
                                             label={datePickerLabel}
@@ -280,7 +282,9 @@ export const CourseTimeslotModule: React.FC<
                                         />
                                     </LocalizationProvider>
                                 </Grid>
-                                <Grid item xs={8} sm={4} md={3}>
+                                <Grid
+                                    // item xs={8} sm={4} md={3}
+                                >
                                     <FormControl sx={{ width: 100 }} fullWidth variant="outlined" error={!!fieldState.error}>
                                         <InputLabel id={`${name}-ampm-label`}>{ampmPickerLabel}</InputLabel>
                                         <Select
@@ -296,7 +300,10 @@ export const CourseTimeslotModule: React.FC<
                                         </Select>
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={4} sm={2} md={2} sx={{ textAlign: 'left', pl: 0 }}>
+                                <Grid
+                                    // item xs={4} sm={2} md={2}
+                                    sx={{ textAlign: 'left', pl: 0 }}
+                                >
                                     <IconButton onClick={handleVerifyClick} color={
                                         verificationStatus === 'verified' ? 'success' :
                                             verificationStatus === 'error' ? 'error' : 'default'
