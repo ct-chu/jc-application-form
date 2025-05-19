@@ -152,7 +152,10 @@ export const JcCourseTimeslotModule: React.FC<
           console.log(`JcCourseTimeslotModule SYNC: RHF is empty and status is 'idle'. No change to pickers from this effect.`);
         }
       }
-    }, [rhfFieldValue, name, clearErrors, setValue]); // Dependency array refined
+    }, [
+      rhfFieldValue, name, clearErrors, setValue,
+      rhfErrors, selectedAmPm, selectedDate, verificationStatus
+    ]); // Unremoved rhfErrors, selectedDate, selectedAmPm, verificationStatus from deps
 
     const handleVerifyClick = () => {
       console.log(`JcCourseTimeslotModule VERIFY CLICK for '${name}': Date=${selectedDate}, AM/PM='${selectedAmPm}'`);
