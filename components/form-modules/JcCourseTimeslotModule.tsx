@@ -1,4 +1,5 @@
 // components/form-modules/JcCourseTimeslotModule.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
