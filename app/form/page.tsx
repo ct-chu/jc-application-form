@@ -1068,7 +1068,7 @@ const FormContent: React.FC = () => {
                     filter((key) => !key.includes('outreach')).
                     reduce((cur, key) => { return Object.assign(cur, { [key]: reviewFormData[key] }) }, {})
                 )
-                  .map(([key, value], index) => (
+                  .map(([key, value]) => (
                     <div key={key} className="mb-2">
                       {/* <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography> */}
                       <Typography variant="subtitle1" component="span" fontWeight={500} color="#5e81ac">{labels[key]}: </Typography>
