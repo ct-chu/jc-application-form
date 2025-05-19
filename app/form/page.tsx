@@ -636,7 +636,7 @@ const FormContent: React.FC = () => {
       let navigatedConditionally = false;
 
       // Example: if feedbackType field is on this page and has conditional routing
-      if (fieldsToValidate.includes("appType" as keyof MainFormValues) && selectedappChoice?.nextPage && selectedappChoice.nextPage !== currentPage) {
+      if (fieldsToValidate.includes("appType") && selectedappChoice?.nextPage && selectedappChoice.nextPage !== currentPage) {
           // Ensure nextPage is different to avoid loop and is a valid page number
           if (selectedappChoice.nextPage <= formPagesConfig.length) {
             console.log(`Page ${currentPage} - Navigating conditionally to page ${selectedappChoice.nextPage}`);
