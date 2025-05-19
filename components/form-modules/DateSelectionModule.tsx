@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'; // or AdapterDayjs
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'; // or AdapterDayjs
 import { Controller } from 'react-hook-form';
 import { FormModuleProps } from './common';
 import { TextField } from '@mui/material'; // For rendering input
