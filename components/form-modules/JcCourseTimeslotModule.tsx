@@ -1,7 +1,7 @@
 // components/form-modules/JcCourseTimeslotModule.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   FormControl,
   InputLabel,
@@ -13,7 +13,6 @@ import {
   FormHelperText,
   styled,
   IconButton,
-  Box,
 } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'; // For date-fns v2.x. For v3.x use AdapterDateFnsV3
