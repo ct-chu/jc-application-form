@@ -6,7 +6,7 @@ import { useFormContextData } from '@/context/FormContext'; // Adjust path
 
 interface NavigationButtonsProps {
   onNext?: () => Promise<void>; // Handler for "Next" or "Review" button
-  onPrevious?: () => void;
+  onPrevious?: () => Promise<void>;
   isLastPage?: boolean; // True if this is the last data entry page (leading to Review)
   isFirstPage?: boolean;
 }
@@ -27,9 +27,9 @@ export const NavigationButtons: React.FC<NavigationButtonsProps> = ({
     }
   };
 
-  const handlePreviousClick = () => {
+  const handlePreviousClick = async () => {
     if (onPrevious) {
-      onPrevious(); // Allow custom previous behavior if needed
+      await onPrevious(); // Allow custom previous behavior if needed
     } else {
       goToPreviousPage();
     }
