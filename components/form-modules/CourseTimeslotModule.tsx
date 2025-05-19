@@ -330,7 +330,7 @@ export const CourseTimeslotModule: React.FC<
                             {/* Show verification message if it's an error and RHF doesn't have a more specific error,
                 OR if it's a success message and there's no RHF error. */}
                             {verificationMessage &&
-                                ((verificationStatus === 'error' && !fieldState.error?.message.includes(verificationMessage)) ||
+                                ((verificationStatus === 'error' && !fieldState.error?.message?.includes(verificationMessage)) ||
                                     (verificationStatus === 'verified' && !fieldState.error)) && (
                                     <Typography
                                         variant="caption"

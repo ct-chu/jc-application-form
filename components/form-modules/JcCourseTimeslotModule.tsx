@@ -308,7 +308,7 @@ export const JcCourseTimeslotModule: React.FC<
                 </FormHelperText>
               )}
               {verificationMessage &&
-                ((verificationStatus === 'error' && !fieldState.error?.message.includes(verificationMessage)) ||
+                ((verificationStatus === 'error' && !fieldState.error?.message?.includes(verificationMessage)) ||
                   (verificationStatus === 'verified' && !fieldState.error)) && (
                   <Typography
                     variant="caption"
