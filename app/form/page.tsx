@@ -17,13 +17,19 @@ import { PhoneNumberModule } from '@/components/form-modules/PhoneNumberModule';
 import { DropdownChoiceModule } from '@/components/form-modules/DropdownChoiceModule';
 // ... import other modules
 import { CssBaseline } from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionActions from '@mui/material/AccordionActions';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
+const orgTitleEng = "Ho Koon Nature Education Cum Astronomical Centre  JC Cool Science"
 const formTitle = "25-26年度 小學科學外展 報名表格"
-const sheetName = "response"
+const formTitleEng = "Application for 25-26 Primary Science Outreach activities"
 const SHEET_ID_1 = process.env.NEXT_PUBLIC_SHEET_ID_1
 
-interface outreach {
+interface outreachDetail {
   theme?: number;
     timeslot?: {
       "1"?: string;
@@ -56,28 +62,30 @@ interface MainFormValues {
   email?: string;
   appType?: string;
   // Page 3
-  outreach1?: outreach;
+  outreach1?: outreachDetail;
   // Page 4
-  outreach2?: outreach;
+  outreach2?: outreachDetail;
   // Page 5
-  outreach3?: outreach;
+  outreach3?: outreachDetail;
   // Page 6
-  outreach4?: outreach;
+  outreach4?: outreachDetail;
   // Page 7
-  outreach5?: outreach;
+  outreach5?: outreachDetail;
   // Page 8
-  outreach6?: outreach;
-  // Page 3 (Review)
+  outreach6?: outreachDetail;
+  // Page 9
+  event?: outreachDetail;
+  // Page 10 (Review)
   // ... add all fields
 }
 
 const outreachs = [
   {n: 1, sheetId: `${SHEET_ID_1}`},
-  // {n: 2, sheetId: `${SHEET_ID_1}`},
-  // {n: 3, sheetId: `${SHEET_ID_1}`},
-  // {n: 4, sheetId: `${SHEET_ID_1}`},
-  // {n: 5, sheetId: `${SHEET_ID_1}`},
-  // {n: 6, sheetId: `${SHEET_ID_1}`},
+  {n: 2, sheetId: `${SHEET_ID_1}`},
+  {n: 3, sheetId: `${SHEET_ID_1}`},
+  {n: 4, sheetId: `${SHEET_ID_1}`},
+  {n: 5, sheetId: `${SHEET_ID_1}`},
+  {n: 6, sheetId: `${SHEET_ID_1}`},
 ]
 
 const formPagesConfig = [
@@ -194,24 +202,25 @@ const formPagesConfig = [
       'outreach6.noOfPpl',
     ],
   },
-  // {
-  //   pageNumber: 9,
-  //   sheetId: SHEET_ID_1,
-  //   fields: [
-  //     'eventTheme',
-  //     'eventTime1',
-  //     'eventTime2',
-  //     'eventTime3',
-  //     'eventTime4',
-  //     'eventTime5',
-  //     'eventGrade',
-  //     'eventClassNo',
-  //     'eventPplNo',
-  //   ],
-  // },
+  {
+    pageNumber: 9,
+    sheetId: SHEET_ID_1,
+    fields: [
+      'event.theme',
+      'event.timeslot[1]',
+      'event.timeslot[2]',
+      'event.timeslot[3]',
+      'event.timeslot[4]',
+      'event.timeslot[5]',
+      'event.grade',
+      'event.whichClass',
+      'event.noOfPpl',
+    ],
+  },
   // Add more pages
 ];
 
+//labels for review page
 var labels = {
   'schoolNameChn': "學校名稱（中文）",
   'schoolNameEng': "School name (ENG)",
@@ -226,8 +235,18 @@ var labels = {
   'teacherEmail': "聯絡電郵 Contact email",
   'contactAgree': "同意聯絡本人 Agreed to be contacted",
   'appType': "報名類型  Type of application",
+  'event.theme': `活動主題 Event theme`,
+  'event.timeslot[1]': `活動時段（第一選擇） Event timeslot (1st choice)`,
+  'event.timeslot[2]': `活動時段（第二選擇） Event timeslot (2nd choice)`,
+  'event.timeslot[3]': `活動時段（第三選擇） Event timeslot (3rd choice)`,
+  'event.timeslot[4]': `活動時段（第四選擇） Event timeslot (4th choice)`,
+  'event.timeslot[5]': `活動時段（第五選擇） Event timeslot (5th choice)`,
+  'event.grade': `學生年級 Student grade`,
+  'event.whichClass': `班別 Class`,
+  'event.noOfPpl': `學生人數 No. of students`,
 }
 
+// outreach courses labels for review page
 for (let i = 0; i < 7; i++) {
   labels = Object.assign({[`outreach${i}.theme`] : `課程主題 Course theme` },labels)
   labels = Object.assign({[`outreach${i}.timeslot[1]`] : `課程時段（第一選擇） Course timeslot (1st choice)` },labels)
@@ -238,7 +257,7 @@ for (let i = 0; i < 7; i++) {
   labels = Object.assign({[`outreach${i}.grade`] : `學生年級 Student grade` },labels)
   labels = Object.assign({[`outreach${i}.whichClass`] : `班別 Class` },labels)
   labels = Object.assign({[`outreach${i}.noOfPpl`] : `學生人數 No. of students` },labels)
-  }
+}
 
 const isSpecialChoices = [
   { value: 'no', label: '否 No' },
@@ -283,6 +302,42 @@ const outreachThemes = [
   {value: 17, label: "R17 機械生物大步走",},
 ]
 
+const eventThemes = [
+  {value: 1, label: "Theme1",},
+  {value: 2, label: "Theme2",},
+  {value: 3, label: "Theme3",},
+  {value: 4, label: "Theme4",},
+  {value: 5, label: "Theme5",},
+]
+
+const eventTimeslots = [
+  "2025/11/04_AM",
+  "2025/11/04_PM",
+  "2025/11/07_AM",
+  "2025/11/07_PM",
+  "2025/11/11_AM",
+  "2025/11/11_PM",
+  "2025/11/20_AM",
+  "2025/11/20_PM",
+  "2025/11/27_AM",
+  "2025/11/27_PM",
+  "2026/02/25_AM",
+  "2026/02/25_PM",
+  "2026/06/22_AM",
+  "2026/06/23_AM",
+  "2026/06/24_AM",
+  "2026/06/25_AM",
+  "2026/06/26_AM",
+  "2026/07/03_AM",
+  "2026/07/06_AM",
+  "2026/07/07_AM",
+  "2026/07/08_AM",
+  "2026/07/09_AM",
+  "2026/07/10_AM",
+  "2026/07/13_AM",
+  "2026/07/14_AM",
+  ]
+
 const courseTimeslots = [
   "2025/09/16_AM",
   "2025/09/16_PM",
@@ -318,6 +373,182 @@ const courseTimeslots = [
   "2025/10/20_PM",
   "2025/10/21_AM",
   "2025/10/21_PM",
+  "2025/10/22_AM",
+  "2025/10/22_PM",
+  "2025/10/23_AM",
+  "2025/10/23_PM",
+  "2025/10/27_AM",
+  "2025/10/27_PM",
+  "2025/10/28_AM",
+  "2025/10/28_PM",
+  "2025/11/03_AM",
+  "2025/11/03_PM",
+  "2025/11/05_AM",
+  "2025/11/05_PM",
+  "2025/11/06_AM",
+  "2025/11/06_PM",
+  "2025/11/10_AM",
+  "2025/11/10_PM",
+  "2025/11/12_AM",
+  "2025/11/12_PM",
+  "2025/11/17_AM",
+  "2025/11/17_PM",
+  "2025/11/18_AM",
+  "2025/11/18_PM",
+  "2025/11/19_AM",
+  "2025/11/19_PM",
+  "2025/11/21_AM",
+  "2025/11/21_PM",
+  "2025/11/24_AM",
+  "2025/11/24_PM",
+  "2025/11/25_AM",
+  "2025/11/25_PM",
+  "2025/11/26_AM",
+  "2025/11/26_PM",
+  "2025/12/01_AM",
+  "2025/12/01_PM",
+  "2025/12/02_AM",
+  "2025/12/02_PM",
+  "2025/12/03_AM",
+  "2025/12/03_PM",
+  "2025/12/04_AM",
+  "2025/12/04_PM",
+  "2025/12/05_AM",
+  "2025/12/05_PM",
+  "2025/12/08_AM",
+  "2025/12/08_PM",
+  "2025/12/09_AM",
+  "2025/12/09_PM",
+  "2025/12/10_AM",
+  "2025/12/10_PM",
+  "2025/12/11_AM",
+  "2025/12/11_PM",
+  "2025/12/12_AM",
+  "2025/12/12_PM",
+  "2025/12/15_AM",
+  "2025/12/15_PM",
+  "2025/12/16_AM",
+  "2025/12/16_PM",
+  "2025/12/17_AM",
+  "2025/12/17_PM",
+  "2026/01/12_AM",
+  "2026/01/12_PM",
+  "2026/01/13_AM",
+  "2026/01/13_PM",
+  "2026/01/14_AM",
+  "2026/01/14_PM",
+  "2026/01/15_AM",
+  "2026/01/15_PM",
+  "2026/01/16_AM",
+  "2026/01/16_PM",
+  "2026/01/19_AM",
+  "2026/01/19_PM",
+  "2026/01/20_AM",
+  "2026/01/20_PM",
+  "2026/01/26_AM",
+  "2026/01/26_PM",
+  "2026/01/27_AM",
+  "2026/01/27_PM",
+  "2026/02/04_AM",
+  "2026/02/04_PM",
+  "2026/02/05_AM",
+  "2026/02/05_PM",
+  "2026/02/10_AM",
+  "2026/02/10_PM",
+  "2026/02/11_AM",
+  "2026/02/11_PM",
+  "2026/02/12_AM",
+  "2026/02/12_PM",
+  "2026/02/26_AM",
+  "2026/02/26_PM",
+  "2026/03/02_AM",
+  "2026/03/02_PM",
+  "2026/03/03_AM",
+  "2026/03/03_PM",
+  "2026/03/05_AM",
+  "2026/03/05_PM",
+  "2026/03/10_AM",
+  "2026/03/10_PM",
+  "2026/03/11_AM",
+  "2026/03/11_PM",
+  "2026/03/12_AM",
+  "2026/03/12_PM",
+  "2026/03/16_AM",
+  "2026/03/16_PM",
+  "2026/03/17_AM",
+  "2026/03/17_PM",
+  "2026/03/18_AM",
+  "2026/03/18_PM",
+  "2026/03/19_AM",
+  "2026/03/19_PM",
+  "2026/03/23_AM",
+  "2026/03/23_PM",
+  "2026/03/24_AM",
+  "2026/03/24_PM",
+  "2026/03/25_AM",
+  "2026/03/25_PM",
+  "2026/03/26_AM",
+  "2026/03/26_PM",
+  "2026/03/30_AM",
+  "2026/03/30_PM",
+  "2026/03/31_AM",
+  "2026/03/31_PM",
+  "2026/04/09_AM",
+  "2026/04/09_PM",
+  "2026/04/10_AM",
+  "2026/04/10_PM",
+  "2026/04/14_AM",
+  "2026/04/14_PM",
+  "2026/04/15_AM",
+  "2026/04/15_PM",
+  "2026/04/16_AM",
+  "2026/04/16_PM",
+  "2026/04/17_AM",
+  "2026/04/17_PM",
+  "2026/04/20_AM",
+  "2026/04/20_PM",
+  "2026/04/21_AM",
+  "2026/04/21_PM",
+  "2026/04/22_AM",
+  "2026/04/22_PM",
+  "2026/04/23_AM",
+  "2026/04/23_PM",
+  "2026/04/24_AM",
+  "2026/04/24_PM",
+  "2026/04/27_AM",
+  "2026/04/27_PM",
+  "2026/04/28_AM",
+  "2026/04/28_PM",
+  "2026/04/29_AM",
+  "2026/04/29_PM",
+  "2026/05/05_AM",
+  "2026/05/05_PM",
+  "2026/05/06_AM",
+  "2026/05/06_PM",
+  "2026/05/07_AM",
+  "2026/05/07_PM",
+  "2026/05/08_AM",
+  "2026/05/08_PM",
+  "2026/05/11_AM",
+  "2026/05/11_PM",
+  "2026/05/12_AM",
+  "2026/05/12_PM",
+  "2026/05/13_AM",
+  "2026/05/13_PM",
+  "2026/05/15_AM",
+  "2026/05/15_PM",
+  "2026/05/18_AM",
+  "2026/05/18_PM",
+  "2026/05/19_AM",
+  "2026/05/19_PM",
+  "2026/06/15_AM",
+  "2026/06/15_PM",
+  "2026/06/16_AM",
+  "2026/06/16_PM",
+  "2026/06/17_AM",
+  "2026/06/17_PM",
+  "2026/07/02_AM",
+  "2026/07/02_PM",
 ]
 
 const REVIEW_PAGE_NUMBER = formPagesConfig.length + 1;
@@ -361,6 +592,15 @@ const FormContent: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
+  const [sheetName, setSheetName] = useState("response")
+  
+  const [reviewFormData, setReviewFormData] = useState(formData);
+
+  const [jumpToReview, setJumpToReview] = useState(false);
+  const NextJumpToReview = () =>{
+    setJumpToReview(true)
+    return null
+  }
   
   // Gets the current page's configuration
   const getCurrentPageConfig = () => formPagesConfig.find(p => p.pageNumber === currentPage);
@@ -401,8 +641,25 @@ const FormContent: React.FC = () => {
           }
       }
 
+      if (jumpToReview && currentPage !== REVIEW_PAGE_NUMBER) {
+        console.log(`Page ${currentPage} - Navigating conditionally to last page ${REVIEW_PAGE_NUMBER}`);
+        setReviewFormData(formData)
+        console.log("reviewFormData", reviewFormData);
+        formData.appType == "event" ? setSheetName("event") : formData.appType == "courses" ? setSheetName("courses") : null;
+        console.log("setSheetName", sheetName)
+        goToPage(REVIEW_PAGE_NUMBER);
+        navigatedConditionally = true;
+      }
+
       if (!navigatedConditionally) {
         console.log(`Page ${currentPage} - Navigating to next page.`);
+        if (currentPage+1 == REVIEW_PAGE_NUMBER) {
+          setReviewFormData(formData)
+          console.log("reviewFormData", reviewFormData)
+          formData.appType == "event" ? setSheetName("event") : formData.appType == "courses" ? setSheetName("courses") : null;
+          console.log("formData.appType", formData.appType)
+          console.log("setSheetName", sheetName)
+        }
         goToNextPage(); // This will increment currentPage
       }
     } else {
@@ -451,7 +708,7 @@ const FormContent: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(
-          { data, sheetId: targetSheetId, sheetName: process.env.NEXT_PUBLIC_SHEET_NAME },
+          { data, sheetId: targetSheetId, sheetName: sheetName },
           (k, v) => v === undefined ? null : v ), // replace undefined with null so that all columns will be sent
           // Send all data
       });
@@ -491,18 +748,24 @@ const FormContent: React.FC = () => {
     <RHFFormProvider {...rhfMethods}> {/* Provide RHF methods to children */}
       <form onSubmit={handleSubmit(onSubmitToGoogleSheets)} noValidate>
         <Paper elevation={3} className="p-6 md:p-10 my-10">
-          <Typography variant="h6" component="h2" gutterBottom className="text-center">
-            {orgTitle}
-          </Typography>
           <Typography sx={{ fontWeight: 800 }} variant="h4" component="h1" gutterBottom className="text-center">
             {formTitle}
+          </Typography>
+          <Typography sx={{ fontWeight: 800 }} variant="h6" component="h2" gutterBottom className="text-center">
+            {formTitleEng}
           </Typography>
           {/* <Typography variant="h6" component="h6" gutterBottom className="text-center">
             Page {currentPage > formPagesConfig.length ? 'Review' : currentPage}
           </Typography> */}
 
           <PageWrapper pageNumber={1}>
-            <Typography variant="h6" gutterBottom>參加學校資料 School info</Typography>
+            <Typography variant="body1" fontSize="1rem" color="#4c566a">
+              注意事項 Notices<br />
+              1. 所有資料必須填寫。All data should be filled in.<br />
+              2. 若錯漏填報資料, 可導致申請不被考慮。Missing or incorrect data could lead to rejection of the application.<br />
+              3. 申請人所提供的資料將予保密，並只作申請有關課程用途。 All data will remain confidential and used only for course application.
+            </Typography>
+            <Typography align="center" variant="h5" className='pt-4 pb-3' fontWeight={700} color="#2e3440" gutterBottom>參加學校資料 School info</Typography>
             <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}>
             <ShortAnswerModule name="schoolNameChn" label="學校名稱（中文）" control={control} errors={errors} />
             <ShortAnswerModule name="schoolNameEng" label="School Name (ENG)" control={control} errors={errors} required />
@@ -518,7 +781,7 @@ const FormContent: React.FC = () => {
             <ShortAnswerModule name="schoolAddEng" label="School Address (ENG)" control={control} errors={errors} required />
             <PhoneNumberModule name="schoolPhone" label="學校電話 School phone no." control={control} errors={errors} required />
             <PhoneNumberModule name="schoolFax" label="學校傳真 School Fax no." control={control} errors={errors} required />
-            <Typography variant="h6" gutterBottom>負責老師資料 Teacher's contact info </Typography>
+            <Typography align="center" variant="h5" className='pt-5 pb-3' fontWeight={700} color="#2e3440" gutterBottom>負責老師資料 Teacher's contact info </Typography>
             <ShortAnswerModule name="teacherNameChn" label="老師姓名 （中文）" control={control} errors={errors} />
             <ShortAnswerModule name="teacherNameEng" label="Teacher Name (ENG)" control={control} errors={errors} required />
             <PhoneNumberModule name="teacherPhone" label="手提電話 Mobile phone no." control={control} errors={errors} required />
@@ -535,7 +798,16 @@ const FormContent: React.FC = () => {
           </PageWrapper>
 
           <PageWrapper pageNumber={2}>
-            <Typography variant="h6" gutterBottom>報名類型  Type of Application</Typography>
+            <Typography variant="body1" fontSize="1rem" color="#4c566a" className="pb-5">
+              每間學校可在 25-26年度<strong>「外展到校課程」</strong>和<strong>「 外展Cool Science Day 」</strong>之間 <u><strong>選擇其一，不可重複</strong></u>。<br />
+              若選擇 <strong>「外展到校課程」</strong> ，學校可以為 <u><strong>最多6班</strong></u> 學生報名課程。<br />
+              若選擇 <strong>「 外展Cool Science Day 」</strong> ，學校可以為 <u><strong>最多1次</strong></u> 活動報名，大約能讓一級學生參加（因學生人數而異）。<br />
+              <br />
+              In the 25-26 school year,  each school can make <u><strong>one choice, without repetition</strong></u>, between <strong>"Outreach courses"</strong> and <strong>"Outreach Cool Science Day"</strong>.<br />
+              If <strong>"Outreach courses"</strong>  is chosen, the school can apply for a <u><strong>maximum of 6 classes</strong></u> of students.<br />
+              If <strong>"Outreach Cool Science Day"</strong> is chosen, the school can apply for a <u><strong>maximum of 1 event</strong></u>, and roughly 1 grade of students would be able to participate (subject to change according to the no. of students in a grade).
+            </Typography>
+            <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>報名類型  Type of Application</Typography>
             <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}>
             <SingleChoiceCheckboxModule
               name="appType"
@@ -551,8 +823,57 @@ const FormContent: React.FC = () => {
           {outreachs.map((outreach) => (
             <PageWrapper pageNumber={outreach.n + 2}>
               <GoogleSheetWrapper sheetId={outreach.sheetId} sheetName={sheetName}>
-                <Typography align="center" variant="h5" className='pb-3' gutterBottom>外展到校課程({outreach.n}) | Outreach courses ({outreach.n})</Typography>
-                <Typography variant="h6" className='pb-3' gutterBottom>課程資料 | Course Details</Typography>
+                <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>
+                  外展到校課程({outreach.n})<br />
+                  Outreach courses ({outreach.n})
+                </Typography>
+                <Typography variant="h6" className='pb-3 pt-5' gutterBottom>報名須知 Notice for application</Typography>
+                <Accordion defaultExpanded={outreach.n == 1 ? true : false }>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`outreach${outreach.n}-theme-content`}
+                    id="outreach${outreach.n}-theme-content-header"
+                  >
+                    <Typography variant="body1" fontWeight={500} gutterBottom>課程主題列表 List of course themes</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="body1" fontSize="1rem" color="#4c566a">
+                      請按以下 URL 以閱讀課程主題列表與詳細介紹。<br/>
+                      Please refer to the URL below for the list of course themes and details.
+                    </Typography>
+                  </AccordionDetails>
+                  <AccordionActions sx={{ justifyContent: 'flex-start' }}>
+                    <Button>URL</Button>
+                  </AccordionActions>
+                </Accordion>
+                <Accordion defaultExpanded={outreach.n == 1 ? true : false }>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`outreach${outreach.n}-timeslot-content`}
+                    id="outreach${outreach.n}-timeslot-content-header"
+                  >
+                    <Typography variant="body1" fontWeight={500} gutterBottom>上課時段列表 List of course timeslots</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="body1" fontSize="1rem" color="#4c566a">
+                      外展課程標準長度為70分鐘（2課節）或105分鐘（3課節）。活動時段分為上午（xx:xx 至 xx:xx 之間）或下午 （xx:xx 至 xx:xx 之間）。<br/>
+                      The standard length for outreach courses are 70 minutes (2 sessions) or 105 minutes (3 sessions). Timeslots for the event are separated into 2 types: AM (between xx:xx and xx:xx) or PM (between xx:xx and xx:xx).<br/>
+                      <br/>
+                      學校需為每個課程選擇5個上課時段。如該課程申請成功，上課時間將按剩餘時段空缺及學校的選擇次序分配。<br/>
+                      Each school should choose 5 course timeslots for a course application. If the course application is accepted, course time will be assigned according to availability and school's preferences.<br/>
+                      <br/>
+                      在下面的日期選擇器中，有AM或PM時段可選的日子會以綠色圓圈標記。<br />
+                      In the date selector below, dates with AM and/or PM timeslot available are marked in green circles.<br />
+                      <br />
+                      請按以下 URL 確認上課時段列表。<br/>
+                      Please refer to the URL below for the list of course timeslots.<br/>
+                    </Typography>
+                  </AccordionDetails>
+                  <AccordionActions sx={{ justifyContent: 'flex-start' }}>
+                    <Button>URL</Button>
+                  </AccordionActions>
+                </Accordion>
+                <Typography variant="h6" className='pb-3 pt-5' gutterBottom>課程資料 Course Details</Typography>
                 <DropdownChoiceModule
                   name={`outreach${outreach.n.toString()}.theme`}
                   label="請選擇課程主題。 Please choose a course theme."
@@ -601,7 +922,7 @@ const FormContent: React.FC = () => {
                   jcTimeslots={courseTimeslots}
                   required
                 />
-                <Typography variant="h6" className='pb-3' gutterBottom>學生資料 | Student Details</Typography>
+                <Typography variant="h6" className='pb-3' gutterBottom>學生資料 Student Details</Typography>
                 <SingleChoiceCheckboxModule
                   name={`outreach${outreach.n.toString()}.grade`}
                   label="學生年級 Student grade"
@@ -612,74 +933,127 @@ const FormContent: React.FC = () => {
                 />
                 <ShortAnswerModule name={`outreach${outreach.n.toString()}.whichClass`} label="班別 Class" control={control} errors={errors} required />
                 <NumberAnswerModule name={`outreach${outreach.n.toString()}.noOfPpl`} label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
+                {outreach.n == outreachs.length? <NextJumpToReview /> :null}
               </GoogleSheetWrapper>
             </PageWrapper>
           ))}
-          {/* <PageWrapper pageNumber={3}> */}
-            {/* <GoogleSheetWrapper sheetId="SHEET_ID_1" sheetName={sheetName}> */}
-            {/* <Typography align="center" variant="h5" className='pb-3' gutterBottom>外展到校課程(1) | Outreach courses (1)</Typography>
-            <Typography variant="h6" className='pb-3' gutterBottom>課程資料 | Course Details</Typography>
-            <DropdownChoiceModule
-              name="outreach1.theme"
-              label="請選擇課程主題。 Please choose a course theme."
-              control={control}
-              errors={errors}
-              choices={outreachThemes}
-              required
-            />
-            <JcCourseTimeslotModule
-              name="outreach1.timeslot[1]"
-              label="請選擇課程時段（第一選擇）。 Please choose a course timeslot (1st choice)."
-              control={control}
-              errors={errors}
-              jcTimeslots={courseTimeslots}
-              required
-            />
-            <JcCourseTimeslotModule
-              name="outreach1.timeslot[2]"
-              label="請選擇課程時段（第二選擇）。 Please choose a course timeslot (2nd choice)."
-              control={control}
-              errors={errors}
-              jcTimeslots={courseTimeslots}
-              required
-            />
-            <JcCourseTimeslotModule
-              name="outreach1.timeslot[3]"
-              label="請選擇課程時段（第三選擇）。 Please choose a course timeslot (3rd choice)."
-              control={control}
-              errors={errors}
-              jcTimeslots={courseTimeslots}
-              required
-            />
-            <JcCourseTimeslotModule
-              name="outreach1.timeslot[4]"
-              label="請選擇課程時段（第四選擇）。 Please choose a course timeslot (4th choice)."
-              control={control}
-              errors={errors}
-              jcTimeslots={courseTimeslots}
-              required
-            />
-            <JcCourseTimeslotModule
-              name="outreach1.timeslot[5]"
-              label="請選擇課程時段（第五選擇）。 Please choose a course timeslot (5th choice)."
-              control={control}
-              errors={errors}
-              jcTimeslots={courseTimeslots}
-              required
-            />
-            <Typography variant="h6" className='pb-3' gutterBottom>學生資料 | Student Details</Typography>
-            <SingleChoiceCheckboxModule
-              name="outreach1.grade"
-              label="學生年級 Student grade"
-              control={control}
-              errors={errors}
-              choices={studentgrades}
-              required
-            />
-            <ShortAnswerModule name="outreach1.whichClass" label="班別 Class" control={control} errors={errors} required />
-            <NumberAnswerModule name="outreach1.noOfPpl" label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required /> */}
-            {/* </GoogleSheetWrapper> */}
-          {/* </PageWrapper> */}
+
+          {/* --- Page for outreach--- */}
+          <PageWrapper pageNumber={9}>
+            <GoogleSheetWrapper sheetId="SHEET_ID_1" sheetName={sheetName}>
+              <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>
+                  外展 Cool Science Day<br />
+                  Outreach Cool Science Day
+                </Typography>
+                <Typography variant="h6" className='pb-3 pt-5' gutterBottom>報名須知 Notice for application</Typography>
+                <Accordion defaultExpanded>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`event-theme-content`}
+                    id="event-theme-content-header"
+                  >
+                    <Typography variant="body1" fontWeight={500} gutterBottom>活動主題列表 List of event themes</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="body1" fontSize="1rem" color="#4c566a">
+                      請按以下 URL 確認活動主題列表與詳細介紹。<br/>
+                      Please refer to the URL below for the list of event themes and details.
+                    </Typography>
+                  </AccordionDetails>
+                  <AccordionActions sx={{ justifyContent: 'flex-start' }}>
+                    <Button>URL</Button>
+                  </AccordionActions>
+                </Accordion>
+                <Accordion defaultExpanded>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`event-timeslot-content`}
+                    id="event-timeslot-content-header"
+                  >
+                    <Typography variant="body1" fontWeight={500} gutterBottom>活動時段列表 List of event timeslots</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="body1" fontSize="1rem" color="#4c566a">
+                      Cool Science Day 活動標準長度為 x 小時。活動時段分為上午（xx:xx 至 xx:xx 之間）或下午 （xx:xx 至 xx:xx 之間）。<br/>
+                      The standard length for "Cool Science Day" event is x hours. Timeslots for the event are separated into 2 types: AM (between xx:xx and xx:xx) or PM (between xx:xx and xx:xx).<br/>
+
+                      學校需為每個活動選擇5個時段。如該活動申請成功， 活動時間將按剩餘時段空缺及學校的選擇次序分配。<br/>
+                      Each school should choose 5 event timeslots for an event application. If the event application is accepted, event time will be assigned according to availability and school's preferences.<br/>
+                      <br/>
+                      在下面的日期選擇器中，有AM或PM時段可選的日子會以綠色圓圈標記。<br />
+                      In the date selector below, dates with AM and/or PM timeslot available are marked in green circles.<br />
+                      <br />
+                      請按以下 URL 確認活動時段列表。<br/>
+                      Please refer to the URL below for the list of event timeslots.<br/>
+                    </Typography>
+                  </AccordionDetails>
+                  <AccordionActions sx={{ justifyContent: 'flex-start' }}>
+                    <Button>URL</Button>
+                  </AccordionActions>
+                </Accordion>
+              <Typography variant="h6" className='pb-3' gutterBottom>活動資料 | Course Details</Typography>
+              <DropdownChoiceModule
+                name="event.theme"
+                label="請選擇活動主題。 Please choose an event theme."
+                control={control}
+                errors={errors}
+                choices={eventThemes}
+                required
+              />
+              <JcCourseTimeslotModule
+                name="event.timeslot[1]"
+                label="請選擇活動時段（第一選擇）。 Please choose an event timeslot (1st choice)."
+                control={control}
+                errors={errors}
+                jcTimeslots={eventTimeslots}
+                required
+              />
+              <JcCourseTimeslotModule
+                name="event.timeslot[2]"
+                label="請選擇活動時段（第二選擇）。 Please choose an event timeslot (2nd choice)."
+                control={control}
+                errors={errors}
+                jcTimeslots={eventTimeslots}
+                required
+              />
+              <JcCourseTimeslotModule
+                name="event.timeslot[3]"
+                label="請選擇活動時段（第三選擇）。 Please choose an event timeslot (3rd choice)."
+                control={control}
+                errors={errors}
+                jcTimeslots={eventTimeslots}
+                required
+              />
+              <JcCourseTimeslotModule
+                name="event.timeslot[4]"
+                label="請選擇活動時段（第四選擇）。 Please choose an event timeslot (4th choice)."
+                control={control}
+                errors={errors}
+                jcTimeslots={eventTimeslots}
+                required
+              />
+              <JcCourseTimeslotModule
+                name="event.timeslot[5]"
+                label="請選擇活動時段（第五選擇）。 Please choose an event timeslot (5th choice)."
+                control={control}
+                errors={errors}
+                jcTimeslots={eventTimeslots}
+                required
+              />
+              <Typography variant="h6" className='pb-3' gutterBottom>學生資料 | Student Details</Typography>
+              <DropdownChoiceModule
+                name="event.grade"
+                label="學生年級 Student grade"
+                control={control}
+                errors={errors}
+                choices={studentgrades}
+                required
+                multiple
+              />
+              <ShortAnswerModule name="event.whichClass" label="班別 Class" control={control} errors={errors} required />
+              <NumberAnswerModule name="event.noOfPpl" label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
+            </GoogleSheetWrapper>
+          </PageWrapper>
 
 
 
@@ -688,11 +1062,11 @@ const FormContent: React.FC = () => {
             <div className="animate-fadeIn">
               <Typography align="center" className="pt-3 pb-3" variant="h5" gutterBottom>請檢查你的申請內容。Please review your application.</Typography>
               <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">報名學校及老師資料 <br />School and Teacher info</Typography>
-              {formData.appType == "event" ? //check if application type is event
+              {reviewFormData.appType == "event" ? //check if application type is event
                 Object.entries(
-                  Object.keys(formData).
+                  Object.keys(reviewFormData).
                     filter((key) => !key.includes('outreach')).
-                    reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
+                    reduce((cur, key) => { return Object.assign(cur, { [key]: reviewFormData[key] }) }, {})
                 )
                   .map(([key, value], index) => (
                     <div key={key} className="mb-2">
@@ -703,20 +1077,19 @@ const FormContent: React.FC = () => {
                           typeof value === 'object' && value !== null && value instanceof Date
                             ? value.toLocaleDateString()
                             : key == "appType" ? String(appTypeChoices.find(o => o.value === value).label)
-                              : key.substring(key.length - 5, key.length) == "theme" ? String(outreachThemes.find(o => o.value === value).label)
-                                : key.substring(key.length - 5, key.length) == "grade" ? `P. ${String(value)}`
-                                  : Array.isArray(value)
-                                    ? key.substring(key.length - 5, key.length) == "grade" ? `P. ${value.join(', ')}`
-                                      : value.join(', ')
-                                    : String(value)}
+                              : key.substring(key.length - 5, key.length) == "theme" ? String(eventThemes.find(o => o.value === value).label)
+                                : Array.isArray(value)
+                                  ? key.substring(key.length - 5, key.length) == "grade" ? `P. ${value.join(', P.')}`
+                                    : value.join(', ')
+                                  : String(value)}
                         {/* replace undefined value */}
                       </Typography>
                     </div>
                   ))
                 : Object.entries( //if application type is NOT event, should be outreach courses then
-                  Object.keys(formData).
+                  Object.keys(reviewFormData).
                     filter((key) => !key.includes('event')).
-                    reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
+                    reduce((cur, key) => { return Object.assign(cur, { [key]: reviewFormData[key] }) }, {})
                 )
                   .map(([key, value], index) => (
                     <div key={key} className="mb-2">
