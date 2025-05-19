@@ -23,6 +23,20 @@ const formTitle = "25-26年度 小學科學外展 報名表格"
 const sheetName = "response"
 const SHEET_ID_1 = process.env.NEXT_PUBLIC_SHEET_ID_1
 
+interface outreach {
+  theme?: number;
+    timeslot?: {
+      "1"?: string;
+      "2"?: string;
+      "3"?: string;
+      "4"?: string;
+      "5"?: string;
+    };
+    grade?: number;
+    whichClass?: string;
+    noOfPpl?: number;
+}
+
 // Define a type for your entire form's data
 interface MainFormValues {
   // Page 1
@@ -42,89 +56,17 @@ interface MainFormValues {
   email?: string;
   appType?: string;
   // Page 3
-  outreach1?: {
-    theme?: number;
-    timeslot?: {
-      "1"?: string;
-      "2"?: string;
-      "3"?: string;
-      "4"?: string;
-      "5"?: string;
-    };
-    grade?: number;
-    whichClass?: string;
-    noOfPpl?: number;
-  };
+  outreach1?: outreach;
   // Page 4
-  outreach2?: {
-    theme?: number;
-    timeslot?: {
-      "1"?: string;
-      "2"?: string;
-      "3"?: string;
-      "4"?: string;
-      "5"?: string;
-    };
-    grade?: number;
-    whichClass?: string;
-    noOfPpl?: number;
-  };
+  outreach2?: outreach;
   // Page 5
-  outreach3?: {
-    theme?: number;
-    timeslot?: {
-      "1"?: string;
-      "2"?: string;
-      "3"?: string;
-      "4"?: string;
-      "5"?: string;
-    };
-    grade?: number;
-    whichClass?: string;
-    noOfPpl?: number;
-  };
+  outreach3?: outreach;
   // Page 6
-  outreach4?: {
-    theme?: number;
-    timeslot?: {
-      "1"?: string;
-      "2"?: string;
-      "3"?: string;
-      "4"?: string;
-      "5"?: string;
-    };
-    grade?: number;
-    whichClass?: string;
-    noOfPpl?: number;
-  };
+  outreach4?: outreach;
   // Page 7
-  outreach5?: {
-    theme?: number;
-    timeslot?: {
-      "1"?: string;
-      "2"?: string;
-      "3"?: string;
-      "4"?: string;
-      "5"?: string;
-    };
-    grade?: number;
-    whichClass?: string;
-    noOfPpl?: number;
-  };
+  outreach5?: outreach;
   // Page 8
-  outreach6?: {
-    theme?: number;
-    timeslot?: {
-      "1"?: string;
-      "2"?: string;
-      "3"?: string;
-      "4"?: string;
-      "5"?: string;
-    };
-    grade?: number;
-    whichClass?: string;
-    noOfPpl?: number;
-  };
+  outreach6?: outreach;
   // Page 3 (Review)
   // ... add all fields
 }
