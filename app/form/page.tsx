@@ -91,6 +91,11 @@ const outreachs = [
   {n: 6, sheetId: `${SHEET_ID_1}`},
 ]
 
+const section = {
+  outreach : 3,
+  event : 9,
+}
+
 const formPagesConfig = [
   {
     pageNumber: 1,
