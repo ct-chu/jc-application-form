@@ -99,6 +99,11 @@ const section = {
 const formPagesConfig = [
   {
     pageNumber: 1,
+    sheetId: SHEET_ID_1, // Could be same or different
+    fields: ['appType'],
+  },
+  {
+    pageNumber: 2,
     sheetId: SHEET_ID_1, // For data from this page or group
     fields: [
       'schoolNameChn',
@@ -114,11 +119,6 @@ const formPagesConfig = [
       'teacherEmail',
       'contactAgree'
     ], // Fields on this page for validation trigger
-  },
-  {
-    pageNumber: 2,
-    sheetId: SHEET_ID_1, // Could be same or different
-    fields: ['appType'],
   },
   {
     pageNumber: 3,
@@ -825,13 +825,42 @@ const FormContent: React.FC = () => {
             Page {currentPage > formPagesConfig.length ? 'Review' : currentPage}
           </Typography> */}
 
+
           <PageWrapper pageNumber={1}>
-            <Typography variant="body1" fontSize="1rem" color="#4c566a">
-              注意事項 Notices<br />
+            
+             <Typography variant="body1" fontSize="1rem" color="#4c566a" className="pb-5">
+              <strong>注意事項 Notices</strong><br />
               1. 所有資料必須填寫。All data should be filled in.<br />
               2. 若錯漏填報資料, 可導致申請不被考慮。Missing or incorrect data could lead to rejection of the application.<br />
-              3. 申請人所提供的資料將予保密，並只作申請有關課程用途。 All data will remain confidential and used only for course application.
+              3. 申請人所提供的資料將予保密，並只作申請有關課程用途。 All data will remain confidential and used only for course application.<br />
             </Typography>
+            
+            <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>報名類型  Type of Application</Typography>
+            <Typography variant="body1" fontSize="1rem" color="#4c566a" className="pb-5">
+              每間學校可在 25-26年度<strong>「外展到校課程」</strong>和<strong>「 外展Cool Science Day 」</strong>之間 <u><strong>選擇其一，不可重複</strong></u>。<br />
+              若選擇 <strong>「外展到校課程」</strong> ，學校可以為 <u><strong>最多6班</strong></u> 學生報名課程。<br />
+              若選擇 <strong>「 外展Cool Science Day 」</strong> ，學校可以為 <u><strong>最多1次</strong></u> 活動報名，大約能讓一級學生參加（因學生人數而異）。<br />
+              <strong>此選擇不能更改，若要更改，須重新填寫表格。</strong><br />
+              <br />
+              In the 25-26 school year,  each school can make <u><strong>one choice, without repetition</strong></u>, between <strong>"Outreach courses"</strong> and <strong>"Outreach Cool Science Day"</strong>.<br />
+              If <strong>"Outreach courses"</strong>  is chosen, the school can apply for a <u><strong>maximum of 6 classes</strong></u> of students.<br />
+              If <strong>"Outreach Cool Science Day"</strong> is chosen, the school can apply for a <u><strong>maximum of 1 event</strong></u>, and roughly 1 grade of students would be able to participate (subject to change according to the no. of students in a grade).
+              <strong>The choice CANNOT be changed. You will have to re-fill the form from the beginning if you need to choose otherwise.</strong><br />
+            </Typography>
+            {/* <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}> */}
+            <SingleChoiceCheckboxModule
+              name="appType"
+              label="請選擇報名類型。 Please choose a type of application."
+              control={control}
+              errors={errors}
+              choices={appTypeChoices}
+              required
+            />
+            {/* </GoogleSheetWrapper> */}
+          </PageWrapper>
+
+
+          <PageWrapper pageNumber={2}>
             <Typography align="center" variant="h5" className='pt-4 pb-3' fontWeight={700} color="#2e3440" gutterBottom>參加學校資料 School info</Typography>
             {/* <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}> */}
             <ShortAnswerModule name="schoolNameChn" label="學校名稱（中文）" control={control} errors={errors} />
@@ -864,28 +893,6 @@ const FormContent: React.FC = () => {
             {/* </GoogleSheetWrapper> */}
           </PageWrapper>
 
-          <PageWrapper pageNumber={2}>
-            <Typography variant="body1" fontSize="1rem" color="#4c566a" className="pb-5">
-              每間學校可在 25-26年度<strong>「外展到校課程」</strong>和<strong>「 外展Cool Science Day 」</strong>之間 <u><strong>選擇其一，不可重複</strong></u>。<br />
-              若選擇 <strong>「外展到校課程」</strong> ，學校可以為 <u><strong>最多6班</strong></u> 學生報名課程。<br />
-              若選擇 <strong>「 外展Cool Science Day 」</strong> ，學校可以為 <u><strong>最多1次</strong></u> 活動報名，大約能讓一級學生參加（因學生人數而異）。<br />
-              <br />
-              In the 25-26 school year,  each school can make <u><strong>one choice, without repetition</strong></u>, between <strong>"Outreach courses"</strong> and <strong>"Outreach Cool Science Day"</strong>.<br />
-              If <strong>"Outreach courses"</strong>  is chosen, the school can apply for a <u><strong>maximum of 6 classes</strong></u> of students.<br />
-              If <strong>"Outreach Cool Science Day"</strong> is chosen, the school can apply for a <u><strong>maximum of 1 event</strong></u>, and roughly 1 grade of students would be able to participate (subject to change according to the no. of students in a grade).
-            </Typography>
-            <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>報名類型  Type of Application</Typography>
-            {/* <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}> */}
-            <SingleChoiceCheckboxModule
-              name="appType"
-              label="請選擇報名類型。 Please choose a type of application."
-              control={control}
-              errors={errors}
-              choices={appTypeChoices}
-              required
-            />
-            {/* </GoogleSheetWrapper> */}
-          </PageWrapper>
 
           {outreachs.map((outreach) => (
             <PageWrapper pageNumber={outreach.n + 2} key={`outreach-page-${outreach.n}`}>
