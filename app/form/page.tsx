@@ -982,7 +982,7 @@ const FormContent: React.FC = () => {
                   control={control}
                   errors={errors}
                   choices={outreachThemes}
-                  required
+                  required={outreach.n == 1}
                 />
                 <JcCourseTimeslotModule
                   name={`outreach${outreach.n.toString()}.timeslot[1]`}
@@ -990,7 +990,7 @@ const FormContent: React.FC = () => {
                   control={control}
                   errors={errors}
                   jcTimeslots={courseTimeslots}
-                  required
+                  required={outreach.n == 1}
                 />
                 <JcCourseTimeslotModule
                   name={`outreach${outreach.n.toString()}.timeslot[2]`}
@@ -998,7 +998,7 @@ const FormContent: React.FC = () => {
                   control={control}
                   errors={errors}
                   jcTimeslots={courseTimeslots}
-                  required
+                  required={outreach.n == 1}
                 />
                 <JcCourseTimeslotModule
                   name={`outreach${outreach.n.toString()}.timeslot[3]`}
@@ -1006,7 +1006,7 @@ const FormContent: React.FC = () => {
                   control={control}
                   errors={errors}
                   jcTimeslots={courseTimeslots}
-                  required
+                  required={outreach.n == 1}
                 />
                 <JcCourseTimeslotModule
                   name={`outreach${outreach.n.toString()}.timeslot[4]`}
@@ -1014,7 +1014,7 @@ const FormContent: React.FC = () => {
                   control={control}
                   errors={errors}
                   jcTimeslots={courseTimeslots}
-                  required
+                  required={outreach.n == 1}
                 />
                 <JcCourseTimeslotModule
                   name={`outreach${outreach.n.toString()}.timeslot[5]`}
@@ -1022,6 +1022,7 @@ const FormContent: React.FC = () => {
                   control={control}
                   errors={errors}
                   jcTimeslots={courseTimeslots}
+                  required={outreach.n == 1}
                 />                
                 {outreach.n == outreachs.length? <NextJumpToReview /> :null}
               {/* </GoogleSheetWrapper> */}
@@ -1254,7 +1255,7 @@ export default function FormPageContainer() {
             <img src="web_top.png" />
           </Grid>
         </Grid>
-        <Typography variant='h5' align='center' className='pt-5'>
+        <Typography variant='h6' align='center' className='pt-5'>
               嗇色園主辦可觀自然教育中心暨天文館 | 賽馬會探索科學<br />
               Ho Koon Nature Education Cum Astronomical Centre | JC Cool Science
         </Typography>
