@@ -850,17 +850,18 @@ const FormContent: React.FC = () => {
               1. 所有資料必須填寫。All data should be filled in.<br />
               2. 若錯漏填報資料, 可導致申請不被考慮。Missing or incorrect data could lead to rejection of the application.<br />
               3. 申請人所提供的資料將予保密，並只作申請有關課程用途。 All data will remain confidential and used only for course application.<br />
+              4. 本中心保留課程報名的最終決定權。HKNEAC's decision regarding course application shall be final. <br />
             </Typography>
             
             <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>報名類型  Type of Application</Typography>
             <Typography variant="body1" fontSize="1rem" color="#4c566a" className="pb-5">
-              每間學校可在 25-26年度<strong>「外展到校課程」</strong>和<strong>「 外展Cool Science Day 」</strong>之間 <u><strong>選擇其一，不可重複</strong></u>。<br />
-              若選擇 <strong>「外展到校課程」</strong> ，學校可以為 <u><strong>最多6班</strong></u> 學生報名課程。<br />
+              每間學校可在 25-26年度<strong>「外展到校課程」</strong>和<strong>「 外展Cool Science Day 」</strong>之間 <u><strong>選擇其一，不可重複</strong></u>。如有重複，本中心只會處理最早提交之報名。<br />
+              若選擇 <strong>「外展到校課程」</strong> ，學校可以為最少1班， <u><strong>最多6班</strong></u> 學生報名課程。除了第1班報名為必填之外，其他皆可按需要留空。<br />
               若選擇 <strong>「 外展Cool Science Day 」</strong> ，學校可以為 <u><strong>最多1次</strong></u> 活動報名，大約能讓一級學生參加（因學生人數而異）。<br />
               <strong>此選擇不能更改，若要更改，須重新填寫表格。</strong><br />
               <br />
-              In the 25-26 school year,  each school can make <u><strong>one choice, without repetition</strong></u>, between <strong>"Outreach courses"</strong> and <strong>"Outreach Cool Science Day"</strong>.<br />
-              If <strong>"Outreach courses"</strong>  is chosen, the school can apply for a <u><strong>maximum of 6 classes</strong></u> of students.<br />
+              In the 25-26 school year,  each school can make <u><strong>one choice, without repetition</strong></u>, between <strong>"Outreach courses"</strong> and <strong>"Outreach Cool Science Day"</strong>. In case of repeated application, only the first submission would be considered.<br />
+              If <strong>"Outreach courses"</strong>  is chosen, the school can apply for at least 1 class, and up to a <u><strong>maximum of 6 classes</strong></u> of students. Only the application for the first course is required, you may leave pages for other course blank if necessary.<br />
               If <strong>"Outreach Cool Science Day"</strong> is chosen, the school can apply for a <u><strong>maximum of 1 event</strong></u>, and roughly 1 grade of students would be able to participate (subject to change according to the no. of students in a grade).
               <strong>The choice CANNOT be changed. You will have to re-fill the form from the beginning if you need to choose otherwise.</strong><br />
             </Typography>
