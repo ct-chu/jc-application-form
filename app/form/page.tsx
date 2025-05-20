@@ -758,13 +758,13 @@ const FormContent: React.FC = () => {
 
   if (submissionStatus) {
     return (
-      <Container maxWidth="sm" className="py-10">
-        <Alert severity={submissionStatus.type}>{submissionStatus.message}</Alert>
-        {submissionStatus.type === 'success' && (
+      <Container maxWidth="sm" className="py-10" sx={{height:"100vh",  alignContent: "center"}}>
+        <Alert sx={{ fontSize:"1.5rem", whiteSpace: "pre-line" }} severity={submissionStatus.type}>{submissionStatus.message}</Alert>
+        {/* {submissionStatus.type === 'success' && (
           <Button onClick={() => { reset({}); goToPage(1); setSubmissionStatus(null); }} className="mt-4">
             Submit Another Response
           </Button>
-        )}
+        )} */}
       </Container>
     );
   }
