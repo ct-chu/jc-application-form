@@ -49,6 +49,9 @@ interface outreachDetail extends FieldValues {
 // Define a type for your entire form's data
 interface MainFormValues extends FieldValues {
   // Page 1
+  email?: string;
+  appType?: string;
+  // Page 2
   schoolNameChn?: string;
   schoolNameEng?: string;
   isSpecial?: string;
@@ -61,9 +64,6 @@ interface MainFormValues extends FieldValues {
   teacherPhone?: number;
   teacherEmail?: string;
   contactAgree?: string;
-  // Page 2
-  email?: string;
-  appType?: string;
   // Page 3
   outreach1?: outreachDetail;
   // Page 4
