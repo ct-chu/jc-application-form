@@ -592,6 +592,43 @@ const FormContent: React.FC = () => {
     });
   }, [formData, currentPage, reset]); // Rerun if formData changes OR if currentPage changes
 
+  // const watchedAppType = watch('appType');
+  // // Effect to handle changes in appType and filter formData
+  // useEffect(() => {
+  //   if (!watchedAppType) {
+  //       // If appType is not yet selected or cleared, do nothing or define default behavior
+  //       console.log("appType is not selected or cleared.");
+  //       return;
+  //   }
+  //   console.log(`appType changed to: ${watchedAppType}. Filtering formData.`);
+
+  //   const currentGlobalFormData = { ...formData }; // Get a mutable copy of the global formData
+  //   let dataWasModified = false;
+
+  //   if (watchedAppType === 'event') {
+  //     Object.keys(currentGlobalFormData).forEach(key => {
+  //       if (key.startsWith('outreach')) {
+  //         delete currentGlobalFormData[key as keyof MainFormValues];
+  //         dataWasModified = true;
+  //         console.log(`Removed outreach field: ${key}`);
+  //       }
+  //     });
+  //   } else if (watchedAppType === 'courses') {
+  //     Object.keys(currentGlobalFormData).forEach(key => {
+  //       if (key.startsWith('event')) {
+  //         delete currentGlobalFormData[key as keyof MainFormValues];
+  //         dataWasModified = true;
+  //         console.log(`Removed event field: ${key}`);
+  //       }
+  //     });
+  //   }
+
+  //   if (dataWasModified) {
+  //     console.log("Updating global formData and resetting RHF with filtered data:", currentGlobalFormData);
+  //     updateFormData(currentGlobalFormData); // Update the global context
+  //     reset(currentGlobalFormData)
+  //   }
+  // }, [formData.appType]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -650,10 +687,10 @@ const FormContent: React.FC = () => {
 
       if (jumpToReview && currentPage !== REVIEW_PAGE_NUMBER) {
         console.log(`Page ${currentPage} - Navigating conditionally to last page ${REVIEW_PAGE_NUMBER}`);
-        setReviewFormData(formData)
-        console.log("reviewFormData", reviewFormData);
+        // setReviewFormData(formData)
+        // console.log("reviewFormData", reviewFormData);
         formData.appType == "event" ? setSheetName("event") : formData.appType == "courses" ? setSheetName("courses") : null;
-        console.log("setSheetName", sheetName)
+        // console.log("setSheetName", sheetName)
         goToPage(REVIEW_PAGE_NUMBER);
         navigatedConditionally = true;
       }
