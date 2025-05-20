@@ -676,7 +676,7 @@ const FormContent: React.FC = () => {
       updateFormData(currentPageData); // Update global context with current page's data
 
       // Conditional navigation logic (example, adapt as needed)
-      const appTypeValue = getValues("appType");
+      // const appTypeValue = getValues("appType");
       // const selectedappChoice = appTypeChoices.find(c => c.value === appTypeValue);
       let navigatedConditionally = false;
 
