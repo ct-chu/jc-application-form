@@ -1188,7 +1188,7 @@ const FormContent: React.FC = () => {
                   ))
               }
               <div className="mt-8 flex justify-between">
-                <Button variant="outlined" onClick={() => goToPage(currentPage - 1)}>
+                <Button variant="outlined" onClick={() => handlePageSpecificPrevious()}>
                   Back to Edit
                 </Button>
                 <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
@@ -1199,7 +1199,7 @@ const FormContent: React.FC = () => {
           )}
 
           {/* Navigation (only if not on review page and not submitting) */}
-          {currentPage !== REVIEW_PAGE_NUMBER && !isSubmitting && (
+          {currentPage !==2 && currentPage !== REVIEW_PAGE_NUMBER && !isSubmitting && (
             <NavigationButtons
               onNext={handlePageSpecificNext}
               onPrevious={handlePageSpecificPrevious}
@@ -1207,6 +1207,18 @@ const FormContent: React.FC = () => {
               isLastPage={currentPage === formPagesConfig.length} // True if current page is the last data entry page
               // onReview={handleReview}
             />
+          )}
+
+          {/* Navigation (only on page 2) */}
+          {currentPage == 2 && (
+            <div className="mt-8 flex justify-between">
+              <Button variant="outlined" disabled={true}>
+                Previous
+              </Button>
+              <Button variant="contained" color="primary" className="rounded-md shadow-sm hover:shadow-md transition-shadow" onClick={() => handlePageSpecificNext()}>
+                Next
+              </Button>
+            </div>
           )}
         </Paper>
       </form>
