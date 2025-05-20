@@ -661,11 +661,11 @@ const FormContent: React.FC = () => {
       if (!navigatedConditionally) {
         console.log(`Page ${currentPage} - Navigating to next page.`);
         if (currentPage+1 == REVIEW_PAGE_NUMBER) {
-          setReviewFormData(formData)
-          console.log("reviewFormData", reviewFormData)
+          // setReviewFormData(formData)
+          // console.log("reviewFormData", reviewFormData)
           formData.appType == "event" ? setSheetName("event") : formData.appType == "courses" ? setSheetName("courses") : null;
-          console.log("formData.appType", formData.appType)
-          console.log("setSheetName", sheetName)
+          // console.log("formData.appType", formData.appType)
+          // console.log("setSheetName", sheetName)
         }
         goToNextPage(); // This will increment currentPage
       }
@@ -743,7 +743,7 @@ const FormContent: React.FC = () => {
         throw new Error(errorData.message || 'Submission failed');
       }
 
-      setSubmissionStatus({ type: 'success', message: '你已成功遞交表格。Form submitted successfully.' });
+      setSubmissionStatus({ type: 'success', message: `你已成功遞交表格。\n Form submitted successfully.` });
       // Optionally reset form or redirect: reset({}); goToPage(1);
     } catch (error: any) {
       setSubmissionStatus({ type: 'error', message: error.message || '發生錯誤。An error occurred.' });
@@ -1087,11 +1087,11 @@ const FormContent: React.FC = () => {
             <div className="animate-fadeIn">
               <Typography align="center" className="pt-3 pb-3" variant="h5" gutterBottom>請檢查你的申請內容。Please review your application.</Typography>
               <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">報名學校及老師資料 <br />School and Teacher info</Typography>
-              {reviewFormData.appType == "event" ? //check if application type is event
+              {formData.appType == "event" ? //check if application type is event
                 Object.entries(
-                  Object.keys(reviewFormData).
+                  Object.keys(formData).
                     filter((key) => !key.includes('outreach')).
-                    reduce((cur, key) => { return Object.assign(cur, { [key]: reviewFormData[key] }) }, {})
+                    reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
                 )
                   .map(([key, value]) => (
                     <div key={key} className="mb-2">
@@ -1112,9 +1112,9 @@ const FormContent: React.FC = () => {
                     </div>
                   ))
                 : Object.entries( //if application type is NOT event, should be outreach courses then
-                  Object.keys(reviewFormData).
+                  Object.keys(formData).
                     filter((key) => !key.includes('event')).
-                    reduce((cur, key) => { return Object.assign(cur, { [key]: reviewFormData[key] }) }, {})
+                    reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
                 )
                   .map(([key, value], index) => (
                     <div key={key} className="mb-2">
