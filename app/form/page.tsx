@@ -964,6 +964,17 @@ const FormContent: React.FC = () => {
                     <Button>URL</Button>
                   </AccordionActions>
                 </Accordion>
+                <Typography variant="h6" className='pb-3' gutterBottom>學生資料 Student Details</Typography>
+                <SingleChoiceCheckboxModule
+                  name={`outreach${outreach.n.toString()}.grade`}
+                  label="學生年級 Student grade"
+                  control={control}
+                  errors={errors}
+                  choices={studentgrades}
+                  required={outreach.n == 1}
+                />
+                <ShortAnswerModule name={`outreach${outreach.n.toString()}.whichClass`} label="班別 Class" control={control} errors={errors} required={outreach.n == 1} />
+                <NumberAnswerModule name={`outreach${outreach.n.toString()}.noOfPpl`} label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required={outreach.n == 1} />
                 <Typography variant="h6" className='pb-3 pt-5' gutterBottom>課程資料 Course Details</Typography>
                 <DropdownChoiceModule
                   name={`outreach${outreach.n.toString()}.theme`}
@@ -1011,19 +1022,7 @@ const FormContent: React.FC = () => {
                   control={control}
                   errors={errors}
                   jcTimeslots={courseTimeslots}
-                  required
-                />
-                <Typography variant="h6" className='pb-3' gutterBottom>學生資料 Student Details</Typography>
-                <SingleChoiceCheckboxModule
-                  name={`outreach${outreach.n.toString()}.grade`}
-                  label="學生年級 Student grade"
-                  control={control}
-                  errors={errors}
-                  choices={studentgrades}
-                  required
-                />
-                <ShortAnswerModule name={`outreach${outreach.n.toString()}.whichClass`} label="班別 Class" control={control} errors={errors} required />
-                <NumberAnswerModule name={`outreach${outreach.n.toString()}.noOfPpl`} label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
+                />                
                 {outreach.n == outreachs.length? <NextJumpToReview /> :null}
               {/* </GoogleSheetWrapper> */}
             </PageWrapper>
@@ -1081,7 +1080,19 @@ const FormContent: React.FC = () => {
                   <AccordionActions sx={{ justifyContent: 'flex-start' }}>
                     <Button>URL</Button>
                   </AccordionActions>
-                </Accordion>
+                </Accordion>              
+              <Typography variant="h6" className='pb-3' gutterBottom>學生資料 | Student Details</Typography>
+              <DropdownChoiceModule
+                name="event.grade"
+                label="學生年級 Student grade"
+                control={control}
+                errors={errors}
+                choices={studentgrades}
+                required
+                multiple
+              />
+              <ShortAnswerModule name="event.whichClass" label="班別 Class" control={control} errors={errors} required />
+              <NumberAnswerModule name="event.noOfPpl" label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
               <Typography variant="h6" className='pb-3' gutterBottom>活動資料 | Course Details</Typography>
               <DropdownChoiceModule
                 name="event.theme"
@@ -1131,18 +1142,6 @@ const FormContent: React.FC = () => {
                 jcTimeslots={eventTimeslots}
                 required
               />
-              <Typography variant="h6" className='pb-3' gutterBottom>學生資料 | Student Details</Typography>
-              <DropdownChoiceModule
-                name="event.grade"
-                label="學生年級 Student grade"
-                control={control}
-                errors={errors}
-                choices={studentgrades}
-                required
-                multiple
-              />
-              <ShortAnswerModule name="event.whichClass" label="班別 Class" control={control} errors={errors} required />
-              <NumberAnswerModule name="event.noOfPpl" label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
             {/* </GoogleSheetWrapper> */}
           </PageWrapper>
 
