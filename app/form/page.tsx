@@ -4,7 +4,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider as RHFFormProvider, Path, FieldValues } from 'react-hook-form';
-import { Button, Container, Paper, Typography, CircularProgress, Alert } from '@mui/material';
+import { Button, Container, Paper, Typography, CircularProgress, Alert, Grid } from '@mui/material';
 import { FormProvider as AppFormProvider, useFormContextData } from '@/context/FormContext'; // Adjust path
 
 // Import your modules
@@ -831,7 +831,7 @@ const FormContent: React.FC = () => {
   return (
     <RHFFormProvider {...rhfMethods}> {/* Provide RHF methods to children */}
       <form onSubmit={handleSubmit(onSubmitToGoogleSheets)} noValidate>
-        <Paper elevation={3} className="p-6 md:p-10 my-10">
+        <Paper elevation={3} className="p-6 md:p-10 my-5">
           <Typography sx={{ fontWeight: 800 }} variant="h4" component="h1" gutterBottom className="text-center">
             {formTitle}
           </Typography>
@@ -1250,7 +1250,21 @@ export default function FormPageContainer() {
     <AppFormProvider totalFormPages={TOTAL_PAGES}>
       <CssBaseline />
       <Container maxWidth="md">
+        <Grid container sx={{justifyContent: "space-around"}} className='pt-5'>
+          <Grid size={5}>
+            <img src="web_top.png" />
+          </Grid>
+        </Grid>
+        <Typography variant='h5' align='center' className='pt-5'>
+              嗇色園主辦可觀自然教育中心暨天文館 | 賽馬會探索科學<br />
+              Ho Koon Nature Education Cum Astronomical Centre | JC Cool Science
+        </Typography>
+      </Container>
+      <Container maxWidth="md">
         <FormContent />
+      </Container>
+      <Container maxWidth="md" className='pb-5'>
+        <img src="footer.png" />
       </Container>
     </AppFormProvider>
   );
