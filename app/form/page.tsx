@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider as RHFFormProvider, Path, FieldValues } from 'react-hook-form';
 import { Button, Container, Paper, Typography, CircularProgress, Alert, Grid } from '@mui/material';
 import { FormProvider as AppFormProvider, useFormContextData } from '@/context/FormContext'; // Adjust path
+import axios from 'axios';
 
 // Import your modules
 import { PageWrapper } from '@/components/core/PageWrapper'; // Adjust path
@@ -786,26 +787,46 @@ const FormContent: React.FC = () => {
     const targetSheetId = formPagesConfig[0]?.sheetId || SHEET_ID_1; // Example
 
     try {
-      const response = await fetch('/api/submit-to-sheet', { // Your API endpoint
-        method: 'POST',
+      const payload = {
+        data: formData, // Your actual form data
+        sheetId: targetSheetId, // Replace with your actual Google Sheet ID
+        sheetName: sheetName // Optional: Replace with your desired sheet name
+      };
+
+      const response = await axios.post(GOOGLE_APPS_SCRIPT_URL, payload, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "text/plain;charset=utf-8",
         },
-        body: JSON.stringify(
-          { data, sheetId: targetSheetId, sheetName: sheetName },
-          (k, v) => v === undefined ? null : v ), // replace undefined with null so that all columns will be sent
-          // Send all data
+        maxRedirects: 0,
+        validateStatus: function (status) {
+          return status >= 200 && status < 303; // Accept success and redirect statuses
+        },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Submission failed');
+      // Based on your Apps Script's expected response:
+      if (response.status === 200 && response.data && response.data.status === 'success') {
+        setSubmissionStatus({ type: 'success', message: `你已成功遞交表格。\n Form submitted successfully.` });
+        reset({})
+      } else if (response.status === 200 && response.data && response.data.status === 'error') {
+        setSubmissionStatus({ type: 'error', message: `Error from Google Apps Script: ${response.data.message || 'Unknown error'}` });
+      } else if (response.status === 302) { // Google Apps Script often redirects on successful plain text output
+        setSubmissionStatus({ type: 'success', message: `你已成功遞交表格。\n Form submitted successfully.` });
+        reset({})
+        console.log("Submitted with code 302, redirected")
+      } else {
+        setSubmissionStatus({ type: 'error', message: `出現不明錯誤。\n Unknown Error` });
       }
-
-      setSubmissionStatus({ type: 'success', message: `你已成功遞交表格。\n Form submitted successfully.` });
       // Optionally reset form or redirect: reset({}); goToPage(1);
     } catch (error: any) {
+      console.error('Error submitting form:', error);
       setSubmissionStatus({ type: 'error', message: error.message || '發生錯誤。An error occurred.' });
+      let errorMessage = 'Failed to submit data.';
+      if (axios.isAxiosError(error) && error.response) {
+        errorMessage = `Network or Apps Script error: ${error.response.status} ${JSON.stringify(error.response.data)}`;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      setSubmissionStatus({ type: 'error', message: `Error: ${errorMessage}` });
     } finally {
       setIsSubmitting(false);
     }
