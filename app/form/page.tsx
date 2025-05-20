@@ -277,8 +277,8 @@ const contactAgreeChoices = [
 ];
 
 const appTypeChoices = [
-  { value: 'courses', label: '外展到校課程 | Outreach courses', nextPage: 3}, /* Example: skip to page if needed, or just regular next*/
-  { value: 'event', label: '外展 Cool Science Day | Outreach Cool Science Day', nextPage: 9 },
+  { value: 'courses', label: '外展到校課程 | Outreach courses'}, /* Example: skip to page if needed, or just regular next*/
+  { value: 'event', label: '外展 Cool Science Day | Outreach Cool Science Day'},
 ];
 
 const studentgrades = [
@@ -680,14 +680,26 @@ const FormContent: React.FC = () => {
       const selectedappChoice = appTypeChoices.find(c => c.value === appTypeValue);
       let navigatedConditionally = false;
 
-      // Example: if feedbackType field is on this page and has conditional routing
-      if (fieldsToValidate.includes("appType") && selectedappChoice?.nextPage && selectedappChoice.nextPage !== currentPage) {
-          // Ensure nextPage is different to avoid loop and is a valid page number
-          if (selectedappChoice.nextPage <= formPagesConfig.length) {
-            console.log(`Page ${currentPage} - Navigating conditionally to page ${selectedappChoice.nextPage}`);
-            goToPage(selectedappChoice.nextPage);
-            navigatedConditionally = true;
-          }
+      
+      // if (fieldsToValidate.includes("appType") && selectedappChoice?.nextPage && selectedappChoice.nextPage !== currentPage) {
+      //     // Ensure nextPage is different to avoid loop and is a valid page number
+      //     if (selectedappChoice.nextPage <= formPagesConfig.length) {
+      //       console.log(`Page ${currentPage} - Navigating conditionally to page ${selectedappChoice.nextPage}`);
+      //       goToPage(selectedappChoice.nextPage);
+      //       navigatedConditionally = true;
+      //     }
+      // }
+
+      if (currentPage == 2) {
+        if (formData.appType == "event") {
+          console.log(`Page ${currentPage} - Navigating conditionally to page ${section.event}`);
+          goToPage(section.event);
+          navigatedConditionally = true;
+        } else if (formData.appType == "courses") {
+          console.log(`Page ${currentPage} - Navigating conditionally to page ${section.outreach}`);
+          goToPage(section.outreach);
+          navigatedConditionally = true;
+        }
       }
 
       if (jumpToReview && currentPage !== REVIEW_PAGE_NUMBER) {
@@ -719,15 +731,20 @@ const FormContent: React.FC = () => {
   };
 
   const handlePageSpecificPrevious = async () => {
-  if (formData.appType == "event") {
-    if (currentPage == 9){
-      goToPage(2);
+    if (currentPage == 2) {
+      null
+    } else if (formData.appType == "event") {
+      if (currentPage == 9) {
+        console.log(`Page ${currentPage} - Navigating conditionally to page ${2}`)
+        goToPage(2);
+      } else goToPreviousPage();
+    } else if (formData.appType == "courses") {
+      console.log("navigation variable = courses")
+      if (currentPage == REVIEW_PAGE_NUMBER) {
+        console.log(`Page ${currentPage} - Navigating conditionally to page ${REVIEW_PAGE_NUMBER - 2}`)
+        goToPage(REVIEW_PAGE_NUMBER - 2);
+      } else goToPreviousPage();
     } else goToPreviousPage();
-  } else if (formData.appType == "courses"){
-    if (currentPage == REVIEW_PAGE_NUMBER) {
-      goToPage(REVIEW_PAGE_NUMBER - 2);
-    } else goToPreviousPage();
-  } else goToPreviousPage();
   };
 
 // Handles validation and navigation to the Review page
