@@ -640,7 +640,7 @@ const FormContent: React.FC = () => {
 
   const [sheetName, setSheetName] = useState("response")
   
-  const [reviewFormData, setReviewFormData] = useState(formData);
+  // const [reviewFormData, setReviewFormData] = useState(formData);
 
   const [jumpToReview, setJumpToReview] = useState(false);
   const NextJumpToReview = () =>{
@@ -677,7 +677,7 @@ const FormContent: React.FC = () => {
 
       // Conditional navigation logic (example, adapt as needed)
       const appTypeValue = getValues("appType");
-      const selectedappChoice = appTypeChoices.find(c => c.value === appTypeValue);
+      // const selectedappChoice = appTypeChoices.find(c => c.value === appTypeValue);
       let navigatedConditionally = false;
 
       
