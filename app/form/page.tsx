@@ -108,18 +108,18 @@ const formPagesConfig = [
     pageNumber: 2,
     sheetId: SHEET_ID_1, // For data from this page or group
     fields: [
-      'schoolNameChn',
-      'schoolNameEng',
-      'isSpecial',
-      'schoolAddChn',
-      'schoolAddEng',
-      'schoolPhone',
-      'schoolFax',
-      'teacherNameChn',
-      'teacherNameEng',
-      'teacherPhone',
-      'teacherEmail',
-      'contactAgree'
+      'a_schoolNameChn',
+      'a_schoolNameEng',
+      'a_isSpecial',
+      'a_schoolAddChn',
+      'a_schoolAddEng',
+      'a_schoolPhone',
+      'a_schoolFax',
+      'a_teacherNameChn',
+      'a_teacherNameEng',
+      'a_teacherPhone',
+      'a_teacherEmail',
+      'a_contactAgree'
     ], // Fields on this page for validation trigger
   },
   {
@@ -232,18 +232,18 @@ const formPagesConfig = [
 
 //labels for review page
 let labels: {[key: string]: string,} = {
-  'schoolNameChn': "學校名稱（中文）",
-  'schoolNameEng': "School name (ENG)",
-  'isSpecial': "本校為教育局資助特殊學校。Our school is an aided special school.",
-  'schoolAddChn': "學校地址 （中文）",
-  'schoolAddEng': "School address (ENG)",
-  'schoolPhone': "學校電話 School phone no.",
-  'schoolFax': "學校傳真 School fax no.",
-  'teacherNameChn': "老師姓名 （中文）",
-  'teacherNameEng': "Teacher name (ENG)",
-  'teacherPhone': "手提電話 Mobile phone no.",
-  'teacherEmail': "聯絡電郵 Contact email",
-  'contactAgree': "同意聯絡本人 Agreed to be contacted",
+  'a_schoolNameChn': "學校名稱（中文）",
+  'a_schoolNameEng': "School name (ENG)",
+  'a_isSpecial': "本校為教育局資助特殊學校。Our school is an aided special school.",
+  'a_schoolAddChn': "學校地址 （中文）",
+  'a_schoolAddEng': "School address (ENG)",
+  'a_schoolPhone': "學校電話 School phone no.",
+  'a_schoolFax': "學校傳真 School fax no.",
+  'a_teacherNameChn': "老師姓名 （中文）",
+  'a_teacherNameEng': "Teacher name (ENG)",
+  'a_teacherPhone': "手提電話 Mobile phone no.",
+  'a_teacherEmail': "聯絡電郵 Contact email",
+  'a_contactAgree': "同意聯絡本人 Agreed to be contacted",
   'appType': "報名類型  Type of application",
   'event.theme': `活動主題 Event theme`,
   'event.timeslot[1]': `活動時段（第一選擇） Event timeslot (1st choice)`,
@@ -778,10 +778,29 @@ const FormContent: React.FC = () => {
   //   }
   // };
 
+  function recursivelyNullifyUndefinedValues(obj: object | any) {
+    const keys = Object.keys(obj) as Array<keyof typeof obj>;
+    keys.forEach((key) => {
+      const value = obj[key]
+      if (!!value && (typeof value === 'object')) {
+        recursivelyNullifyUndefinedValues(value);
+      } else if (value === undefined) {
+        obj[key] = null;
+      }
+    });
+    return obj;
+  }
+
+  function sortObj(obj: object) {
+    let sortedEntries = Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0]));
+    let sortedObject = Object.fromEntries(sortedEntries);
+    return sortedObject
+  }
+
   const onSubmitToGoogleSheets = async (data: MainFormValues) => {
     setIsSubmitting(true);
     setSubmissionStatus(null);
-    console.log('Submitting data:', data);
+    console.log('Submitting data:', sortObj(recursivelyNullifyUndefinedValues(data)));
 
     // Here, you would determine which sheetId to use based on formPagesConfig
     // For simplicity, assuming all data goes to one sheet or you have a primary sheetId
@@ -789,7 +808,7 @@ const FormContent: React.FC = () => {
 
     try {
       const payload = {
-        data: formData, // Your actual form data
+        data: sortObj(recursivelyNullifyUndefinedValues(formData)), // Your actual form data
         sheetId: targetSheetId, // Replace with your actual Google Sheet ID
         sheetName: sheetName // Optional: Replace with your desired sheet name
       };
@@ -903,27 +922,27 @@ const FormContent: React.FC = () => {
           <PageWrapper pageNumber={2}>
             <Typography align="center" variant="h5" className='pt-4 pb-3' fontWeight={700} color="#2e3440" gutterBottom>參加學校資料 School info</Typography>
             {/* <GoogleSheetWrapper sheetId={SHEET_ID_1} sheetName={sheetName}> */}
-            <ShortAnswerModule name="schoolNameChn" label="學校名稱（中文）" control={control} errors={errors} />
-            <ShortAnswerModule name="schoolNameEng" label="School Name (ENG)" control={control} errors={errors} required />
+            <ShortAnswerModule name="a_schoolNameChn" label="學校名稱（中文）" control={control} errors={errors} />
+            <ShortAnswerModule name="a_schoolNameEng" label="School Name (ENG)" control={control} errors={errors} required />
             <SingleChoiceCheckboxModule
-              name="isSpecial"
+              name="a_isSpecial"
               label="本校為教育局資助特殊學校。Our school is an aided special school."
               control={control}
               errors={errors} 
               choices={isSpecialChoices}
               required
             />
-            <ShortAnswerModule name="schoolAddChn" label="學校地址 （中文）" control={control} errors={errors} />
-            <ShortAnswerModule name="schoolAddEng" label="School Address (ENG)" control={control} errors={errors} required />
-            <PhoneNumberModule name="schoolPhone" label="學校電話 School phone no." control={control} errors={errors} required />
-            <PhoneNumberModule name="schoolFax" label="學校傳真 School Fax no." control={control} errors={errors} required />
+            <ShortAnswerModule name="a_schoolAddChn" label="學校地址 （中文）" control={control} errors={errors} />
+            <ShortAnswerModule name="a_schoolAddEng" label="School Address (ENG)" control={control} errors={errors} required />
+            <PhoneNumberModule name="a_schoolPhone" label="學校電話 School phone no." control={control} errors={errors} required />
+            <PhoneNumberModule name="a_schoolFax" label="學校傳真 School Fax no." control={control} errors={errors} required />
             <Typography align="center" variant="h5" className='pt-5 pb-3' fontWeight={700} color="#2e3440" gutterBottom>負責老師資料 Teacher's contact info </Typography>
-            <ShortAnswerModule name="teacherNameChn" label="老師姓名 （中文）" control={control} errors={errors} />
-            <ShortAnswerModule name="teacherNameEng" label="Teacher Name (ENG)" control={control} errors={errors} required />
-            <PhoneNumberModule name="teacherPhone" label="手提電話 Mobile phone no." control={control} errors={errors} required />
-            <EmailModule name="teacherEmail" label="聯絡電郵 Contact email" control={control} errors={errors} required />
+            <ShortAnswerModule name="a_teacherNameChn" label="老師姓名 （中文）" control={control} errors={errors} />
+            <ShortAnswerModule name="a_teacherNameEng" label="Teacher Name (ENG)" control={control} errors={errors} required />
+            <PhoneNumberModule name="a_teacherPhone" label="手提電話 Mobile phone no." control={control} errors={errors} required />
+            <EmailModule name="a_teacherEmail" label="聯絡電郵 Contact email" control={control} errors={errors} required />
             <SingleChoiceCheckboxModule
-              name="contactAgree"
+              name="a_contactAgree"
               label={"本人同意可觀自然教育中心暨天文館日後以電郵及手提電話短訊聯絡本人，以處理課程報名及協調課程事宜。  I agree to be contacted by HKNEAC via email and text messages regarding course application and implementation."}
               control={control}
               errors={errors}
