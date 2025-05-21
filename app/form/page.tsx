@@ -51,21 +51,20 @@ interface outreachDetail extends FieldValues {
 // Define a type for your entire form's data
 interface MainFormValues extends FieldValues {
   // Page 1
-  email?: string;
   appType?: string;
   // Page 2
-  schoolNameChn?: string;
-  schoolNameEng?: string;
-  isSpecial?: string;
-  schoolAddChn?: string;
-  schoolAddEng?: string;
-  schoolPhone?: number;
-  schoolFax?: number;
-  teacherNameChn?: string;
-  teacherNameEng?: string;
-  teacherPhone?: number;
-  teacherEmail?: string;
-  contactAgree?: string;
+  a_schoolNameChn?: string;
+  a_schoolNameEng?: string;
+  a_isSpecial?: string;
+  a_schoolAddChn?: string;
+  a_schoolAddEng?: string;
+  a_schoolPhone?: number;
+  a_schoolFax?: number;
+  a_teacherNameChn?: string;
+  a_teacherNameEng?: string;
+  a_teacherPhone?: number;
+  a_teacherEmail?: string;
+  a_contactAgree?: string;
   // Page 3
   outreach1?: outreachDetail;
   // Page 4
@@ -792,8 +791,8 @@ const FormContent: React.FC = () => {
   }
 
   function sortObj(obj: object) {
-    let sortedEntries = Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0]));
-    let sortedObject = Object.fromEntries(sortedEntries);
+    const sortedEntries = Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0]));
+    const sortedObject = Object.fromEntries(sortedEntries);
     return sortedObject
   }
 
