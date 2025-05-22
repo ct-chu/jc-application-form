@@ -1210,6 +1210,7 @@ const FormContent: React.FC = () => {
             <div className="animate-fadeIn">
               <Typography align="center" className="pt-3 pb-3" variant="h5" gutterBottom>請檢查你的申請內容。Please review your application.</Typography>
               <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">報名學校及老師資料 <br />School and Teacher info</Typography>
+              {formData.appType == "event" ? <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">外展 Cool Science Day<br />Outreach Cool Science Day</Typography>:null}
               {formData.appType == "event" ? //check if application type is event
                 Object.entries(
                   Object.keys(formData).
