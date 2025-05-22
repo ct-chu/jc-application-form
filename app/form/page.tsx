@@ -695,10 +695,12 @@ const FormContent: React.FC = () => {
         if (formData.appType == "event") {
           console.log(`Page ${currentPage} - Navigating conditionally to page ${section.event}`);
           goToPage(section.event);
+          window.scrollTo({top: 0, behavior: 'smooth'});
           navigatedConditionally = true;
         } else if (formData.appType == "courses") {
           console.log(`Page ${currentPage} - Navigating conditionally to page ${section.outreach}`);
           goToPage(section.outreach);
+          window.scrollTo({top: 0, behavior: 'smooth'});
           navigatedConditionally = true;
         }
       }
@@ -710,6 +712,7 @@ const FormContent: React.FC = () => {
         formData.appType == "event" ? setSheetName("event") : formData.appType == "courses" ? setSheetName("courses") : null;
         // console.log("setSheetName", sheetName)
         goToPage(REVIEW_PAGE_NUMBER);
+        window.scrollTo({top: 0, behavior: 'smooth'});
         navigatedConditionally = true;
       }
 
@@ -723,6 +726,7 @@ const FormContent: React.FC = () => {
           // console.log("setSheetName", sheetName)
         }
         goToNextPage(); // This will increment currentPage
+        window.scrollTo({top: 0, behavior: 'smooth'});
       }
     } else {
       // Ensure UI updates to show errors if validation fails
@@ -738,14 +742,25 @@ const FormContent: React.FC = () => {
       if (currentPage == 9) {
         console.log(`Page ${currentPage} - Navigating conditionally to page ${2}`)
         goToPage(2);
-      } else goToPreviousPage();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      } else {
+        goToPreviousPage()
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      };
     } else if (formData.appType == "courses") {
       console.log("navigation variable = courses")
       if (currentPage == REVIEW_PAGE_NUMBER) {
         console.log(`Page ${currentPage} - Navigating conditionally to page ${REVIEW_PAGE_NUMBER - 2}`)
         goToPage(REVIEW_PAGE_NUMBER - 2);
-      } else goToPreviousPage();
-    } else goToPreviousPage();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      } else {
+        goToPreviousPage()
+        window.scrollTo({top: 0, behavior: 'smooth'})
+      };
+    } else {
+      goToPreviousPage()
+      window.scrollTo({top: 0, behavior: 'smooth'})
+    };
   };
 
 // Handles validation and navigation to the Review page
