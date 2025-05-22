@@ -32,8 +32,10 @@ import DownloadJSON from '@/components/core/DownloadJSON';
 // const orgTitleEng = "Ho Koon Nature Education Cum Astronomical Centre  JC Cool Science"
 const formTitle = "25-26年度 小學科學外展 報名表格"
 const formTitleEng = "Application for 25-26 Primary Science Outreach activities"
-const SHEET_ID_1 = process.env.NEXT_PUBLIC_SHEET_ID_1
-const GOOGLE_APPS_SCRIPT_URL:string|any = process.env.GOOGLE_APPS_SCRIPT_URL
+// const SHEET_ID_1 = process.env.NEXT_PUBLIC_SHEET_ID_1
+// const GOOGLE_APPS_SCRIPT_URL:string|any = process.env.GOOGLE_APPS_SCRIPT_URL
+const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu9LrGQWYe3fJ2NxIqJehdAUH-mbtIrCnotoQkPeJTo7h-OiLY5o6nDRfgs8DH-CE/exec"
+const SHEET_ID_1 = "1VmXYcMvo_zanPPuQxAsvupVKbLz_5ksV5EtD0rL7L7U"
 
 interface outreachDetail extends FieldValues {
   theme?: number;
