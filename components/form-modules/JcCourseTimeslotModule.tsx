@@ -127,7 +127,7 @@ export const JcCourseTimeslotModule: React.FC<
             setSelectedDate(newDateFromRHF);
             setSelectedAmPm(ampmStr);
             setVerificationStatus('verified');
-            setVerificationMessage(`已確認時段。Timeslot confirmed: ${formatDateFns(newDateFromRHF, 'yyyy/MM/dd')} ${ampmStr}`);
+            setVerificationMessage(`已確認時段選擇。Timeslot choice confirmed: ${formatDateFns(newDateFromRHF, 'yyyy/MM/dd')} ${ampmStr}`);
           } else {
             console.log(`JcCourseTimeslotModule SYNC: Internal state already matches RHF value '${rhfFieldValue}'. No update.`);
           }
