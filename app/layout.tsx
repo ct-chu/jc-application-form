@@ -5,7 +5,7 @@ import ThemeRegistry from './ThemeRegistry'; // Adjust path if needed
 
 export const metadata = {
   title: '可觀課程報名表格',
-  description: 'Fill out this form',
+  description: '嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學 進階環境教育及小學科學課程報名網站',
 };
 
 export default function RootLayout({
