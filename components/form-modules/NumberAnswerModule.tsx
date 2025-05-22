@@ -17,7 +17,7 @@ export const NumberAnswerModule: React.FC<NumberAnswerProps<MyFormValues>> = ({
   name,
   label,
   control,
-  errors,
+  // errors,
   required = false,
   min,
   max,

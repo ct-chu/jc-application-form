@@ -20,7 +20,7 @@ export const DateSelectionModule: React.FC<DateSelectionProps<MyFormValues>> = (
   name,
   label,
   control,
-  errors,
+  // errors,
   required = false,
   allowedDates,
   disablePast,

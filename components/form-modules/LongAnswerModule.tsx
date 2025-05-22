@@ -16,7 +16,7 @@ export const LongAnswerModule: React.FC<LongAnswerProps<MyFormValues>> = ({
   name,
   label,
   control,
-  errors,
+  // errors,
   required = false,
   rows = 4,
   className = 'mb-4',

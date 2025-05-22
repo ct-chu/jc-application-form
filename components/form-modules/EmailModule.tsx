@@ -13,7 +13,7 @@ export const EmailModule: React.FC<FormModuleProps<MyFormValues>> = ({
   name,
   label,
   control,
-  errors,
+  // errors,
   required = false,
   className = 'mb-4',
 }) => {

@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Select, MenuItem, FormControl, InputLabel, FormHelperText, Typography } from '@mui/material';
+import { Select, MenuItem, FormControl, InputLabel, Typography } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { FormModuleProps } from './common';
 
@@ -22,7 +22,7 @@ export const DropdownChoiceModule: React.FC<DropdownProps<MyFormValues>> = ({
   name,
   label,
   control,
-  errors,
+  // errors,
   required = false,
   choices,
   multiple = false,
