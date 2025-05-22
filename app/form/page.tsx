@@ -26,6 +26,7 @@ import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import DownloadJSON from '@/components/core/DownloadJSON';
 
 // const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
 // const orgTitleEng = "Ho Koon Nature Education Cum Astronomical Centre  JC Cool Science"
@@ -1260,6 +1261,20 @@ const FormContent: React.FC = () => {
                     </div>
                   ))
               }
+              <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">
+                下載表格資料備份<br />Download backup application data
+              </Typography>
+              <Typography variant="subtitle1" component="span" fontWeight={500} color="#5e81ac">
+                檢查表格資料無誤後，請務必在遞交前按「下載資料」以下載表格檔案作備份。如有技術問題或其他疑難，請在查詢時提供在此下載的表格檔案作參考。<br />
+                After confirming the data as errorless, please make sure to press "Download Data" to download a backup file of the application before submitting. Please attach the backup file downloaded here to your enquiries should there be any technical or other problems.
+              </Typography>
+              <div className="pt-4 flex justify-center">
+                <DownloadJSON
+                  data={sortObj(recursivelyNullifyUndefinedValues(formData))}
+                  fileName={`${String(formData.a_schoolNameEng)}_${formData.appType}_${new Date().toISOString()}`}
+                  label="下載資料 Download Data"
+                />
+              </div>
               <div className="mt-8 flex justify-between">
                 <Button variant="outlined" onClick={() => handlePageSpecificPrevious()}>
                   Back to Edit
