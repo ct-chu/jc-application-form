@@ -37,12 +37,12 @@ export const NumberAnswerModule: React.FC<NumberAnswerProps<MyFormValues>> = ({
         control={control}
         rules={{
           required: required ? (typeof required === 'string' ? required : '此欄必填。This field is required.') : false,
-          min: min !== undefined ? { value: min, message: `Minimum value is ${min}` } : undefined,
-          max: max !== undefined ? { value: max, message: `Maximum value is ${max}` } : undefined,
+          min: min !== undefined ? { value: min, message: `數字不得小於 ${min}。Minimum value is ${min}.` } : undefined,
+          max: max !== undefined ? { value: max, message: `數字不得大於 ${max}。Maximum value is ${max}.` } : undefined,
           validate: value => {
             if (value === null || value === undefined || value === '') return true; // Allow empty if not required
             const num = parseFloat(value.toString());
-            return !isNaN(num) || 'Please enter a valid number';
+            return !isNaN(num) || '請輸入有效數字。Please enter a valid number.';
           }
         }}
         render={({ field, fieldState }) => (
