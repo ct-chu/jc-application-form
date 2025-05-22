@@ -23,6 +23,13 @@ export const NumberAnswerModule: React.FC<NumberAnswerProps<MyFormValues>> = ({
   max,
   className = 'mb-4',
 }) => {
+  if ( min !== undefined ||  max !== undefined ) {
+    label = label + " ( "
+    label = ( min !== undefined ) ? label +`最少 Min. ${min.toString()} ` : label
+    label = ( max !== undefined ) ? label +`最多 Max. ${max.toString()} ` : label
+    label = label + ")"
+  }
+
   return (
     <div className={className}>
       <Controller
