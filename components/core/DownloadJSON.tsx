@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React from 'react';
 import { Button } from '@mui/material';
 
 interface DownloadJSONProps{
-  data?: Object|any;
-  fileName?: String;
-  label?: String;
+  data?: object|any;
+  fileName?: string;
+  label?: string;
 }
 
 const DownloadJSON: React.FC<DownloadJSONProps> = ({
