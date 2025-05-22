@@ -44,7 +44,7 @@ export const DateSelectionModule: React.FC<DateSelectionProps<MyFormValues>> = (
             required: required ? (typeof required === 'string' ? required : '此欄必填。This field is required.') : false,
             validate: (value) => (allowedDates ? isDateAllowed(value) || 'Selected date is not allowed' : true),
           }}
-          render={({ field }) => (
+          render={({ field, fieldState }) => (
             <DatePicker
               label={label}
               value={field.value || null}
@@ -59,8 +59,8 @@ export const DateSelectionModule: React.FC<DateSelectionProps<MyFormValues>> = (
                         fullWidth
                         variant="outlined"
                         required={!!required}
-                        error={!!errors[name]}
-                        helperText={errors[name]?.message as string || params.helperText || ''}
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message as string || params.helperText || ''}
                         className="bg-white"
                     />
                 ),

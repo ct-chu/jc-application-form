@@ -23,15 +23,15 @@ export const ShortAnswerModule: React.FC<FormModuleProps<MyFormValues>> = ({
         name={name}
         control={control}
         rules={{ required: required ? (typeof required === 'string' ? required : '此欄必填。This field is required.') : false }}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <TextField
             {...field}
             label={label}
             variant="outlined"
             fullWidth
             required={!!required}
-            error={!!errors[name]}
-            helperText={errors[name]?.message as string || ''}
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message as string || ''}
             className="bg-white" // Example Tailwind styling
           />
         )}

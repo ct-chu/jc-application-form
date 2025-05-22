@@ -29,15 +29,15 @@ export const EmailModule: React.FC<FormModuleProps<MyFormValues>> = ({
             message: '請輸入有效電郵地址。Please enter a valid email address.',
           },
          }}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <TextField
             {...field}
             label={label}
             variant="outlined"
             fullWidth
             required={!!required}
-            error={!!errors[name]}
-            helperText={errors[name]?.message as string || ''}
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message as string || ''}
             className="bg-white" // Example Tailwind styling
           />
         )}

@@ -27,7 +27,7 @@ export const LongAnswerModule: React.FC<LongAnswerProps<MyFormValues>> = ({
         name={name}
         control={control}
         rules={{ required: required ? (typeof required === 'string' ? required : '此欄必填。This field is required.') : false }}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <TextField
             {...field}
             label={label}
@@ -36,8 +36,8 @@ export const LongAnswerModule: React.FC<LongAnswerProps<MyFormValues>> = ({
             multiline
             rows={rows}
             required={!!required}
-            error={!!errors[name]}
-            helperText={errors[name]?.message as string || ''}
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message as string || ''}
             className="bg-white"
           />
         )}

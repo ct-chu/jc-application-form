@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React from 'react';
-import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, FormHelperText } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, FormHelperText, Typography } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { FormModuleProps } from './common';
 import { useFormContextData } from '@/context/FormContext';
@@ -40,26 +40,38 @@ export const SingleChoiceCheckboxModule: React.FC<SingleChoiceProps<MyFormValues
           name={name}
           control={control}
           rules={{ required: required ? (typeof required === 'string' ? required : '此欄必填。This field is required.') : false }}
-          render={({ field }) => (
-            <RadioGroup
-              {...field}
-              onChange={(e) => {
-                field.onChange(e);
-                const selectedValue = e.target.value;
-                const selectedChoice = choices.find((choice: any) => choice.value === selectedValue);
-                updateFormData({ [name]: selectedValue }); // Update global context immediately for potential conditional logic
-                // Conditional navigation is handled by the NavigationButton's onNext prop
-              }}
-            >
-              {choices.map((choice: any) => (
-                <FormControlLabel
-                  key={choice.value}
-                  value={choice.value}
-                  control={<Radio />}
-                  label={choice.label}
-                />
-              ))}
-            </RadioGroup>
+          render={({ field, fieldState }) => (
+            
+            <>
+              <RadioGroup
+                {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  const selectedValue = e.target.value;
+                  const selectedChoice = choices.find((choice: any) => choice.value === selectedValue);
+                  updateFormData({ [name]: selectedValue }); // Update global context immediately for potential conditional logic
+                  // Conditional navigation is handled by the NavigationButton's onNext prop
+                }}
+              >
+                {choices.map((choice: any) => (
+                  <FormControlLabel
+                    key={choice.value}
+                    value={choice.value}
+                    control={<Radio />}
+                    label={choice.label}
+                  />
+                ))}
+              </RadioGroup>
+              {fieldState.error ?
+                <Typography
+                  variant="subtitle1" gutterBottom component="label" fontSize="0.75rem"
+                  htmlFor={`${name}-single`}
+                  className={fieldState.error ? 'text-red-600' : ''}
+                >
+                  {fieldState.error?.message as string || ''}
+                </Typography>
+              :null}              
+            </>
           )}
         />
         {errors[name] && <FormHelperText>{errors[name]?.message as string}</FormHelperText>}

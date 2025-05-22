@@ -38,7 +38,7 @@ export const NumberAnswerModule: React.FC<NumberAnswerProps<MyFormValues>> = ({
             return !isNaN(num) || 'Please enter a valid number';
           }
         }}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <TextField
             {...field}
             label={label}
@@ -46,8 +46,8 @@ export const NumberAnswerModule: React.FC<NumberAnswerProps<MyFormValues>> = ({
             variant="outlined"
             fullWidth
             required={!!required}
-            error={!!errors[name]}
-            helperText={errors[name]?.message as string || ''}
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message as string || ''}
             inputProps={{
               min, max, step: 'any'
             }} // HTML5 validation can be a plus

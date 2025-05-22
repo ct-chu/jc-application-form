@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Select, MenuItem, FormControl, InputLabel, FormHelperText } from '@mui/material';
+import { Select, MenuItem, FormControl, InputLabel, FormHelperText, Typography } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { FormModuleProps } from './common';
 
@@ -30,30 +30,42 @@ export const DropdownChoiceModule: React.FC<DropdownProps<MyFormValues>> = ({
 }) => {
   return (
     <div className={className}>
-      <FormControl fullWidth error={!!errors[name]} required={!!required} variant="outlined" className="bg-white">
+      <FormControl fullWidth required={!!required} variant="outlined" className="bg-white">
         <InputLabel id={`${name}-label`}>{label}</InputLabel>
         <Controller
           name={name}
           control={control}
           defaultValue={multiple ? [] : ''}
           rules={{ required: required ? (typeof required === 'string' ? required : '此欄必填。This field is required.') : false }}
-          render={({ field }) => (
-            <Select
-              {...field}
-              labelId={`${name}-label`}
-              label={label}
-              multiple={multiple}
-            >
-              {!multiple && <MenuItem value=""><em>None</em></MenuItem>}
-              {choices.map((choice) => (
-                <MenuItem key={choice.value} value={choice.value}>
-                  {choice.label}
-                </MenuItem>
-              ))}
-            </Select>
+          render={({ field, fieldState }) => (
+            <>
+              <Select
+                {...field}
+                labelId={`${name}-label`}
+                label={label}
+                multiple={multiple}
+                error={!!fieldState.error}
+              >
+                {!multiple && <MenuItem value=""><em>None</em></MenuItem>}
+                {choices.map((choice) => (
+                  <MenuItem key={choice.value} value={choice.value}>
+                    {choice.label}
+                  </MenuItem>
+                ))}
+              </Select>
+              {fieldState.error ?
+                <Typography
+                  variant="subtitle1" gutterBottom component="label" fontSize="0.75rem"
+                  htmlFor={`${name}-dropdown`}
+                  className={fieldState.error ? 'text-red-600' : ''}
+                >
+                  {fieldState.error?.message as string || ''}
+                </Typography>
+              :null}
+            </>
           )}
         />
-        {errors[name] && <FormHelperText>{errors[name]?.message as string}</FormHelperText>}
+        {/* {errors[name] && <FormHelperText>{errors[name]?.message as string}</FormHelperText>} */}
       </FormControl>
     </div>
   );

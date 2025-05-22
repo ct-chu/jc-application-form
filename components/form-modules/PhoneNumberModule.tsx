@@ -28,7 +28,7 @@ export const PhoneNumberModule: React.FC<FormModuleProps<MyFormValues>> = ({
             message: '請輸入有效8位號碼，並去除空格及地區碼（+852）。Please enter a valid 8-digit no., without any spaces or country code (+852).',
           },
         }}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <TextField
             {...field}
             label={label}
@@ -36,8 +36,8 @@ export const PhoneNumberModule: React.FC<FormModuleProps<MyFormValues>> = ({
             variant="outlined"
             fullWidth
             required={!!required}
-            error={!!errors[name]}
-            helperText={errors[name]?.message as string || ''}
+            error={!!fieldState.error}
+            helperText={fieldState.error?.message as string || ''}
             className="bg-white"
           />
         )}
