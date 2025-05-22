@@ -27,18 +27,23 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DownloadJSON from '@/components/core/DownloadJSON';
+import { advanceEeTheme } from '../content/advanceEeTheme';
+import { astroDayTheme } from '../content/astroDayTheme';
+import { astroNightTheme } from '../content/astroNightTheme';
+import { jcOnsiteTheme } from '../content/jcOnsiteTheme';
+import { isSpecialChoices, contactAgreeChoices, studentgrades } from '../content/commonChoices';
 
 // const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
 // const orgTitleEng = "Ho Koon Nature Education Cum Astronomical Centre  JC Cool Science"
-const formTitle = "25-26年度 小學科學外展 報名表格"
-const formTitleEng = "Application for 25-26 Primary Science Outreach activities"
+const formTitle = "25-26年度 進階環境教育及天文課程 報名表格"
+const formTitleEng = "Application for 25-26 Advance Environmental Education and Astronomy courses"
 // const SHEET_ID_1 = process.env.NEXT_PUBLIC_SHEET_ID_1
 // const GOOGLE_APPS_SCRIPT_URL:string|any = process.env.GOOGLE_APPS_SCRIPT_URL
 const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu9LrGQWYe3fJ2NxIqJehdAUH-mbtIrCnotoQkPeJTo7h-OiLY5o6nDRfgs8DH-CE/exec"
 const SHEET_ID_1 = "1VmXYcMvo_zanPPuQxAsvupVKbLz_5ksV5EtD0rL7L7U"
 
-interface outreachDetail extends FieldValues {
-  theme?: number;
+interface courseDetails extends FieldValues {
+  theme?: string;
     timeslot?: {
       "1"?: string;
       "2"?: string;
@@ -69,36 +74,49 @@ interface MainFormValues extends FieldValues {
   a_teacherEmail?: string;
   a_contactAgree?: string;
   // Page 3
-  outreach1?: outreachDetail;
+  advanceEe?: courseDetails;
   // Page 4
-  outreach2?: outreachDetail;
+  jcOnsite?: courseDetails;
   // Page 5
-  outreach3?: outreachDetail;
+  astroDay?: courseDetails;
   // Page 6
-  outreach4?: outreachDetail;
-  // Page 7
-  outreach5?: outreachDetail;
-  // Page 8
-  outreach6?: outreachDetail;
-  // Page 9
-  event?: outreachDetail;
-  // Page 10 (Review)
+  astroNight?: courseDetails;
+  // Page 7 (Review)
   // ... add all fields
 }
 
-const outreachs = [
-  {n: 1, sheetId: `${SHEET_ID_1}`},
-  {n: 2, sheetId: `${SHEET_ID_1}`},
-  {n: 3, sheetId: `${SHEET_ID_1}`},
-  {n: 4, sheetId: `${SHEET_ID_1}`},
-  {n: 5, sheetId: `${SHEET_ID_1}`},
-  {n: 6, sheetId: `${SHEET_ID_1}`},
-]
+const appTypeChoices = [
+  {
+    value: 'advanceEe',
+    label: '進階環境教育課程 | Advance Environmental Education courses',
+    theme: advanceEeTheme,
+    timeslot: advanceEeTimeslot,
+    page: 3,
+  },
+  {
+    value: 'jcOnsite',
+    label: '進階環境教育課程（新課程） | Advance Environmental Education courses (New courses)',
+    theme: jcOnsiteTheme,
+    timeslot: jcOnsiteTimeslot,
+    page: 4,
+  },
+  {
+    value: 'astroDay',
+    label: '日間天文課程 | Day-time Advance Astronomy courses',
+    theme: astroDayTheme,
+    timeslot: astroDayTimeslot,
+    page: 5,
+  },
+  {
+    value: 'astroNight',
+    label: '晚間進階天文課程 | Night-time Advance Astronomy courses',
+    theme: astroNightTheme,
+    timeslot: astroNightTimeslot,
+    page: 6,
+  },
+];
 
-const section = {
-  outreach : 3,
-  event : 9,
-}
+
 
 const formPagesConfig = [
   {
@@ -128,105 +146,60 @@ const formPagesConfig = [
     pageNumber: 3,
     sheetId: SHEET_ID_1,
     fields: [
-      'outreach1.theme',
-      'outreach1.timeslot[1]',
-      'outreach1.timeslot[2]',
-      'outreach1.timeslot[3]',
-      'outreach1.timeslot[4]',
-      'outreach1.timeslot[5]',
-      'outreach1.grade',
-      'outreach1.whichClass',
-      'outreach1.noOfPpl',
+      'advanceEe.theme',
+      'advanceEe.timeslot[1]',
+      'advanceEe.timeslot[2]',
+      'advanceEe.timeslot[3]',
+      'advanceEe.timeslot[4]',
+      'advanceEe.timeslot[5]',
+      'advanceEe.grade',
+      'advanceEe.whichClass',
+      'advanceEe.noOfPpl',
     ],
   },
   {
     pageNumber: 4,
     sheetId: SHEET_ID_1,
     fields: [
-      'outreach2.theme',
-      'outreach2.timeslot[1]',
-      'outreach2.timeslot[2]',
-      'outreach2.timeslot[3]',
-      'outreach2.timeslot[4]',
-      'outreach2.timeslot[5]',
-      'outreach2.grade',
-      'outreach2.whichClass',
-      'outreach2.noOfPpl',
+      'jcOnsite.theme',
+      'jcOnsite.timeslot[1]',
+      'jcOnsite.timeslot[2]',
+      'jcOnsite.timeslot[3]',
+      'jcOnsite.timeslot[4]',
+      'jcOnsite.timeslot[5]',
+      'jcOnsite.grade',
+      'jcOnsite.whichClass',
+      'jcOnsite.noOfPpl',
     ],
   },
   {
     pageNumber: 5,
     sheetId: SHEET_ID_1,
     fields: [
-      'outreach3.theme',
-      'outreach3.timeslot[1]',
-      'outreach3.timeslot[2]',
-      'outreach3.timeslot[3]',
-      'outreach3.timeslot[4]',
-      'outreach3.timeslot[5]',
-      'outreach3.grade',
-      'outreach3.whichClass',
-      'outreach3.noOfPpl',
+      'astroDay.theme',
+      'astroDay.timeslot[1]',
+      'astroDay.timeslot[2]',
+      'astroDay.timeslot[3]',
+      'astroDay.timeslot[4]',
+      'astroDay.timeslot[5]',
+      'astroDay.grade',
+      'astroDay.whichClass',
+      'astroDay.noOfPpl',
     ],
   },
   {
     pageNumber: 6,
     sheetId: SHEET_ID_1,
     fields: [
-      'outreach4.theme',
-      'outreach4.timeslot[1]',
-      'outreach4.timeslot[2]',
-      'outreach4.timeslot[3]',
-      'outreach4.timeslot[4]',
-      'outreach4.timeslot[5]',
-      'outreach4.grade',
-      'outreach4.whichClass',
-      'outreach4.noOfPpl',
-    ],
-  },
-  {
-    pageNumber: 7,
-    sheetId: SHEET_ID_1,
-    fields: [
-      'outreach5.theme',
-      'outreach5.timeslot[1]',
-      'outreach5.timeslot[2]',
-      'outreach5.timeslot[3]',
-      'outreach5.timeslot[4]',
-      'outreach5.timeslot[5]',
-      'outreach5.grade',
-      'outreach5.whichClass',
-      'outreach5.noOfPpl',
-    ],
-  },
-  {
-    pageNumber: 8,
-    sheetId: SHEET_ID_1,
-    fields: [
-      'outreach6.theme',
-      'outreach6.timeslot[1]',
-      'outreach6.timeslot[2]',
-      'outreach6.timeslot[3]',
-      'outreach6.timeslot[4]',
-      'outreach6.timeslot[5]',
-      'outreach6.grade',
-      'outreach6.whichClass',
-      'outreach6.noOfPpl',
-    ],
-  },
-  {
-    pageNumber: 9,
-    sheetId: SHEET_ID_1,
-    fields: [
-      'event.theme',
-      'event.timeslot[1]',
-      'event.timeslot[2]',
-      'event.timeslot[3]',
-      'event.timeslot[4]',
-      'event.timeslot[5]',
-      'event.grade',
-      'event.whichClass',
-      'event.noOfPpl',
+      'astroNight.theme',
+      'astroNight.timeslot[1]',
+      'astroNight.timeslot[2]',
+      'astroNight.timeslot[3]',
+      'astroNight.timeslot[4]',
+      'astroNight.timeslot[5]',
+      'astroNight.grade',
+      'astroNight.whichClass',
+      'astroNight.noOfPpl',
     ],
   },
   // Add more pages
@@ -247,82 +220,20 @@ let labels: {[key: string]: string,} = {
   'a_teacherEmail': "聯絡電郵 Contact email",
   'a_contactAgree': "同意聯絡本人 Agreed to be contacted",
   'appType': "報名類型  Type of application",
-  'event.theme': `活動主題 Event theme`,
-  'event.timeslot[1]': `活動時段（第一選擇） Event timeslot (1st choice)`,
-  'event.timeslot[2]': `活動時段（第二選擇） Event timeslot (2nd choice)`,
-  'event.timeslot[3]': `活動時段（第三選擇） Event timeslot (3rd choice)`,
-  'event.timeslot[4]': `活動時段（第四選擇） Event timeslot (4th choice)`,
-  'event.timeslot[5]': `活動時段（第五選擇） Event timeslot (5th choice)`,
-  'event.grade': `學生年級 Student grade`,
-  'event.whichClass': `班別 Class`,
-  'event.noOfPpl': `學生人數 No. of students`,
 }
 
 // outreach courses labels for review page
-for (let i = 0; i < 7; i++) {
-  labels = Object.assign({[`outreach${i}.theme`] : `課程主題 Course theme` },labels)
-  labels = Object.assign({[`outreach${i}.timeslot[1]`] : `課程時段（第一選擇） Course timeslot (1st choice)` },labels)
-  labels = Object.assign({[`outreach${i}.timeslot[2]`] : `課程時段（第二選擇） Course timeslot (2nd choice)` },labels)
-  labels = Object.assign({[`outreach${i}.timeslot[3]`] : `課程時段（第三選擇） Course timeslot (3rd choice)` },labels)
-  labels = Object.assign({[`outreach${i}.timeslot[4]`] : `課程時段（第四選擇） Course timeslot (4th choice)` },labels)
-  labels = Object.assign({[`outreach${i}.timeslot[5]`] : `課程時段（第五選擇） Course timeslot (5th choice)` },labels)
-  labels = Object.assign({[`outreach${i}.grade`] : `學生年級 Student grade` },labels)
-  labels = Object.assign({[`outreach${i}.whichClass`] : `班別 Class` },labels)
-  labels = Object.assign({[`outreach${i}.noOfPpl`] : `學生人數 No. of students` },labels)
+for (const appTypeChoice in appTypeChoices) {
+  labels = Object.assign({[`${appTypeChoice}.theme`] : `課程主題 Course theme` },labels)
+  labels = Object.assign({[`${appTypeChoice}.timeslot[1]`] : `課程時段（第一選擇） Course timeslot (1st choice)` },labels)
+  labels = Object.assign({[`${appTypeChoice}.timeslot[2]`] : `課程時段（第二選擇） Course timeslot (2nd choice)` },labels)
+  labels = Object.assign({[`${appTypeChoice}.timeslot[3]`] : `課程時段（第三選擇） Course timeslot (3rd choice)` },labels)
+  labels = Object.assign({[`${appTypeChoice}.timeslot[4]`] : `課程時段（第四選擇） Course timeslot (4th choice)` },labels)
+  labels = Object.assign({[`${appTypeChoice}.timeslot[5]`] : `課程時段（第五選擇） Course timeslot (5th choice)` },labels)
+  labels = Object.assign({[`${appTypeChoice}.grade`] : `學生年級 Student grade` },labels)
+  labels = Object.assign({[`${appTypeChoice}.whichClass`] : `班別 Class` },labels)
+  labels = Object.assign({[`${appTypeChoice}.noOfPpl`] : `學生人數 No. of students` },labels)
 }
-
-const isSpecialChoices = [
-  { value: 'no', label: '否 No' },
-  { value: 'yes', label: '是 Yes' },
-];
-
-const contactAgreeChoices = [
-  { value: 'yes', label: '同意 Agree' },
-];
-
-const appTypeChoices = [
-  { value: 'advance', label: '進階環境教育課程 | Advance Environmental Education courses'},
-  { value: 'jc', label: '進階環境教育課程（新課程） | Advance Environmental Education courses (New courses)'},
-  { value: 'astro', label: '小學日間天文課程 | Day-time Primary Astronomy courses'},
-  { value: 'night', label: '小學晚間天文課程 | Night-time Primary Astronomy courses'},
-];
-
-const studentgrades = [
-  {value: 1, label: "小一 P.1",},
-  {value: 2, label: "小二 P.2",},
-  {value: 3, label: "小三 P.3",},
-  {value: 4, label: "小四 P.4",},
-  {value: 5, label: "小五 P.5",},
-  {value: 6, label: "小六 P.6",},
-]
-
-const outreachThemes = [
-  {value: 1, label: "R1 地球的日與夜",},
-  {value: 2, label: "R2 四季之謎：貓貓拯救大作戰 The Mystery of Seasons: Cat Rescue Mission",},
-  {value: 3, label: "R3 立竿見影、觀象授時",},
-  {value: 4, label: "R4 大行星之旅（課室版） The Planetary Grand Tour",},
-  {value: 5, label: "R5 大行星之旅（加長版） The Planetary Grand Tour",},
-  {value: 6, label: "R6 太陽的祕密（戶外版） Secrets of Our Sun",},
-  {value: 7, label: "R7 小小伽利略",},
-  {value: 8, label: "R8 動物隱身術",},
-  {value: 9, label: "R9 DeliverBird",},
-  {value: 10, label: "R10 花朵解密",},
-  {value: 11, label: "R11 生物搜查隊 OR 公民科學家 - 校園動植物搜查?",},
-  {value: 12, label: "R12 城市設計師：探究動植物與自然環境的關係",},
-  {value: 13, label: "R13 我的理想校園",},
-  {value: 14, label: "R14 影子大師",},
-  {value: 15, label: "R15 飛嘗航天任務 My Very First Space Mission",},
-  {value: 16, label: "R16 星星守護者",},
-  {value: 17, label: "R17 機械生物大步走",},
-]
-
-const eventThemes = [
-  {value: 1, label: "Theme1",},
-  {value: 2, label: "Theme2",},
-  {value: 3, label: "Theme3",},
-  {value: 4, label: "Theme4",},
-  {value: 5, label: "Theme5",},
-]
 
 const eventTimeslots = [
   "2025/11/04_AM",
@@ -563,6 +474,7 @@ const courseTimeslots = [
   "2026/06/17_PM",
   "2026/07/02_AM",
   "2026/07/02_PM",
+
 ]
 
 const REVIEW_PAGE_NUMBER = formPagesConfig.length + 1;
