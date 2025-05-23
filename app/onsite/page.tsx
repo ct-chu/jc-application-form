@@ -15,7 +15,8 @@ import { NavigationButtons } from '@/components/core/NavigationButtons'; // Adju
 import { ShortAnswerModule } from '@/components/form-modules/ShortAnswerModule'; // Adjust path
 import { NumberAnswerModule } from '@/components/form-modules/NumberAnswerModule'; // Adjust path
 import { SingleChoiceCheckboxModule } from '@/components/form-modules/SingleChoiceCheckboxModule'; // Adjust path
-import { JcCourseTimeslotModule } from '@/components/form-modules/JcCourseTimeslotModule'; // Adjust path
+import { CourseTimeslotModule } from '@/components/form-modules/CourseTimeslotModule'; // Adjust path
+import { NightTimeslotModule } from '@/components/form-modules/NightTimeslotModule'; // Adjust path
 import { EmailModule } from '@/components/form-modules/EmailModule'; // Adjust path
 import { PhoneNumberModule } from '@/components/form-modules/PhoneNumberModule';
 import { DropdownChoiceModule } from '@/components/form-modules/DropdownChoiceModule';
@@ -32,6 +33,11 @@ import { astroDayTheme } from '../content/astroDayTheme';
 import { astroNightTheme } from '../content/astroNightTheme';
 import { jcOnsiteTheme } from '../content/jcOnsiteTheme';
 import { isSpecialChoices, contactAgreeChoices, studentgrades } from '../content/commonChoices';
+import { advanceEeTimeslot } from '../content/advanceEeTimeslots';
+import { astroDayTimeslot } from '../content/astroDayTimeslot';
+import { astroNightTimeslot } from '../content/astroNightTimeslot';
+import { jcOnsiteTimeslot } from '../content/jcOnsiteTimeslot';
+import { appTypeChoicesItem, } from '../commonType';
 
 // const orgTitle = "嗇色園主辦可觀自然教育中心暨天文館 賽馬會探索科學"
 // const orgTitleEng = "Ho Koon Nature Education Cum Astronomical Centre  JC Cool Science"
@@ -73,136 +79,78 @@ interface MainFormValues extends FieldValues {
   a_teacherPhone?: number;
   a_teacherEmail?: string;
   a_contactAgree?: string;
-  // Page 3
-  advanceEe?: courseDetails;
-  // Page 4
-  jcOnsite?: courseDetails;
-  // Page 5
-  astroDay?: courseDetails;
-  // Page 6
-  astroNight?: courseDetails;
-  // Page 7 (Review)
+  // Page 3 - 8
+  advanceEe1?: courseDetails;
+  advanceEe2?: courseDetails;
+  advanceEe3?: courseDetails;
+  advanceEe4?: courseDetails;
+  advanceEe5?: courseDetails;
+  advanceEe6?: courseDetails;
+  // Page 9 - 14
+  jcOnsite1?: courseDetails;
+  jcOnsite2?: courseDetails;
+  jcOnsite3?: courseDetails;
+  jcOnsite4?: courseDetails;
+  jcOnsite5?: courseDetails;
+  jcOnsite6?: courseDetails;
+  // Page 15 - 20
+  astroDay1?: courseDetails;
+  astroDay2?: courseDetails;
+  astroDay3?: courseDetails;
+  astroDay4?: courseDetails;
+  astroDay5?: courseDetails;
+  astroDay6?: courseDetails;
+  // Page 21 - 26
+  astroNight1?: courseDetails;
+  astroNight2?: courseDetails;
+  astroNight3?: courseDetails;
+  astroNight4?: courseDetails;
+  astroNight5?: courseDetails;
+  astroNight6?: courseDetails;
+  // Page 27 (Review)
   // ... add all fields
 }
 
-const appTypeChoices = [
+const applicationNoArray = [1,2,3,4,5,6] //how many course applications for each application type?
+const timeslotsArray = [1,2,3,4,5] //how many timeslots per application of a course?
+
+const appTypeChoices: appTypeChoicesItem[] = [
   {
     value: 'advanceEe',
+    labelChn: '進階環境教育課程',
+    labelEng: 'Advance Environmental Education courses',
     label: '進階環境教育課程 | Advance Environmental Education courses',
     theme: advanceEeTheme,
     timeslot: advanceEeTimeslot,
-    page: 3,
+    ppl:{ min: 10, max: 40 },
   },
   {
     value: 'jcOnsite',
-    label: '進階環境教育課程（新課程） | Advance Environmental Education courses (New courses)',
+    labelChn: '進階環境教育課程（新課程）',
+    labelEng: 'Advance Environmental Education courses (New courses)',
+    label: '進階環境教育課程（新課程）| Advance Environmental Education courses (New courses)',
     theme: jcOnsiteTheme,
     timeslot: jcOnsiteTimeslot,
-    page: 4,
+    ppl:{ min: 10, max: 40 },
   },
   {
     value: 'astroDay',
-    label: '日間天文課程 | Day-time Advance Astronomy courses',
+    labelChn: '日間進階天文課程',
+    labelEng: 'Day-time Advance Astronomy courses',
+    label: '日間進階天文課程 | Day-time Advance Astronomy courses',
     theme: astroDayTheme,
     timeslot: astroDayTimeslot,
-    page: 5,
+    ppl:{ min: 10, max: 40 },
   },
   {
     value: 'astroNight',
+    labelChn: '晚間進階天文課程',
+    labelEng: 'Night-time Advance Astronomy courses',
     label: '晚間進階天文課程 | Night-time Advance Astronomy courses',
     theme: astroNightTheme,
     timeslot: astroNightTimeslot,
-    page: 6,
+    ppl:{ min: 10, max: 40 },
   },
-];
-
-
-
-const formPagesConfig = [
-  {
-    pageNumber: 1,
-    sheetId: SHEET_ID_1, // Could be same or different
-    fields: ['appType'],
-  },
-  {
-    pageNumber: 2,
-    sheetId: SHEET_ID_1, // For data from this page or group
-    fields: [
-      'a_schoolNameChn',
-      'a_schoolNameEng',
-      'a_isSpecial',
-      'a_schoolAddChn',
-      'a_schoolAddEng',
-      'a_schoolPhone',
-      'a_schoolFax',
-      'a_teacherNameChn',
-      'a_teacherNameEng',
-      'a_teacherPhone',
-      'a_teacherEmail',
-      'a_contactAgree'
-    ], // Fields on this page for validation trigger
-  },
-  {
-    pageNumber: 3,
-    sheetId: SHEET_ID_1,
-    fields: [
-      'advanceEe.theme',
-      'advanceEe.timeslot[1]',
-      'advanceEe.timeslot[2]',
-      'advanceEe.timeslot[3]',
-      'advanceEe.timeslot[4]',
-      'advanceEe.timeslot[5]',
-      'advanceEe.grade',
-      'advanceEe.whichClass',
-      'advanceEe.noOfPpl',
-    ],
-  },
-  {
-    pageNumber: 4,
-    sheetId: SHEET_ID_1,
-    fields: [
-      'jcOnsite.theme',
-      'jcOnsite.timeslot[1]',
-      'jcOnsite.timeslot[2]',
-      'jcOnsite.timeslot[3]',
-      'jcOnsite.timeslot[4]',
-      'jcOnsite.timeslot[5]',
-      'jcOnsite.grade',
-      'jcOnsite.whichClass',
-      'jcOnsite.noOfPpl',
-    ],
-  },
-  {
-    pageNumber: 5,
-    sheetId: SHEET_ID_1,
-    fields: [
-      'astroDay.theme',
-      'astroDay.timeslot[1]',
-      'astroDay.timeslot[2]',
-      'astroDay.timeslot[3]',
-      'astroDay.timeslot[4]',
-      'astroDay.timeslot[5]',
-      'astroDay.grade',
-      'astroDay.whichClass',
-      'astroDay.noOfPpl',
-    ],
-  },
-  {
-    pageNumber: 6,
-    sheetId: SHEET_ID_1,
-    fields: [
-      'astroNight.theme',
-      'astroNight.timeslot[1]',
-      'astroNight.timeslot[2]',
-      'astroNight.timeslot[3]',
-      'astroNight.timeslot[4]',
-      'astroNight.timeslot[5]',
-      'astroNight.grade',
-      'astroNight.whichClass',
-      'astroNight.noOfPpl',
-    ],
-  },
-  // Add more pages
 ];
 
 //labels for review page
@@ -222,264 +170,8 @@ let labels: {[key: string]: string,} = {
   'appType': "報名類型  Type of application",
 }
 
-// outreach courses labels for review page
-for (const appTypeChoice in appTypeChoices) {
-  labels = Object.assign({[`${appTypeChoice}.theme`] : `課程主題 Course theme` },labels)
-  labels = Object.assign({[`${appTypeChoice}.timeslot[1]`] : `課程時段（第一選擇） Course timeslot (1st choice)` },labels)
-  labels = Object.assign({[`${appTypeChoice}.timeslot[2]`] : `課程時段（第二選擇） Course timeslot (2nd choice)` },labels)
-  labels = Object.assign({[`${appTypeChoice}.timeslot[3]`] : `課程時段（第三選擇） Course timeslot (3rd choice)` },labels)
-  labels = Object.assign({[`${appTypeChoice}.timeslot[4]`] : `課程時段（第四選擇） Course timeslot (4th choice)` },labels)
-  labels = Object.assign({[`${appTypeChoice}.timeslot[5]`] : `課程時段（第五選擇） Course timeslot (5th choice)` },labels)
-  labels = Object.assign({[`${appTypeChoice}.grade`] : `學生年級 Student grade` },labels)
-  labels = Object.assign({[`${appTypeChoice}.whichClass`] : `班別 Class` },labels)
-  labels = Object.assign({[`${appTypeChoice}.noOfPpl`] : `學生人數 No. of students` },labels)
-}
-
-const eventTimeslots = [
-  "2025/11/04_AM",
-  "2025/11/04_PM",
-  "2025/11/07_AM",
-  "2025/11/07_PM",
-  "2025/11/11_AM",
-  "2025/11/11_PM",
-  "2025/11/20_AM",
-  "2025/11/20_PM",
-  "2025/11/27_AM",
-  "2025/11/27_PM",
-  "2026/02/25_AM",
-  "2026/02/25_PM",
-  "2026/06/22_AM",
-  "2026/06/23_AM",
-  "2026/06/24_AM",
-  "2026/06/25_AM",
-  "2026/06/26_AM",
-  "2026/07/03_AM",
-  "2026/07/06_AM",
-  "2026/07/07_AM",
-  "2026/07/08_AM",
-  "2026/07/09_AM",
-  "2026/07/10_AM",
-  "2026/07/13_AM",
-  "2026/07/14_AM",
-  ]
-
-const courseTimeslots = [
-  "2025/09/16_AM",
-  "2025/09/16_PM",
-  "2025/09/17_AM",
-  "2025/09/17_PM",
-  "2025/09/18_AM",
-  "2025/09/18_PM",
-  "2025/09/19_AM",
-  "2025/09/19_PM",
-  "2025/09/22_AM",
-  "2025/09/22_PM",
-  "2025/09/23_AM",
-  "2025/09/23_PM",
-  "2025/09/24_AM",
-  "2025/09/24_PM",
-  "2025/09/25_AM",
-  "2025/09/25_PM",
-  "2025/09/29_AM",
-  "2025/09/29_PM",
-  "2025/09/30_AM",
-  "2025/09/30_PM",
-  "2025/10/09_AM",
-  "2025/10/09_PM",
-  "2025/10/13_AM",
-  "2025/10/13_PM",
-  "2025/10/14_AM",
-  "2025/10/14_PM",
-  "2025/10/15_AM",
-  "2025/10/15_PM",
-  "2025/10/16_AM",
-  "2025/10/16_PM",
-  "2025/10/20_AM",
-  "2025/10/20_PM",
-  "2025/10/21_AM",
-  "2025/10/21_PM",
-  "2025/10/22_AM",
-  "2025/10/22_PM",
-  "2025/10/23_AM",
-  "2025/10/23_PM",
-  "2025/10/27_AM",
-  "2025/10/27_PM",
-  "2025/10/28_AM",
-  "2025/10/28_PM",
-  "2025/11/03_AM",
-  "2025/11/03_PM",
-  "2025/11/05_AM",
-  "2025/11/05_PM",
-  "2025/11/06_AM",
-  "2025/11/06_PM",
-  "2025/11/10_AM",
-  "2025/11/10_PM",
-  "2025/11/12_AM",
-  "2025/11/12_PM",
-  "2025/11/17_AM",
-  "2025/11/17_PM",
-  "2025/11/18_AM",
-  "2025/11/18_PM",
-  "2025/11/19_AM",
-  "2025/11/19_PM",
-  "2025/11/21_AM",
-  "2025/11/21_PM",
-  "2025/11/24_AM",
-  "2025/11/24_PM",
-  "2025/11/25_AM",
-  "2025/11/25_PM",
-  "2025/11/26_AM",
-  "2025/11/26_PM",
-  "2025/12/01_AM",
-  "2025/12/01_PM",
-  "2025/12/02_AM",
-  "2025/12/02_PM",
-  "2025/12/03_AM",
-  "2025/12/03_PM",
-  "2025/12/04_AM",
-  "2025/12/04_PM",
-  "2025/12/05_AM",
-  "2025/12/05_PM",
-  "2025/12/08_AM",
-  "2025/12/08_PM",
-  "2025/12/09_AM",
-  "2025/12/09_PM",
-  "2025/12/10_AM",
-  "2025/12/10_PM",
-  "2025/12/11_AM",
-  "2025/12/11_PM",
-  "2025/12/12_AM",
-  "2025/12/12_PM",
-  "2025/12/15_AM",
-  "2025/12/15_PM",
-  "2025/12/16_AM",
-  "2025/12/16_PM",
-  "2025/12/17_AM",
-  "2025/12/17_PM",
-  "2026/01/12_AM",
-  "2026/01/12_PM",
-  "2026/01/13_AM",
-  "2026/01/13_PM",
-  "2026/01/14_AM",
-  "2026/01/14_PM",
-  "2026/01/15_AM",
-  "2026/01/15_PM",
-  "2026/01/16_AM",
-  "2026/01/16_PM",
-  "2026/01/19_AM",
-  "2026/01/19_PM",
-  "2026/01/20_AM",
-  "2026/01/20_PM",
-  "2026/01/26_AM",
-  "2026/01/26_PM",
-  "2026/01/27_AM",
-  "2026/01/27_PM",
-  "2026/02/04_AM",
-  "2026/02/04_PM",
-  "2026/02/05_AM",
-  "2026/02/05_PM",
-  "2026/02/10_AM",
-  "2026/02/10_PM",
-  "2026/02/11_AM",
-  "2026/02/11_PM",
-  "2026/02/12_AM",
-  "2026/02/12_PM",
-  "2026/02/26_AM",
-  "2026/02/26_PM",
-  "2026/03/02_AM",
-  "2026/03/02_PM",
-  "2026/03/03_AM",
-  "2026/03/03_PM",
-  "2026/03/05_AM",
-  "2026/03/05_PM",
-  "2026/03/10_AM",
-  "2026/03/10_PM",
-  "2026/03/11_AM",
-  "2026/03/11_PM",
-  "2026/03/12_AM",
-  "2026/03/12_PM",
-  "2026/03/16_AM",
-  "2026/03/16_PM",
-  "2026/03/17_AM",
-  "2026/03/17_PM",
-  "2026/03/18_AM",
-  "2026/03/18_PM",
-  "2026/03/19_AM",
-  "2026/03/19_PM",
-  "2026/03/23_AM",
-  "2026/03/23_PM",
-  "2026/03/24_AM",
-  "2026/03/24_PM",
-  "2026/03/25_AM",
-  "2026/03/25_PM",
-  "2026/03/26_AM",
-  "2026/03/26_PM",
-  "2026/03/30_AM",
-  "2026/03/30_PM",
-  "2026/03/31_AM",
-  "2026/03/31_PM",
-  "2026/04/09_AM",
-  "2026/04/09_PM",
-  "2026/04/10_AM",
-  "2026/04/10_PM",
-  "2026/04/14_AM",
-  "2026/04/14_PM",
-  "2026/04/15_AM",
-  "2026/04/15_PM",
-  "2026/04/16_AM",
-  "2026/04/16_PM",
-  "2026/04/17_AM",
-  "2026/04/17_PM",
-  "2026/04/20_AM",
-  "2026/04/20_PM",
-  "2026/04/21_AM",
-  "2026/04/21_PM",
-  "2026/04/22_AM",
-  "2026/04/22_PM",
-  "2026/04/23_AM",
-  "2026/04/23_PM",
-  "2026/04/24_AM",
-  "2026/04/24_PM",
-  "2026/04/27_AM",
-  "2026/04/27_PM",
-  "2026/04/28_AM",
-  "2026/04/28_PM",
-  "2026/04/29_AM",
-  "2026/04/29_PM",
-  "2026/05/05_AM",
-  "2026/05/05_PM",
-  "2026/05/06_AM",
-  "2026/05/06_PM",
-  "2026/05/07_AM",
-  "2026/05/07_PM",
-  "2026/05/08_AM",
-  "2026/05/08_PM",
-  "2026/05/11_AM",
-  "2026/05/11_PM",
-  "2026/05/12_AM",
-  "2026/05/12_PM",
-  "2026/05/13_AM",
-  "2026/05/13_PM",
-  "2026/05/15_AM",
-  "2026/05/15_PM",
-  "2026/05/18_AM",
-  "2026/05/18_PM",
-  "2026/05/19_AM",
-  "2026/05/19_PM",
-  "2026/06/15_AM",
-  "2026/06/15_PM",
-  "2026/06/16_AM",
-  "2026/06/16_PM",
-  "2026/06/17_AM",
-  "2026/06/17_PM",
-  "2026/07/02_AM",
-  "2026/07/02_PM",
-
-]
-
-const REVIEW_PAGE_NUMBER = formPagesConfig.length + 1;
-const TOTAL_PAGES = formPagesConfig.length + 1; // +1 for review page
-
+  const REVIEW_PAGE_NUMBER = 9;
+  const TOTAL_PAGES = 9; // +1 for review page
 
 const FormContent: React.FC = () => {
   const {
@@ -499,12 +191,38 @@ const FormContent: React.FC = () => {
 
   const { control, formState: { errors }, getValues, trigger, handleSubmit, reset } = rhfMethods;
 
+  const [formPagesConfig, setFormPagesConfig] = useState([
+    {
+      pageNumber: 1,
+      sheetId: SHEET_ID_1, // Could be same or different
+      fields: ['appType'],
+    },
+    {
+      pageNumber: 2,
+      sheetId: SHEET_ID_1, // For data from this page or group
+      fields: [
+        'a_schoolNameChn',
+        'a_schoolNameEng',
+        'a_isSpecial',
+        'a_schoolAddChn',
+        'a_schoolAddEng',
+        'a_schoolPhone',
+        'a_schoolFax',
+        'a_teacherNameChn',
+        'a_teacherNameEng',
+        'a_teacherPhone',
+        'a_teacherEmail',
+        'a_contactAgree'
+      ], // Fields on this page for validation trigger
+    },
+  ])
+
   useEffect(() => {
     setFormMethods(rhfMethods); // Make RHF methods available globally via context
   }, [rhfMethods, setFormMethods]);
 
 
-   useEffect(() => {
+  useEffect(() => {
     console.log("Syncing RHF with formData. Current Page:", currentPage, "Global formData:", formData);
     // When formData from context changes (e.g., after updateFormData)
     // or when navigating back to a page, reset RHF with the latest global data.
@@ -515,43 +233,50 @@ const FormContent: React.FC = () => {
     });
   }, [formData, currentPage, reset]); // Rerun if formData changes OR if currentPage changes
 
-  // const watchedAppType = watch('appType');
-  // // Effect to handle changes in appType and filter formData
-  // useEffect(() => {
-  //   if (!watchedAppType) {
-  //       // If appType is not yet selected or cleared, do nothing or define default behavior
-  //       console.log("appType is not selected or cleared.");
-  //       return;
-  //   }
-  //   console.log(`appType changed to: ${watchedAppType}. Filtering formData.`);
+  const emptyCurrentAppType = (): appTypeChoicesItem => ({ value : "", label : "", labelChn : "", labelEng : "", theme : [] , timeslot: {"":""}, ppl: { min: 0, max: 0 },
+ page: 0, });
 
-  //   const currentGlobalFormData = { ...formData }; // Get a mutable copy of the global formData
-  //   let dataWasModified = false;
+  const [currentAppType, setCurrentAppType] = useState<appTypeChoicesItem>(emptyCurrentAppType)
 
-  //   if (watchedAppType === 'event') {
-  //     Object.keys(currentGlobalFormData).forEach(key => {
-  //       if (key.startsWith('outreach')) {
-  //         delete currentGlobalFormData[key as keyof MainFormValues];
-  //         dataWasModified = true;
-  //         console.log(`Removed outreach field: ${key}`);
-  //       }
-  //     });
-  //   } else if (watchedAppType === 'courses') {
-  //     Object.keys(currentGlobalFormData).forEach(key => {
-  //       if (key.startsWith('event')) {
-  //         delete currentGlobalFormData[key as keyof MainFormValues];
-  //         dataWasModified = true;
-  //         console.log(`Removed event field: ${key}`);
-  //       }
-  //     });
-  //   }
-
-  //   if (dataWasModified) {
-  //     console.log("Updating global formData and resetting RHF with filtered data:", currentGlobalFormData);
-  //     updateFormData(currentGlobalFormData); // Update the global context
-  //     reset(currentGlobalFormData)
-  //   }
-  // }, [formData.appType]);
+  useEffect(() => {
+    if (formData.appType != undefined) {
+      const obj = appTypeChoices.find(o => o.value == formData.appType)
+      setCurrentAppType(obj? obj: currentAppType)
+      console.log(`appType is: ${formData.appType}.`);
+      console.log(`appTypeChoices is ${currentAppType}.`);
+      applicationNoArray.forEach((n) =>{
+        setFormPagesConfig(formPagesConfig.concat([{
+          pageNumber: 3-1+n,
+          sheetId: SHEET_ID_1,
+          fields: [
+            `${currentAppType.value}${n}.theme`,
+            `${currentAppType.value}${n}.timeslot[1]`,
+            `${currentAppType.value}${n}.timeslot[2]`,
+            `${currentAppType.value}${n}.timeslot[3]`,
+            `${currentAppType.value}${n}.timeslot[4]`,
+            `${currentAppType.value}${n}.timeslot[5]`,
+            `${currentAppType.value}${n}.grade`,
+            `${currentAppType.value}${n}.whichClass`,
+            `${currentAppType.value}${n}.noOfPpl`,
+          ]
+        }]))
+        // outreach courses labels for review page
+        labels = Object.assign({[`${currentAppType.value}${n}.theme`] : `課程主題 Course theme` },labels)
+        labels = Object.assign({[`${currentAppType.value}${n}.timeslot[1]`] : `課程時段（第一選擇） Course timeslot (1st choice)` },labels)
+        labels = Object.assign({[`${currentAppType.value}${n}.timeslot[2]`] : `課程時段（第二選擇） Course timeslot (2nd choice)` },labels)
+        labels = Object.assign({[`${currentAppType.value}${n}.timeslot[3]`] : `課程時段（第三選擇） Course timeslot (3rd choice)` },labels)
+        labels = Object.assign({[`${currentAppType.value}${n}.timeslot[4]`] : `課程時段（第四選擇） Course timeslot (4th choice)` },labels)
+        labels = Object.assign({[`${currentAppType.value}${n}.timeslot[5]`] : `課程時段（第五選擇） Course timeslot (5th choice)` },labels)
+        labels = Object.assign({[`${currentAppType.value}${n}.grade`] : `學生年級 Student grade` },labels)
+        labels = Object.assign({[`${currentAppType.value}${n}.whichClass`] : `班別 Class` },labels)
+        labels = Object.assign({[`${currentAppType.value}${n}.noOfPpl`] : `學生人數 No. of students` },labels)
+      })
+    } else if (currentAppType == null) {
+        // If appType is not yet selected or cleared, do nothing or define default behavior
+        console.log("appType is not selected or cleared.");
+        return;
+    }
+  }, [currentAppType, currentPage]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -560,11 +285,12 @@ const FormContent: React.FC = () => {
   
   // const [reviewFormData, setReviewFormData] = useState(formData);
 
-  const [jumpToReview, setJumpToReview] = useState(false);
-  const NextJumpToReview = () =>{
-    setJumpToReview(true)
-    return null
-  }
+  // const [jumpToReview, setJumpToReview] = useState(false);
+  // const NextJumpToReview = () =>{
+  //   setJumpToReview(true)
+  //   console.log("set jump to review")
+  //   return null
+  // }
   
   // Gets the current page's configuration
   const getCurrentPageConfig = () => formPagesConfig.find(p => p.pageNumber === currentPage);
@@ -596,55 +322,38 @@ const FormContent: React.FC = () => {
       // Conditional navigation logic (example, adapt as needed)
       // const appTypeValue = getValues("appType");
       // const selectedappChoice = appTypeChoices.find(c => c.value === appTypeValue);
-      let navigatedConditionally = false;
+      // let navigatedConditionally = false;
 
-      
-      // if (fieldsToValidate.includes("appType") && selectedappChoice?.nextPage && selectedappChoice.nextPage !== currentPage) {
-      //     // Ensure nextPage is different to avoid loop and is a valid page number
-      //     if (selectedappChoice.nextPage <= formPagesConfig.length) {
-      //       console.log(`Page ${currentPage} - Navigating conditionally to page ${selectedappChoice.nextPage}`);
-      //       goToPage(selectedappChoice.nextPage);
-      //       navigatedConditionally = true;
-      //     }
+      //conditionally navigate to correct application after basic info filled
+      // if (currentPage == 2) { 
+      //   let toPage:number = 2+1
+      //   toPage = currentAppType.page ? currentAppType.page : toPage
+      //   console.log(`Page ${currentPage} - Navigating conditionally to page ${toPage}`);
+      //   goToPage(toPage);
+      //   window.scrollTo({top: 0, behavior: 'smooth'});
+      //   navigatedConditionally = true;
       // }
 
-      if (currentPage == 2) {
-        if (formData.appType == "event") {
-          console.log(`Page ${currentPage} - Navigating conditionally to page ${section.event}`);
-          goToPage(section.event);
-          window.scrollTo({top: 0, behavior: 'smooth'});
-          navigatedConditionally = true;
-        } else if (formData.appType == "courses") {
-          console.log(`Page ${currentPage} - Navigating conditionally to page ${section.outreach}`);
-          goToPage(section.outreach);
-          window.scrollTo({top: 0, behavior: 'smooth'});
-          navigatedConditionally = true;
-        }
-      }
+      // if (!navigatedConditionally && jumpToReview && currentPage !== REVIEW_PAGE_NUMBER) {
+      //   console.log(`Page ${currentPage} - Navigating conditionally to last page ${REVIEW_PAGE_NUMBER}`);
+      //   // setReviewFormData(formData)
+      //   // console.log("reviewFormData", reviewFormData);
+      //   setSheetName(currentAppType? currentAppType.value: sheetName)
+      //   // console.log("setSheetName", sheetName)
+      //   goToPage(REVIEW_PAGE_NUMBER);
+      //   window.scrollTo({top: 0, behavior: 'smooth'});
+      //   navigatedConditionally = true;
+      //   setJumpToReview(false)
+      // }
 
-      if (jumpToReview && currentPage !== REVIEW_PAGE_NUMBER) {
-        console.log(`Page ${currentPage} - Navigating conditionally to last page ${REVIEW_PAGE_NUMBER}`);
-        // setReviewFormData(formData)
-        // console.log("reviewFormData", reviewFormData);
-        formData.appType == "event" ? setSheetName("event") : formData.appType == "courses" ? setSheetName("courses") : null;
-        // console.log("setSheetName", sheetName)
-        goToPage(REVIEW_PAGE_NUMBER);
-        window.scrollTo({top: 0, behavior: 'smooth'});
-        navigatedConditionally = true;
-      }
-
-      if (!navigatedConditionally) {
+      // if (!navigatedConditionally) {
         console.log(`Page ${currentPage} - Navigating to next page.`);
         if (currentPage+1 == REVIEW_PAGE_NUMBER) {
-          // setReviewFormData(formData)
-          // console.log("reviewFormData", reviewFormData)
-          formData.appType == "event" ? setSheetName("event") : formData.appType == "courses" ? setSheetName("courses") : null;
-          // console.log("formData.appType", formData.appType)
-          // console.log("setSheetName", sheetName)
+          setSheetName(currentAppType? currentAppType.value: sheetName)
         }
         goToNextPage(); // This will increment currentPage
         window.scrollTo({top: 0, behavior: 'smooth'});
-      }
+      // }
     } else {
       // Ensure UI updates to show errors if validation fails
       // RHF typically handles this automatically by updating the `errors` object
@@ -654,60 +363,24 @@ const FormContent: React.FC = () => {
 
   const handlePageSpecificPrevious = async () => {
     if (currentPage == 2) {
-      null
-    } else if (formData.appType == "event") {
-      if (currentPage == 9) {
-        console.log(`Page ${currentPage} - Navigating conditionally to page ${2}`)
-        goToPage(2);
-        window.scrollTo({top: 0, behavior: 'smooth'});
-      } else {
+      console.log(`Page ${currentPage} - Not going to previous page`)
+    }
+    // else if (currentPage == REVIEW_PAGE_NUMBER) {
+    //   goToPage(currentAppType? currentAppType.page-1+applicationNoArray.length :2)
+    // } else {
+    //   const needConditionalNav:boolean = appTypeChoices.some((appTypeChoice) => appTypeChoice.page == currentPage)
+    //   if (needConditionalNav) {
+    //     console.log(`Page ${currentPage} - Navigating conditionally to page 2`)
+    //     goToPage(2);
+    //     window.scrollTo({top: 0, behavior: 'smooth'});
+    //   }
+      else {
+        console.log(`Page ${currentPage} - Navigating to previous page, p ${currentPage - 1}`)
         goToPreviousPage()
         window.scrollTo({top: 0, behavior: 'smooth'});
-      };
-    } else if (formData.appType == "courses") {
-      console.log("navigation variable = courses")
-      if (currentPage == REVIEW_PAGE_NUMBER) {
-        console.log(`Page ${currentPage} - Navigating conditionally to page ${REVIEW_PAGE_NUMBER - 2}`)
-        goToPage(REVIEW_PAGE_NUMBER - 2);
-        window.scrollTo({top: 0, behavior: 'smooth'});
-      } else {
-        goToPreviousPage()
-        window.scrollTo({top: 0, behavior: 'smooth'})
-      };
-    } else {
-      goToPreviousPage()
-      window.scrollTo({top: 0, behavior: 'smooth'})
-    };
+      // };
+    } 
   };
-
-// Handles validation and navigation to the Review page
-  // const handleReview = async () => {
-  //   const currentConfig = getCurrentPageConfig();
-  //   if (!currentConfig) return;
-
-  //   // The `fields` from `formPagesConfig` are `readonly string[]` due to `as const`.
-  //   // These strings should be valid FieldPath<MainFormValues>.
-  //   const fieldsToValidateFromConfig = currentConfig.fields;
-  //   // Convert to a mutable string array to satisfy some overloads of `trigger` more easily.
-  //   // This is safe because FieldPath<MainFormValues> resolves to strings.
-  //   const fieldsToValidate: string[] = [...fieldsToValidateFromConfig];
-  //   console.log(`Page ${currentPage} (to Review) - Validating fields:`, fieldsToValidate);
-  //   const argumentForTrigger = fieldsToValidate.length > 0 ? fieldsToValidate : undefined;
-  //   const isValid = await trigger(argumentForTrigger);
-  //   console.log(`Page ${currentPage} (to Review) - Validation result:`, isValid);
-
-  //   if (isValid) {
-  //     const currentPageData: Partial<MainFormValues> = {};
-  //     fieldsToValidate.forEach(field => {
-  //       (currentPageData as any)[field] = getValues(field as Path<MainFormValues>);
-  //     });
-  //     updateFormData(currentPageData);
-  //     console.log(`Page ${currentPage} - Navigating to Review Page.`);
-  //     goToPage(REVIEW_PAGE_NUMBER);
-  //   } else {
-  //     console.warn(`Page ${currentPage} (to Review) - Validation failed. Errors:`, JSON.stringify(errors));
-  //   }
-  // };
 
   function recursivelyNullifyUndefinedValues(obj: object | any) {
     const keys = Object.keys(obj) as Array<keyof typeof obj>;
@@ -736,7 +409,8 @@ const FormContent: React.FC = () => {
     // Here, you would determine which sheetId to use based on formPagesConfig
     // For simplicity, assuming all data goes to one sheet or you have a primary sheetId
     const targetSheetId = formPagesConfig[0]?.sheetId || SHEET_ID_1; // Example
-
+    setSheetName(currentAppType? currentAppType.value: sheetName)
+    
     try {
       const payload = {
         data: sortObj(recursivelyNullifyUndefinedValues(formData)), // Your actual form data
@@ -884,300 +558,223 @@ const FormContent: React.FC = () => {
           </PageWrapper>
 
 
-          {outreachs.map((outreach) => (
-            <PageWrapper pageNumber={outreach.n + 2} key={`outreach-page-${outreach.n}`}>
-              {/* <GoogleSheetWrapper sheetId={outreach.sheetId} sheetName={sheetName}> */}
-                <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>
-                  外展到校課程({outreach.n})<br />
-                  Outreach courses ({outreach.n})
-                </Typography>
-                <Typography variant="h6" className='pb-3 pt-5' gutterBottom>報名須知 Notice for application</Typography>
-                <Accordion defaultExpanded={outreach.n == 1 ? true : false }>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`outreach${outreach.n}-theme-content`}
-                    id="outreach${outreach.n}-theme-content-header"
-                  >
-                    <Typography variant="body1" fontWeight={500} gutterBottom>課程主題列表 List of course themes</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography variant="body1" fontSize="1rem" color="#4c566a">
-                      請按以下 URL 以閱讀課程主題列表與詳細介紹。<br/>
-                      Please refer to the URL below for the list of course themes and details.
-                    </Typography>
-                  </AccordionDetails>
-                  <AccordionActions sx={{ justifyContent: 'flex-start' }}>
-                    <Button>URL</Button>
-                  </AccordionActions>
-                </Accordion>
-                <Accordion defaultExpanded={outreach.n == 1 ? true : false }>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`outreach${outreach.n}-timeslot-content`}
-                    id="outreach${outreach.n}-timeslot-content-header"
-                  >
-                    <Typography variant="body1" fontWeight={500} gutterBottom>上課時段列表 List of course timeslots</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography variant="body1" fontSize="1rem" color="#4c566a">
-                      外展課程標準長度為70分鐘（2課節）或105分鐘（3課節）。活動時段分為上午（xx:xx 至 xx:xx 之間）或下午 （xx:xx 至 xx:xx 之間）。<br/>
-                      The standard length for outreach courses are 70 minutes (2 sessions) or 105 minutes (3 sessions). Timeslots for the event are separated into 2 types: AM (between xx:xx and xx:xx) or PM (between xx:xx and xx:xx).<br/>
-                      <br/>
-                      學校需為每個課程選擇5個上課時段。如該課程申請成功，上課時間將按剩餘時段空缺及學校的選擇次序分配。<br/>
-                      Each school should choose 5 course timeslots for a course application. If the course application is accepted, course time will be assigned according to availability and school's preferences.<br/>
-                      <br/>
-                      在下面的日期選擇器中，有AM或PM時段可選的日子會以綠色圓圈標記。<br />
-                      In the date selector below, dates with AM and/or PM timeslot available are marked in green circles.<br />
-                      <br />
-                      請按以下 URL 確認上課時段列表。<br/>
-                      Please refer to the URL below for the list of course timeslots.<br/>
-                    </Typography>
-                  </AccordionDetails>
-                  <AccordionActions sx={{ justifyContent: 'flex-start' }}>
-                    <Button>URL</Button>
-                  </AccordionActions>
-                </Accordion>
-                <Typography variant="h6" className='pb-3' gutterBottom>學生資料 Student Details</Typography>
-                <SingleChoiceCheckboxModule
-                  name={`outreach${outreach.n.toString()}.grade`}
-                  label="學生年級 Student grade"
-                  control={control}
-                  errors={errors}
-                  choices={studentgrades}
-                  required={outreach.n == 1}
-                />
-                <ShortAnswerModule name={`outreach${outreach.n.toString()}.whichClass`} label="班別 Class" control={control} errors={errors} required={outreach.n == 1} />
-                <NumberAnswerModule name={`outreach${outreach.n.toString()}.noOfPpl`} label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required={outreach.n == 1} />
-                <Typography variant="h6" className='pb-3 pt-5' gutterBottom>課程資料 Course Details</Typography>
-                <DropdownChoiceModule
-                  name={`outreach${outreach.n.toString()}.theme`}
-                  label="請選擇課程主題。 Please choose a course theme."
-                  control={control}
-                  errors={errors}
-                  choices={outreachThemes}
-                  required={outreach.n == 1}
-                />
-                <JcCourseTimeslotModule
-                  name={`outreach${outreach.n.toString()}.timeslot[1]`}
-                  label="請選擇課程時段（第一選擇）。 Please choose a course timeslot (1st choice)."
-                  control={control}
-                  errors={errors}
-                  jcTimeslots={courseTimeslots}
-                  required={outreach.n == 1}
-                />
-                <JcCourseTimeslotModule
-                  name={`outreach${outreach.n.toString()}.timeslot[2]`}
-                  label="請選擇課程時段（第二選擇）。 Please choose a course timeslot (2nd choice)."
-                  control={control}
-                  errors={errors}
-                  jcTimeslots={courseTimeslots}
-                  required={outreach.n == 1}
-                />
-                <JcCourseTimeslotModule
-                  name={`outreach${outreach.n.toString()}.timeslot[3]`}
-                  label="請選擇課程時段（第三選擇）。 Please choose a course timeslot (3rd choice)."
-                  control={control}
-                  errors={errors}
-                  jcTimeslots={courseTimeslots}
-                  required={outreach.n == 1}
-                />
-                <JcCourseTimeslotModule
-                  name={`outreach${outreach.n.toString()}.timeslot[4]`}
-                  label="請選擇課程時段（第四選擇）。 Please choose a course timeslot (4th choice)."
-                  control={control}
-                  errors={errors}
-                  jcTimeslots={courseTimeslots}
-                  required={outreach.n == 1}
-                />
-                <JcCourseTimeslotModule
-                  name={`outreach${outreach.n.toString()}.timeslot[5]`}
-                  label="請選擇課程時段（第五選擇）。 Please choose a course timeslot (5th choice)."
-                  control={control}
-                  errors={errors}
-                  jcTimeslots={courseTimeslots}
-                  required={outreach.n == 1}
-                />                
-                {outreach.n == outreachs.length? <NextJumpToReview /> :null}
-              {/* </GoogleSheetWrapper> */}
-            </PageWrapper>
-          ))}
+          {/* page for different applications */}
+          {
+            applicationNoArray.map((n) =>(
+              <PageWrapper pageNumber={2+n} key={`page-${2+n}`}>
+                {/* <GoogleSheetWrapper sheetId={outreach.sheetId} sheetName={sheetName}> */}
+                  <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>
+                    {currentAppType.labelChn} (第{n}班) <br />
+                    {currentAppType.labelEng}  (Application no. {n})
+                  </Typography>
+                  <Typography variant="h6" className='pb-3 pt-5' gutterBottom>報名須知 Notice for application</Typography>
+                  <Accordion defaultExpanded={ (n==1)? true : false }>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls={`page-${2+n}-theme-content`}
+                      id={`${currentAppType.value}${n}-theme-content-header`}
+                    >
+                      <Typography variant="body1" fontWeight={500} gutterBottom>課程主題列表 List of course themes</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography variant="body1" fontSize="1rem" color="#4c566a">
+                        請按以下 URL 以閱讀課程主題列表與詳細介紹。<br/>
+                        Please refer to the URL below for the list of course themes and details.
+                      </Typography>
+                    </AccordionDetails>
+                    <AccordionActions sx={{ justifyContent: 'flex-start' }}>
+                      <Button>URL</Button>
+                    </AccordionActions>
+                  </Accordion>
+                  <Accordion defaultExpanded={(n==1)? true : false}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls={`page-${2+n}-timeslot-content`}
+                      id={`${currentAppType.value}${n}-timeslot-content-header`}
+                    >
+                      <Typography variant="body1" fontWeight={500} gutterBottom>上課時段列表 List of course timeslots</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Typography variant="body1" fontSize="1rem" color="#4c566a">
+                        外展課程標準長度為70分鐘（2課節）或105分鐘（3課節）。活動時段分為上午（xx:xx 至 xx:xx 之間）或下午 （xx:xx 至 xx:xx 之間）。<br/>
+                        The standard length for outreach courses are 70 minutes (2 sessions) or 105 minutes (3 sessions). Timeslots for the event are separated into 2 types: AM (between xx:xx and xx:xx) or PM (between xx:xx and xx:xx).<br/>
+                        <br/>
+                        學校需為每個課程選擇5個上課時段。如該課程申請成功，上課時間將按剩餘時段空缺及學校的選擇次序分配。<br/>
+                        Each school should choose 5 course timeslots for a course application. If the course application is accepted, course time will be assigned according to availability and school's preferences.<br/>
+                        <br/>
+                        在下面的日期選擇器中，有AM或PM時段可選的日子會以綠色圓圈標記。<br />
+                        In the date selector below, dates with AM and/or PM timeslot available are marked in green circles.<br />
+                        <br />
+                        請按以下 URL 確認上課時段列表。<br/>
+                        Please refer to the URL below for the list of course timeslots.<br/>
+                      </Typography>
+                    </AccordionDetails>
+                    <AccordionActions sx={{ justifyContent: 'flex-start' }}>
+                      <Button>URL</Button>
+                    </AccordionActions>
+                  </Accordion>
+                  <Typography variant="h6" className='pb-3' gutterBottom>學生資料 Student Details</Typography>
+                  <SingleChoiceCheckboxModule
+                    name={`${currentAppType.value.toString()}${n}.grade`}
+                    label="學生年級 Student grade"
+                    control={control}
+                    errors={errors}
+                    choices={studentgrades}
+                    required={(n==1)? true : false}
+                  />
+                  <ShortAnswerModule name={`${currentAppType.value.toString()}${n}.whichClass`} label="班別 Class" control={control} errors={errors} required={(n==1)? true : false} />
+                  <NumberAnswerModule name={`${currentAppType.value.toString()}${n}.noOfPpl`} label="學生人數 No. of students" min={currentAppType.ppl.min} max={currentAppType.ppl.max} control={control} errors={errors} required={(n==1)? true : false} />
+                  <Typography variant="h6" className='pb-3 pt-5' gutterBottom>課程資料 Course Details</Typography>
+                  <DropdownChoiceModule
+                    name={`${currentAppType.value.toString()}${n}.theme`}
+                    label="請選擇課程主題。 Please choose a course theme."
+                    control={control}
+                    errors={errors}
+                    choices={currentAppType.theme}
+                    required={(n==1)? true : false}
+                  />
+                  {(currentAppType.value != "astroNight") ? <>
+                    <CourseTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[1]`}
+                      label="請選擇課程時段（第一選擇）。 Please choose a course timeslot (1st choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                      required={(n==1)? true : false}
+                    />
+                    <CourseTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[2]`}
+                      label="請選擇課程時段（第二選擇）。 Please choose a course timeslot (2nd choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                    />
+                    <CourseTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[3]`}
+                      label="請選擇課程時段（第三選擇）。 Please choose a course timeslot (3rd choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                    />
+                    <CourseTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[4]`}
+                      label="請選擇課程時段（第四選擇）。 Please choose a course timeslot (4th choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                    />
+                    <CourseTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[5]`}
+                      label="請選擇課程時段（第五選擇）。 Please choose a course timeslot (5th choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                    />
+                  </>
 
-          {/* --- Page for outreach--- */}
-          <PageWrapper pageNumber={9}>
-            {/* <GoogleSheetWrapper sheetId="SHEET_ID_1" sheetName={sheetName}> */}
-              <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>
-                  外展 Cool Science Day<br />
-                  Outreach Cool Science Day
-                </Typography>
-                <Typography variant="h6" className='pb-3 pt-5' gutterBottom>報名須知 Notice for application</Typography>
-                <Accordion defaultExpanded>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`event-theme-content`}
-                    id="event-theme-content-header"
-                  >
-                    <Typography variant="body1" fontWeight={500} gutterBottom>活動主題列表 List of event themes</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography variant="body1" fontSize="1rem" color="#4c566a">
-                      請按以下 URL 確認活動主題列表與詳細介紹。<br/>
-                      Please refer to the URL below for the list of event themes and details.
-                    </Typography>
-                  </AccordionDetails>
-                  <AccordionActions sx={{ justifyContent: 'flex-start' }}>
-                    <Button>URL</Button>
-                  </AccordionActions>
-                </Accordion>
-                <Accordion defaultExpanded>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`event-timeslot-content`}
-                    id="event-timeslot-content-header"
-                  >
-                    <Typography variant="body1" fontWeight={500} gutterBottom>活動時段列表 List of event timeslots</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography variant="body1" fontSize="1rem" color="#4c566a">
-                      Cool Science Day 活動標準長度為 x 小時。活動時段分為上午（xx:xx 至 xx:xx 之間）或下午 （xx:xx 至 xx:xx 之間）。<br/>
-                      The standard length for "Cool Science Day" event is x hours. Timeslots for the event are separated into 2 types: AM (between xx:xx and xx:xx) or PM (between xx:xx and xx:xx).<br/>
+                  :<>
+                    <NightTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[1]`}
+                      label="請選擇課程時段（第一選擇）。 Please choose a course timeslot (1st choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                      required={(n==1)? true : false}
+                    />
+                    <NightTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[2]`}
+                      label="請選擇課程時段（第二選擇）。 Please choose a course timeslot (2nd choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                    />
+                    <NightTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[3]`}
+                      label="請選擇課程時段（第三選擇）。 Please choose a course timeslot (3rd choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                    />
+                    <NightTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[4]`}
+                      label="請選擇課程時段（第四選擇）。 Please choose a course timeslot (4th choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                    />
+                    <NightTimeslotModule
+                      name={`${currentAppType.value.toString()}${n}.timeslot[5]`}
+                      label="請選擇課程時段（第五選擇）。 Please choose a course timeslot (5th choice)."
+                      control={control}
+                      errors={errors}
+                      courseTimeslots={currentAppType.timeslot}
+                    />
+                  </>}
+                  {/* {(n==applicationNoArray.length)? <NextJumpToReview /> : null} */}
+                {/* </GoogleSheetWrapper> */}
+              </PageWrapper>
+            ))
+          }
 
-                      學校需為每個活動選擇5個時段。如該活動申請成功， 活動時間將按剩餘時段空缺及學校的選擇次序分配。<br/>
-                      Each school should choose 5 event timeslots for an event application. If the event application is accepted, event time will be assigned according to availability and school's preferences.<br/>
-                      <br/>
-                      在下面的日期選擇器中，有AM或PM時段可選的日子會以綠色圓圈標記。<br />
-                      In the date selector below, dates with AM and/or PM timeslot available are marked in green circles.<br />
-                      <br />
-                      請按以下 URL 確認活動時段列表。<br/>
-                      Please refer to the URL below for the list of event timeslots.<br/>
-                    </Typography>
-                  </AccordionDetails>
-                  <AccordionActions sx={{ justifyContent: 'flex-start' }}>
-                    <Button>URL</Button>
-                  </AccordionActions>
-                </Accordion>              
-              <Typography variant="h6" className='pb-3' gutterBottom>學生資料 | Student Details</Typography>
-              <DropdownChoiceModule
-                name="event.grade"
-                label="學生年級 Student grade"
-                control={control}
-                errors={errors}
-                choices={studentgrades}
-                required
-                multiple
-              />
-              <ShortAnswerModule name="event.whichClass" label="班別 Class" control={control} errors={errors} required />
-              <NumberAnswerModule name="event.noOfPpl" label="學生人數 No. of students" min={10} max={40} control={control} errors={errors} required />
-              <Typography variant="h6" className='pb-3' gutterBottom>活動資料 | Course Details</Typography>
-              <DropdownChoiceModule
-                name="event.theme"
-                label="請選擇活動主題。 Please choose an event theme."
-                control={control}
-                errors={errors}
-                choices={eventThemes}
-                required
-              />
-              <JcCourseTimeslotModule
-                name="event.timeslot[1]"
-                label="請選擇活動時段（第一選擇）。 Please choose an event timeslot (1st choice)."
-                control={control}
-                errors={errors}
-                jcTimeslots={eventTimeslots}
-                required
-              />
-              <JcCourseTimeslotModule
-                name="event.timeslot[2]"
-                label="請選擇活動時段（第二選擇）。 Please choose an event timeslot (2nd choice)."
-                control={control}
-                errors={errors}
-                jcTimeslots={eventTimeslots}
-                required
-              />
-              <JcCourseTimeslotModule
-                name="event.timeslot[3]"
-                label="請選擇活動時段（第三選擇）。 Please choose an event timeslot (3rd choice)."
-                control={control}
-                errors={errors}
-                jcTimeslots={eventTimeslots}
-                required
-              />
-              <JcCourseTimeslotModule
-                name="event.timeslot[4]"
-                label="請選擇活動時段（第四選擇）。 Please choose an event timeslot (4th choice)."
-                control={control}
-                errors={errors}
-                jcTimeslots={eventTimeslots}
-                required
-              />
-              <JcCourseTimeslotModule
-                name="event.timeslot[5]"
-                label="請選擇活動時段（第五選擇）。 Please choose an event timeslot (5th choice)."
-                control={control}
-                errors={errors}
-                jcTimeslots={eventTimeslots}
-                required
-              />
-            {/* </GoogleSheetWrapper> */}
-          </PageWrapper>
-
-
-
+         
           {/* --- Review Page --- */}
           {currentPage === REVIEW_PAGE_NUMBER && (
             <div className="animate-fadeIn">
               <Typography align="center" className="pt-3 pb-3" variant="h5" gutterBottom>請檢查你的申請內容。Please review your application.</Typography>
               <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">報名學校及老師資料 <br />School and Teacher info</Typography>
-              {formData.appType == "event" ? <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">外展 Cool Science Day<br />Outreach Cool Science Day</Typography>:null}
-              {formData.appType == "event" ? //check if application type is event
-                Object.entries(
-                  Object.keys(formData).
-                    filter((key) => !key.includes('outreach')).
-                    reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
+            
+              {
+                Object.entries
+                (
+                  Object.keys(formData)
+                    .filter((key) => !key.includes(currentAppType.value))
+                    .reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
                 )
                   .map(([key, value]) => (
                     <div key={key} className="mb-2">
                       {/* <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography> */}
                       <Typography variant="subtitle1" component="span" fontWeight={500} color="#5e81ac">{labels[key]}: </Typography>
                       <Typography variant="body1" component="span">
-                        {value == undefined ? "沒有 N/A" :
-                          typeof value === 'object' && value !== null && value instanceof Date
-                            ? value.toLocaleDateString()
-                            : key == "appType" ? String(appTypeChoices?.find(o => o.value === value)?.label)
-                              : key.substring(key.length - 5, key.length) == "theme" ? String(eventThemes?.find(o => o.value === value)?.label)
-                                : Array.isArray(value)
-                                  ? key.substring(key.length - 5, key.length) == "grade" ? `P. ${value.join(', P.')}`
-                                    : value.join(', ')
-                                  : String(value)}
-                        {/* replace undefined value */}
-                      </Typography>
-                    </div>
-                  ))
-                : Object.entries( //if application type is NOT event, should be outreach courses then
-                  Object.keys(formData).
-                    filter((key) => !key.includes('event')).
-                    reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
-                )
-                  .map(([key, value], index) => (
-                    <div key={key} className="mb-2">
-                      {/* <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography> */}
-                      {( (index-12)%9 == 1) ? <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">外展到校課程({(index-13)/9+1})<br />Outreach courses ({(index-13)/9+1})</Typography>: null}
-                      {/* <Typography variant="body1" component="span" fontWeight={500} color="#5e81ac">{String(index)} | </Typography> */}
-                      <Typography variant="subtitle1" component="span" fontWeight={500} color="#5e81ac">{labels[key]}: </Typography>
-                      <Typography variant="body1" component="span">
-                        {value == undefined ? "沒有 N/A" :
-                          typeof value === 'object' && value !== null && value instanceof Date
-                            ? value.toLocaleDateString()
-                            : key == "appType" ? String(appTypeChoices?.find(o => o.value === value)?.label)
-                              : key.substring(key.length - 5, key.length) == "theme" ? String(outreachThemes?.find(o => o.value === value)?.label)
-                                : key.substring(key.length - 5, key.length) == "grade" ? `P. ${String(value)}`
-                                  : Array.isArray(value)
-                                    ? key.substring(key.length - 5, key.length) == "grade" ? `P. ${value.join(', ')}`
-                                      : value.join(', ')
-                                    : String(value)}
+                        {value == undefined
+                          ? "沒有 N/A"
+                          : key == "appType"
+                            ? String(currentAppType?.label)
+                            : String(value)}
                         {/* replace undefined value */}
                       </Typography>
                     </div>
                   ))
               }
+              <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">{currentAppType?.labelChn}<br />{currentAppType?.labelEng}</Typography>
+              {
+                Object.entries
+                (
+                  Object.keys(formData)
+                    .filter((key) => key.includes(currentAppType.value))
+                    .reduce((cur, key) => { return Object.assign(cur, { [key]: formData[key] }) }, {})
+                )
+                  .map(([key, value]) => (
+                    <div key={key} className="mb-2">
+                      {/* <Typography variant="subtitle1" component="span" className="font-semibold">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}: </Typography> */}
+                      <Typography variant="subtitle1" component="span" fontWeight={500} color="#5e81ac">{labels[key]}: </Typography>
+                      <Typography variant="body1" component="span">
+                        {value == undefined
+                          ? "沒有 N/A"
+                          : key.substring(key.length - 5, key.length) == "theme"
+                              ? `${String(value)} ${String(currentAppType.theme.find(o => o.value === value)?.label)}`
+                              : Array.isArray(value)
+                                ? key.substring(key.length - 5, key.length) == "grade"
+                                  ? `P. ${value.join(', P.')}`
+                                  : value.join(', ')
+                                : key.substring(key.length - 5, key.length) == "grade"
+                                  ? `P. ${value}`
+                                  : String(value)}
+                        {/* replace undefined value */}
+                      </Typography>
+                    </div>
+                  ))
+              }
+
               <Typography className="pt-3 pb-2" variant="h6" fontWeight={700} color="#2e3440">
                 下載表格資料備份<br />Download backup application data
               </Typography>

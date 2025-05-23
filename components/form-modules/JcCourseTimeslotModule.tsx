@@ -171,7 +171,7 @@ export const JcCourseTimeslotModule: React.FC<
           setValue(name, searchString as any, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
           clearErrors(name);
           setVerificationStatus('verified');
-          setVerificationMessage(`已確認。Confirmed: ${formattedDate} ${selectedAmPm}`);
+          setVerificationMessage(`已確認選擇。Choice Confirmed: ${formattedDate} ${selectedAmPm}`);
         } else {
           setValue(name, null as any, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
           setVerificationStatus('error');

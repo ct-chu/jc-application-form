@@ -717,6 +717,7 @@ const FormContent: React.FC = () => {
         goToPage(REVIEW_PAGE_NUMBER);
         window.scrollTo({top: 0, behavior: 'smooth'});
         navigatedConditionally = true;
+        setJumpToReview(false)
       }
 
       if (!navigatedConditionally) {
@@ -974,8 +975,8 @@ const FormContent: React.FC = () => {
             <PageWrapper pageNumber={outreach.n + 2} key={`outreach-page-${outreach.n}`}>
               {/* <GoogleSheetWrapper sheetId={outreach.sheetId} sheetName={sheetName}> */}
                 <Typography align="center" variant="h5" className='pb-3' fontWeight={700} color="#2e3440" gutterBottom>
-                  外展到校課程({outreach.n})<br />
-                  Outreach courses ({outreach.n})
+                  外展到校課程(第{outreach.n}班)<br />
+                  Outreach courses (Application no. {outreach.n})
                 </Typography>
                 <Typography variant="h6" className='pb-3 pt-5' gutterBottom>報名須知 Notice for application</Typography>
                 <Accordion defaultExpanded={outreach.n == 1 ? true : false }>

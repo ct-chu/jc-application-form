@@ -1,4 +1,6 @@
-const advanceEeTimeslot = {
+import { CourseTimeslotData } from '@/app/commonType';
+
+export const advanceEeTimeslot:CourseTimeslotData = {
     "HKP_001": "2025/09/17_AM",
     "HKP_002": "2025/09/17_PM",
     "HKP_003": "2025/09/18_AM",
@@ -47,10 +49,10 @@ const advanceEeTimeslot = {
     "HKP_046": "2025/12/02_PM",
     "HKP_047": "2025/12/04_AM",
     "HKP_048": "2025/12/04_PM",
-    "HKP_049": "2025/12/08_AM",
-    "HKP_050": "2025/12/08_PM",
-    "HKP_051": "2025/12/09_AM",
-    "HKP_052": "2025/12/09_PM",
+    "HKP_049": "2025/12/09_AM",
+    "HKP_050": "2025/12/09_PM",
+    "HKP_051": "2025/12/10_AM",
+    "HKP_052": "2025/12/10_PM",
     "HKP_053": "2025/12/11_AM",
     "HKP_054": "2025/12/11_PM",
     "HKP_055": "2026/01/05_AM",

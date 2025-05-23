@@ -1,4 +1,6 @@
-export const advanceEeTheme = [
+import { Choice } from "../commonType"
+
+export const advanceEeTheme: Choice[] = [
     {value: "S01", label: "自然探索特工 (初級) P1 - P3",},
     {value: "S02", label: "自然探索特工 (高級) P4 - P6",},
     {value: "S03", label: "天氣觀測 P3 - P6",},

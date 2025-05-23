@@ -1,4 +1,6 @@
-const astroNightTimeslot = {
+import { CourseTimeslotData } from '@/app/commonType';
+
+export const astroNightTimeslot:CourseTimeslotData  = {
     "HKA_901": "2025/09/19",
     "HKA_902": "2025/09/26",
     "HKA_903": "2025/09/30",
@@ -27,7 +29,7 @@ const astroNightTimeslot = {
     "HKA_926": "2026/02/06",
     "HKA_927": "2026/02/26",
     "HKA_928": "2026/02/27",
-    "HKA_928": "2026/03/06",
+    "HKA_9281": "2026/03/06",
     "HKA_929": "2026/03/11",
     "HKA_930": "2026/03/13",
     "HKA_931": "2026/03/20",

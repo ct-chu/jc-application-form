@@ -1,4 +1,6 @@
-const jcOnsiteTimeslot = {
+import { CourseTimeslotData } from '@/app/commonType';
+
+export const jcOnsiteTimeslot:CourseTimeslotData = {
     "HKP_121": "2025/09/26_AM",
     "HKP_122": "2025/09/26_PM",
     "HKP_123": "2025/10/03_AM",

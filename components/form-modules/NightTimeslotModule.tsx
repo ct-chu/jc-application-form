@@ -1,4 +1,4 @@
-// components/form-modules/CourseTimeslotModule.tsx
+// components/form-modules/NightTimeslotModule.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
@@ -39,7 +39,6 @@ interface CourseTimeslotModuleProps<TFormValues extends Record<string, any>>
     extends FormModuleProps<TFormValues> {
     courseTimeslots: CourseTimeslotData;
     datePickerLabel?: string;
-    ampmPickerLabel?: string;
 }
 
 // Props for the custom day component
@@ -72,7 +71,7 @@ interface MyMainFormValuesExample extends FieldValues { // Replace with your act
 
 type VerificationStatus = 'idle' | 'verified' | 'error';
 
-export const CourseTimeslotModule: React.FC<
+export const NightTimeslotModule: React.FC<
     CourseTimeslotModuleProps<MyMainFormValuesExample> // Use your actual TFormValues
 > = ({
     name,
@@ -82,12 +81,10 @@ export const CourseTimeslotModule: React.FC<
     courseTimeslots,
     className = 'mb-4',
     datePickerLabel = '日期 Date (YYYY/MM/DD)',
-    ampmPickerLabel = 'AM/PM',
 }) => {
         const { setValue, setError, clearErrors, watch, formState: { errors: rhfErrors } } = useFormContext<MyMainFormValuesExample>();
 
         const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-        const [selectedAmPm, setSelectedAmPm] = useState<string>('');
         const [verificationStatus, setVerificationStatus] = useState<VerificationStatus>('idle');
         const [verificationMessage, setVerificationMessage] = useState<string>('');
 
@@ -99,7 +96,7 @@ export const CourseTimeslotModule: React.FC<
             const currentParsedTimeslots = JSON.parse(stringifiedCourseTimeslots);
             Object.values(currentParsedTimeslots).forEach((timeslotString: any) => {
                 if (typeof timeslotString === 'string') {
-                    const [dateStr] = timeslotString.split('_');
+                    const [dateStr] = timeslotString
                     dates.add(dateStr);
                 }
             });
@@ -113,21 +110,19 @@ export const CourseTimeslotModule: React.FC<
 
             if (rhfFieldValue && typeof rhfFieldValue === 'string' && currentParsedTimeslots[rhfFieldValue]) {
                 // RHF has a valid course code, and it maps to a timeslot string
-                const timeslotString = currentParsedTimeslots[rhfFieldValue]; // "YYYY/MM/DD_AMPM"
-                const [dateStr, ampmStr] = timeslotString.split('_');
+                const timeslotString = currentParsedTimeslots[rhfFieldValue]; // "YYYY/MM/DD"
+                const [dateStr] = timeslotString;
                 const newDateFromRHF = parseDateFns(dateStr, 'yyyy/MM/dd', new Date());
 
-                if (isValidDate(newDateFromRHF) && ampmStr) {
+                if (isValidDate(newDateFromRHF)) {
                     // Check if internal state already matches to prevent unnecessary updates
                     const internalDateMatches = selectedDate && isValidDate(selectedDate) && isEqualDate(startOfDay(selectedDate), startOfDay(newDateFromRHF));
-                    const internalAmPmMatches = selectedAmPm === ampmStr;
 
-                    if (!internalDateMatches || !internalAmPmMatches) {
-                        console.log(`CourseTimeslotModule SYNC: Populating pickers from RHF value. Date: ${dateStr}, AM/PM: ${ampmStr}`);
+                    if (!internalDateMatches) {
+                        console.log(`CourseTimeslotModule SYNC: Populating pickers from RHF value. Date: ${dateStr}`);
                         setSelectedDate(newDateFromRHF);
-                        setSelectedAmPm(ampmStr);
                         setVerificationStatus('verified');
-                        setVerificationMessage(`已確認選擇。Choice confirmed: ${rhfFieldValue} (時段為 ${dateStr} ${selectedAmPm})`);
+                        setVerificationMessage(`已確認選擇。Choice confirmed: ${rhfFieldValue} (時段為 ${dateStr})`);
                         if (rhfErrors[name]) clearErrors(name);
                     } else {
                         console.log(`CourseTimeslotModule SYNC: Internal state already matches RHF value '${rhfFieldValue}'. No update.`);
@@ -135,9 +130,8 @@ export const CourseTimeslotModule: React.FC<
                 } else {
                     // RHF value (courseCode) exists but its corresponding timeslot string is invalid/unparsable
                     console.warn(`CourseTimeslotModule SYNC: Timeslot string for courseCode '${rhfFieldValue}' is invalid.`);
-                    if (selectedDate !== null || selectedAmPm !== '' || verificationStatus !== 'idle') {
+                    if (selectedDate !== null || verificationStatus !== 'idle') {
                         setSelectedDate(null);
-                        setSelectedAmPm('');
                         setVerificationStatus('idle');
                         setVerificationMessage('');
                     }
@@ -149,7 +143,6 @@ export const CourseTimeslotModule: React.FC<
                 if (verificationStatus !== 'idle') {
                     console.log(`CourseTimeslotModule SYNC: RHF is empty and status was '${verificationStatus}'. Resetting internal state.`);
                     setSelectedDate(null);
-                    setSelectedAmPm('');
                     setVerificationStatus('idle');
                     setVerificationMessage('');
                 } else {
@@ -160,17 +153,17 @@ export const CourseTimeslotModule: React.FC<
             }
         }, [
             rhfFieldValue, name, stringifiedCourseTimeslots, clearErrors, setValue,
-            rhfErrors, selectedAmPm, selectedDate, verificationStatus
+            rhfErrors, selectedDate, verificationStatus
         ]); // Unremoved rhfErrors, selectedDate, selectedAmPm, verificationStatus from deps
 
 
         const handleVerifyClick = () => {
-            console.log(`CourseTimeslotModule VERIFY CLICK for '${name}': Date=${selectedDate}, AM/PM='${selectedAmPm}'`);
+            console.log(`CourseTimeslotModule VERIFY CLICK for '${name}': Date=${selectedDate}'`);
             const currentParsedTimeslots = JSON.parse(stringifiedCourseTimeslots);
 
-            if (selectedDate && isValidDate(selectedDate) && selectedAmPm) {
+            if (selectedDate && isValidDate(selectedDate)) {
                 const formattedDate = formatDateFns(selectedDate, 'yyyy/MM/dd');
-                const searchString = `${formattedDate}_${selectedAmPm}`;
+                const searchString = `${formattedDate}`;
 
                 const matchedEntry = Object.entries(currentParsedTimeslots).find(
                     ([_code, timeslot]) => timeslot === searchString
@@ -181,7 +174,7 @@ export const CourseTimeslotModule: React.FC<
                     setValue(name, courseCode as any, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
                     clearErrors(name);
                     setVerificationStatus('verified');
-                    setVerificationMessage(`已確認選擇。Choice confirmed: ${courseCode} (時段為 ${formattedDate} ${selectedAmPm})`);
+                    setVerificationMessage(`已確認選擇。Choice confirmed: ${courseCode} (時段為 ${formattedDate})`);
                 } else {
                     setValue(name, null as any, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
                     setVerificationStatus('error');
@@ -209,13 +202,6 @@ export const CourseTimeslotModule: React.FC<
         const handleDateChange = (date: Date | null) => {
             console.log(`CourseTimeslotModule Input Change for '${name}': Date selected:`, date);
             setSelectedDate(date ? startOfDay(date) : null);
-            resetVerificationAndRHFValue();
-        };
-
-        const handleAmPmChange = (event: React.ChangeEvent<{ value: unknown }> | any) => {
-            const newAmPm = event.target.value as string;
-            console.log(`CourseTimeslotModule Input Change for '${name}': AM/PM selected:`, newAmPm);
-            setSelectedAmPm(newAmPm);
             resetVerificationAndRHFValue();
         };
 
@@ -282,24 +268,6 @@ export const CourseTimeslotModule: React.FC<
                                     </LocalizationProvider>
                                 </Grid>
                                 <Grid
-                                    // item xs={8} sm={4} md={3}
-                                >
-                                    <FormControl sx={{ width: 100 }} fullWidth variant="outlined" error={!!fieldState.error}>
-                                        <InputLabel id={`${name}-ampm-label`}>{ampmPickerLabel}</InputLabel>
-                                        <Select
-                                            labelId={`${name}-ampm-label`} id={`${name}-ampm`}
-                                            value={selectedAmPm}
-                                            onChange={handleAmPmChange}
-                                            label={ampmPickerLabel}
-                                            className="bg-white"
-                                        >
-                                            <MenuItem value=""><em>None</em></MenuItem>
-                                            <MenuItem value="AM">AM</MenuItem>
-                                            <MenuItem value="PM">PM</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid
                                     // item xs={4} sm={2} md={2}
                                     sx={{ textAlign: 'left', pl: 0 }}
                                 >
@@ -309,7 +277,7 @@ export const CourseTimeslotModule: React.FC<
                                     }
                                         aria-label="Verify timeslot"
                                         title="Verify timeslot"
-                                        disabled={!selectedDate || !selectedAmPm}
+                                        disabled={!selectedDate}
                                         sx={{ p: 1.5, mt: 0.5 }}
                                     >
                                         {verificationStatus === 'verified' ? <TaskAltIcon /> :
